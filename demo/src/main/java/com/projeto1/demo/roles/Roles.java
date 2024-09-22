@@ -16,16 +16,22 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class Roles {
 
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 20)
+    @Column(length = 20, nullable = false)
     private ERole name;
+
+    public Roles() {}
+
+    public Roles(ERole name) {
+        this.name = name;
+    }
 
 }
 
