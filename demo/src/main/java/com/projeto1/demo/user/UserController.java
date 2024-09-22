@@ -24,11 +24,13 @@ public class UserController {
     @PostMapping
     public MessageResponseDTO createNewUser(@RequestBody @Valid UserDTO userDTO) {
         System.out.println("[User Controller] registerNewUser " + userDTO.getName());
-        return userService.addNewUser(userDTO);
+        int creatorId = userDTO.getCreator();
+        return userService.addNewUser(userDTO, creatorId);
     }
 
     @GetMapping
-    public List<String> getLivros() {
-        return List.of("Livro A", "Livro B");
+    public List<String> listAllUsers() {
+        System.out.println("[User Controller] listAllUsers");
+        return userService.listAll();
     }
 }
