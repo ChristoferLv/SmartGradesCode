@@ -40,4 +40,5 @@ public class UserDTO {
     private String imageUrl;
     @NotNull
     private Set<RolesDTO> roles;
+    private int creator; 
 }
