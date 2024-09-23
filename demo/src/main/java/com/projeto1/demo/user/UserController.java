@@ -28,7 +28,7 @@ public class UserController {
         return userService.addNewUser(userDTO, creatorId);
     }
 
-    @GetMapping
+    @GetMapping()
     public List<String> listAllUsers() {
         System.out.println("[User Controller] listAllUsers");
         return userService.listAll();
