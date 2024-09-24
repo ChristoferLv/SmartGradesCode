@@ -1,10 +1,15 @@
 package com.projeto1.demo.studentsClass;
 
+import com.projeto1.demo.reportCard.AcademicPeriod;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,8 +29,9 @@ public class StudentsClass {
     @Column(nullable = false)
     private String level;
 
-    @Column(nullable = false)
-    private String period;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "period_id", nullable = false)
+    private AcademicPeriod period;
 
     @Column(nullable = false) // Renamed to avoid conflict
     private String classGroup; //Horário, tipo (Sábado as 15:00)
