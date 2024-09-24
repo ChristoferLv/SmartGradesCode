@@ -10,21 +10,17 @@ public class ReportCardDTO {
 
     private Long id;
 
-    private Long studentId; // To link with a student
+    private Long studentId; // Reference to student ID for data transfer
 
-    private String studentName; // Optionally include student name for easier display
+    private String studentName; // Student name for data transfer
 
-    private Long periodId; // To link with a period
-
-    private String periodName; // Optionally include the period name
+    private Long periodId; // Reference to academic period ID
 
     private EvaluationType evaluationType; // FIRST_EVALUATION or FINAL_EVALUATION
 
-    private List<AssessmentDTO> assessments; // Assessments as part of the report
+    private List<AssessmentDTO> assessments; // DTO for assessments part of the report
 
-    private Long studentClassId; // To link with the student class
-
-    private String studentClassLevel; // Optionally include class level
+    private Long studentClassId; // Reference to student class ID
 
     private Integer OT; // Oral Test grade
 
