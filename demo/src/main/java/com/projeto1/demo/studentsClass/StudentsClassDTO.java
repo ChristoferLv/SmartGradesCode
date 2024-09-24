@@ -1,5 +1,8 @@
 package com.projeto1.demo.studentsClass;
 
+import com.projeto1.demo.reportCard.AcademicPeriod;
+
+
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -18,8 +21,7 @@ public class StudentsClassDTO {
     @Size(min = 2, max = 40)
     private String level;
     @NotNull
-    @Size(min = 2, max = 30)
-    private String period;
+    private AcademicPeriod period;
     @NotNull
     @Size(min = 2, max = 40)
     private String classGroup;

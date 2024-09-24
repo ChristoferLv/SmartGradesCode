@@ -1,8 +1,7 @@
-package com.projeto1.demo.studentsClass;
+package com.projeto1.demo.reportCard;
 
-import com.projeto1.demo.reportCard.AcademicPeriod;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,25 +13,30 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentsClass {
+public class Assessment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "report_card_id", nullable = true)
+    @JsonBackReference // Prevents infinite recursion during serialization
+    @ToString.Exclude
+    private ReportCard reportCard;
+
     @Column(nullable = false)
-    private String level;
+    private String skill; // e.g., "Speaking", "Listening", etc.
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "period_id", nullable = false)
-    private AcademicPeriod period;
+    @Column(nullable = false)
+    private String rating; // e.g., "Excellent", "Very good", etc.
 
-    @Column(nullable = false) // Renamed to avoid conflict
-    private String classGroup; //Horário, tipo (Sábado as 15:00)
+    // Getters and Setters
 }

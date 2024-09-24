@@ -22,7 +22,7 @@ public class UserService {
 
     public MessageResponseDTO addNewUser(UserDTO userDTO, int creatorId) {
         System.out.println("[User Service] addNewUser " + userDTO.getName());
-        System.out.println("[User Service] id of creator " + creatorId);
+        System.out.println("[User Service] id of creator " + creatorId + "\n");
 
         //Checa se o usuário que está criando o novo usuário é professor ou admin
         User creatorUser = userRepository.findById((long) creatorId).orElse(null);
@@ -41,7 +41,7 @@ public class UserService {
     }
 
     public List<String> listAll() {
-        System.out.println("[User Service] listAll");
+        System.out.println("[User Service] listAll\n");
         return userRepository.findAll().stream()
                 .map(user -> user.getId() + ": " + user.getName() + "  " + user.getEmail())
                 .collect(Collectors.toList());

@@ -1,36 +1,28 @@
-package com.projeto1.demo.roles;
+package com.projeto1.demo.reportCard;
+
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
-public class Roles {
+public class AcademicPeriod {
 
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20, nullable = false)
-    private ERole name;
-
-    public Roles() {}
-
-    public Roles(ERole name) {
-        this.name = name;
-    }
+    @Column(nullable = false)
+    private String name; // e.g., "2021-2"
 
 }
-
