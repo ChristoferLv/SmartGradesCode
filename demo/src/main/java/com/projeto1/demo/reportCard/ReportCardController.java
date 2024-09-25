@@ -2,7 +2,6 @@ package com.projeto1.demo.reportCard;
 
 import java.util.List;
 
-import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +26,7 @@ public class ReportCardController {
 
     @PostMapping
     public MessageResponseDTO createNewReportCard(@RequestBody @Valid ReportCardDTO reportCardDTO) {
-        System.out.println("[ReportCard Controller] createNewReportCard " + reportCardDTO.getStudentName());
+        System.out.println("[ReportCard Controller] createNewReportCard " + reportCardDTO.getStudentId());
         return reportCardService.addNewReportCard(reportCardDTO);
     }
 

@@ -7,8 +7,6 @@ import lombok.Data;
 @Builder
 public class AssessmentDTO {
 
-    private Long id;
-    private Long reportCardId;
-    private String skill; // e.g., Speaking, Listening
-    private String rating;    // e.g., Excellent, Good, etc.
+    private String skill; // e.g., "Speaking", "Listening"
+    private String rating; // e.g., "Excellent", "Very Good"
 }
