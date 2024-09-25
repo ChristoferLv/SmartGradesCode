@@ -8,51 +8,37 @@ import org.springframework.stereotype.Service;
 
 import com.projeto1.demo.messages.MessageResponseDTO;
 
-import jakarta.transaction.Transactional;
 
 @Service
 public class ReportCardService {
 
-    private final ReportCardRepository reportCardRepository;
-    private final AssessmentRepository assessmentRepository; // Add this repository to save assessments
+
+    ReportCardMapper reportCardMapper = ReportCardMapper.INSTANCE;
 
     @Autowired
-    public ReportCardService(ReportCardRepository reportCardRepository, AssessmentRepository assessmentRepository) {
-        this.reportCardRepository = reportCardRepository;
-        this.assessmentRepository = assessmentRepository; // Initialize the assessment repository
-    }
+    private ReportCardRepository reportCardRepository;
 
-    @Transactional
+
     public MessageResponseDTO addNewReportCard(ReportCardDTO reportCardDTO) {
-        System.out.println("[ReportCard Service] addNewReportCard " + reportCardDTO.getStudentName() + "\n");
+       ReportCard reportCard = reportCardMapper.toModel(reportCardDTO);
 
-        // Step 1: Map Assessments from DTO to Entity
+
+        // 2. Convert and save assessments
         List<Assessment> assessments = reportCardDTO.getAssessments().stream()
-                .map(assessmentDTO -> {
-                    Assessment assessment = ReportCardMapper.INSTANCE.toModel(assessmentDTO);
-                    // Initially set the report card to null
-                    assessment.setReportCard(null);
-                    return assessment;
-                })
-                .collect(Collectors.toList());
+            .map(assessmentDTO -> {
+                Assessment assessment = new Assessment();
+                assessment.setSkill(assessmentDTO.getSkill());
+                assessment.setRating(assessmentDTO.getRating());
+                assessment.setReportCard(reportCard); // Set the ReportCard reference
+                return assessment;
+            })
+            .collect(Collectors.toList());
 
-        // Step 2: Save Assessments
-        List<Assessment> savedAssessments = assessmentRepository.saveAll(assessments);
+        reportCard.setAssessments(assessments); // Set assessments in the ReportCard
 
-        // Step 3: Create ReportCard entity
-        ReportCard reportCard = ReportCardMapper.INSTANCE.toModel(reportCardDTO);
-        reportCard.setAssessments(savedAssessments); // Set the saved assessments to the report card
-
-        // Step 4: Save the ReportCard
-        reportCard = reportCardRepository.save(reportCard); // Save the report card first
-
-        // Step 5: Update each assessment with the report card reference
-        for (Assessment assessment : savedAssessments) {
-            assessment.setReportCard(reportCard); // Set the report card reference in assessments
-            assessmentRepository.save(assessment); // Save updated assessment with report card reference
-        }
-
-        return MessageResponseDTO.builder().message("Report Card created with ID " + reportCard.getId()).build();
+        // 3. Save the ReportCard (this will automatically save the assessments due to CascadeType.ALL)
+        reportCardRepository.save(reportCard);
+        return MessageResponseDTO.builder().message("ReportCard created with ID " + reportCard.getId()).build();
     }
 
     public List<String> listAll() {

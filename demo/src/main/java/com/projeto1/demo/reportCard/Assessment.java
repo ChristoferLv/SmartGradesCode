@@ -1,6 +1,5 @@
 package com.projeto1.demo.reportCard;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,10 +26,9 @@ public class Assessment {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "report_card_id", nullable = true)
-    @JsonBackReference // Prevents infinite recursion during serialization
+    @JoinColumn(name = "report_card_id", nullable = false)
     @ToString.Exclude
-    private ReportCard reportCard;
+    private ReportCard reportCard; // Reference to the ReportCard it belongs to
 
     @Column(nullable = false)
     private String skill; // e.g., "Speaking", "Listening", etc.
