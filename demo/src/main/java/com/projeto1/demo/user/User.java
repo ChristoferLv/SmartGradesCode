@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.projeto1.demo.roles.Roles;
+import com.projeto1.demo.studentsClass.StudentsClass;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,7 +19,9 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Data
@@ -34,9 +37,9 @@ public class User {
 
     @Column(nullable = false)
     private String name;
-    
+
     @Column(nullable = false)
-    private String dateOfbirth;
+    private String dateOfBirth;
 
     @Column(nullable = false)
     private String phoneNumber;
@@ -57,11 +60,18 @@ public class User {
         name = "user_roles",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "role_id"))
-    final private Set<Roles> roles = new HashSet<>();
+    private Set<Roles> roles = new HashSet<>();
 
-    public void setRoles(Set<Roles> roles2) {
-        roles.clear();
-        roles.addAll(roles2);
-    }
+    // Many-to-Many relationship with StudentsClass
+    @ManyToMany
+    @JoinTable(
+        name = "user_students_class",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "students_class_id")
+    )
+    @ToString.Exclude // Prevent circular references
+    @EqualsAndHashCode.Exclude // Prevent circular references
+    private Set<StudentsClass> studentsClasses = new HashSet<>();
 
+    // Getters and Setters
 }

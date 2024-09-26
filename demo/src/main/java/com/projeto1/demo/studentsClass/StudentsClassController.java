@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +29,19 @@ public class StudentsClassController {
     public MessageResponseDTO createNewClass(@RequestBody @Valid StudentsClassDTO studentsClassDTO) {
         System.out.println("[Students Class Controller] createNewClass " + studentsClassDTO.getLevel());
         return studentsClassService.addNewClass(studentsClassDTO);
+    }
+
+    @PostMapping("/enroll")
+    public MessageResponseDTO enrollStudentInClass(@RequestBody EnrollmentRequestDTO enrollmentRequest) {
+        studentsClassService.enrollStudentInClass(enrollmentRequest.getStudentId(), enrollmentRequest.getClassId());
+        return MessageResponseDTO.builder()
+                .message("Student enrolled in class")
+                .build();
+    }
+
+    @GetMapping("/enroll/{id}")
+    public MessageResponseDTO listStudentsInClass(@PathVariable Long id) {
+        return studentsClassService.listStudentsInClass(id);
     }
 
     @GetMapping
