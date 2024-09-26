@@ -59,7 +59,7 @@ public class RoleDataLoader {
                 Set<Roles> roles = new HashSet<>();
                 roles.add(adminRole);
                 adminUser.setRoles(roles);
-                adminUser.setDateOfbirth("2000-01-01");
+                adminUser.setDateOfBirth("2000-01-01");
                 adminUser.setPhoneNumber("4499999999");
                 adminUser.setUsername("admin");
                 adminUser.setEmail("admin@email.com");

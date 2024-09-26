@@ -23,7 +23,7 @@ public class UserDTO {
     private String name;
     @NotNull
     @Size(min = 2, max = 11)
-    private String dateOfbirth;
+    private String dateOfBirth;
     @NotNull
     @Size(min = 2, max = 11)
     private String phoneNumber;
