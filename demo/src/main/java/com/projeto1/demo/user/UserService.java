@@ -4,37 +4,78 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import com.projeto1.demo.jwdutils.JwtTokenService;
+import com.projeto1.demo.jwdutils.LoginUserDTO;
+import com.projeto1.demo.jwdutils.RecoveryJwtTokenDto;
+import com.projeto1.demo.jwdutils.SecurityConfiguration;
 import com.projeto1.demo.messages.MessageResponseDTO;
 import com.projeto1.demo.roles.ERole;
 
 @Service
 public class UserService {
 
-    private final UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
     private final UserMapper userMapper = UserMapper.INSTANCE;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtTokenService jwtTokenService;
+
+    @Autowired
+    private SecurityConfiguration securityConfiguration;
+
+ 
+
+    // Método responsável por autenticar um usuário e retornar um token JWT
+    public RecoveryJwtTokenDto authenticateUser(LoginUserDTO loginUserDto) {
+        System.out.println("[User Service] authenticateUser " + loginUserDto.email());
+        // Cria um objeto de autenticação com o email e a senha do usuário
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                loginUserDto.email(), loginUserDto.password());
+        //System.out.println("[User Service] usernamePasswordAuthenticationToken " + usernamePasswordAuthenticationToken + "\n");
+        //System.out.println("[User Service] authenticationManager " + usernamePasswordAuthenticationToken.getAuthorities() + "\n");
+        // Autentica o usuário com as credenciais fornecidas
+        //System.out.println("[User Service] authenticationBefore");
+        //System.out.println("Username: " + usernamePasswordAuthenticationToken.getPrincipal());
+        //System.out.println("Password: " + usernamePasswordAuthenticationToken.getCredentials());
+
+        Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+        //System.out.println("[User Service] authentication "+"\n");
+        // Obtém o objeto UserDetails do usuário autenticado
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        //System.out.println("[User Service] userDetails " + userDetails + "\n");
+        // Gera um token JWT para o usuário autenticado
+        return new RecoveryJwtTokenDto(jwtTokenService.generateToken(userDetails));
     }
 
     public MessageResponseDTO addNewUser(UserDTO userDTO, int creatorId) {
-        System.out.println("[User Service] addNewUser " + userDTO.getName());
+        System.out.println("[User Service] addNewUser " + userDTO);
         System.out.println("[User Service] id of creator " + creatorId + "\n");
 
-        //Checa se o usuário que está criando o novo usuário é professor ou admin
+        // Check if the creator user is authorized (Teacher or Admin)
         User creatorUser = userRepository.findById((long) creatorId).orElse(null);
-        if (creatorUser == null || creatorUser.getRoles().stream().noneMatch(role -> role.getName().equals(ERole.TEACHER) || role.getName().equals(ERole.ADMIN))) {
+        if (creatorUser == null || creatorUser.getRoles().stream()
+                .noneMatch(role -> role.getName().equals(ERole.TEACHER) || role.getName().equals(ERole.ADMIN))) {
             return MessageResponseDTO.builder()
                     .message("User with ID " + creatorId + " is not authorized to create new users")
                     .build();
         }
 
+        // Create a new user based on the provided DTO and encode the password
         User userToSave = userMapper.toEntity(userDTO);
+        userToSave.setPassword(securityConfiguration.passwordEncoder().encode(userDTO.getPassword()));
 
+        // Save the new user in the repository
         User savedUser = userRepository.save(userToSave);
+
         return MessageResponseDTO.builder()
                 .message("Created user with ID " + savedUser.getId() + " " + savedUser.toString())
                 .build();
@@ -43,7 +84,7 @@ public class UserService {
     public List<String> listAll() {
         System.out.println("[User Service] listAll\n");
         return userRepository.findAll().stream()
-                .map(user -> user.getId() + ": " + user.getName() + "  " + user.getEmail())
+                .map(user -> user.toString())
                 .collect(Collectors.toList());
     }
 }
