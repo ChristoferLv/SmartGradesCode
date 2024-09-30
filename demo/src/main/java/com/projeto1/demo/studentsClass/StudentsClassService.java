@@ -62,7 +62,7 @@ public class StudentsClassService {
         return MessageResponseDTO.builder()
                 .message("Students in class " + studentsClass.getLevel() + ": " + studentsClass.getStudents()).build();
     }
-
+    
     public List<String> listAll() {
         System.out.println("[Students Class Service] listAll\n");
         return studentsClassRepository.findAll().stream()
