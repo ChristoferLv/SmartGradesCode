@@ -54,6 +54,9 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
+    @Column
+    private int state;
+
     private String imageUrl;
 
     @ManyToMany(fetch = FetchType.EAGER)
