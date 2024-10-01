@@ -49,10 +49,11 @@ public class UserController {
         return userService.addNewUser(userDTO, creatorId);
     }
 
+    @Valid
     @PutMapping("/change-password/{id}")
     public ResponseEntity<MessageResponseDTO> changePassword(@PathVariable Long id,
             @RequestBody PasswordChangeDTO passwordChangeDTO) {
-                System.out.println("[User Controller] changePassword " + id);
+        System.out.println("[User Controller] changePassword " + id);
         MessageResponseDTO response = userService.changeUserPassword(id, passwordChangeDTO);
         return ResponseEntity.ok(response);
     }
