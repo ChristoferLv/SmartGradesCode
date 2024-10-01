@@ -3,6 +3,7 @@ package com.projeto1.demo.studentsClass;
 import java.util.Set;
 import java.util.HashSet;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.projeto1.demo.reportCard.AcademicPeriod;
 import com.projeto1.demo.user.User;
 
@@ -44,6 +45,7 @@ public class StudentsClass {
 
     @ManyToMany(mappedBy = "studentsClasses")
     @EqualsAndHashCode.Exclude // Prevent infinite loop
+    @JsonIgnore
     private Set<User> students = new HashSet<>();
 
     // Getters and Setters

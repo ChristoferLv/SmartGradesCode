@@ -81,6 +81,16 @@ public class UserService {
                 .build();
     }
 
+    public MessageResponseDTO findByUsername(String username) {
+        System.out.println("[User Service] findByUsername " + username);
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user == null) {
+            return MessageResponseDTO.builder().message("User with username " + username + " not found").build();
+        }
+        return MessageResponseDTO.builder().message("Found user with username " + username + " " + user.toString())
+                .build();
+    }
+
     public List<String> listAll() {
         System.out.println("[User Service] listAll\n");
         return userRepository.findAll().stream()

@@ -41,6 +41,11 @@ public class ReportCardService {
         return MessageResponseDTO.builder().message("ReportCard created with ID " + reportCard.getId()).build();
     }
 
+    public List<ReportCard> listReportCardByUserId(Long studentId) {
+        System.out.println("[ReportCard Service] listReportCardByUserId " + studentId);
+        return reportCardRepository.findByStudentId(studentId);
+    }
+
     public List<String> listAll() {
         System.out.println("[ReportCard Service] listAll\n");
         return reportCardRepository.findAll().stream()
