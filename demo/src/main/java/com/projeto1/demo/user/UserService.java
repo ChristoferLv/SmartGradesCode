@@ -131,6 +131,7 @@ public class UserService {
     }
 
     public String changePasswordOfStudent(Long studentId) {
+        System.out.println("[User Service] changePasswordOfStudent " + studentId);
         // Find the student by ID
         User student = userRepository.findById(studentId).orElseThrow(() -> new UsernameNotFoundException("Student not found"));
 
