@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,6 +39,13 @@ public class StudentsClassController {
                 .message("Student enrolled in class")
                 .build();
     }
+
+    //Change state of a class
+    @PutMapping("/update-state/{id}")
+    public MessageResponseDTO changeClassState(@PathVariable Long id, @RequestBody ChangeClassStateDTO changeClassStateDTO) {
+        System.out.println("[Students Class Controller] changeClassState " + id);
+        return studentsClassService.changeClassState(id, changeClassStateDTO);
+    }  
 
     @GetMapping("/enroll/{id}")
     public MessageResponseDTO listStudentsInClass(@PathVariable Long id) {

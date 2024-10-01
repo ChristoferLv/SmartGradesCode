@@ -26,6 +26,7 @@ public class StudentsClassService {
     public MessageResponseDTO addNewClass(StudentsClassDTO studentsClassDTO) {
         System.out.println("[Students Class Service] addNewClass " + studentsClassDTO.getLevel() + "\n");
         StudentsClass studentsClassToSave = studentsClassMapper.toModel(studentsClassDTO);
+        studentsClassToSave.setState(1);
         studentsClassRepository.save(studentsClassToSave);
         return MessageResponseDTO.builder()
                 .message("Created class with ID " + studentsClassToSave.getId() + " " + studentsClassToSave.toString())
@@ -33,6 +34,7 @@ public class StudentsClassService {
     }
 
     public MessageResponseDTO enrollStudentInClass(Long studentId, Long classId) {
+        System.out.println("[Students Class Service] enrollStudentInClass " + studentId + " " + classId + "\n");
         User student = userRepository.findById(studentId).orElse(null);
         StudentsClass studentsClass = studentsClassRepository.findById(classId).orElse(null);
 
@@ -53,6 +55,7 @@ public class StudentsClassService {
     }
 
     public MessageResponseDTO listStudentsInClass(Long id) {
+        System.out.println("[Students Class Service] listStudentsInClass " + id + "\n");
         StudentsClass studentsClass = studentsClassRepository.findById(id).orElse(null);
         if (studentsClass == null) {
             return MessageResponseDTO.builder()
@@ -61,6 +64,21 @@ public class StudentsClassService {
         }
         return MessageResponseDTO.builder()
                 .message("Students in class " + studentsClass.getLevel() + ": " + studentsClass.getStudents()).build();
+    }
+
+    public MessageResponseDTO changeClassState(Long id, ChangeClassStateDTO changeClassStateDTO) {
+        System.out.println("[Students Class Service] changeClassState " + id + "\n");
+        StudentsClass studentsClass = studentsClassRepository.findById(id).orElse(null);
+        if (studentsClass == null) {
+            return MessageResponseDTO.builder()
+                    .message("Class not found")
+                    .build();
+        }
+        studentsClass.setState(ClassStateUtil.fromString(changeClassStateDTO.state()).getCode());
+        studentsClassRepository.save(studentsClass);
+        return MessageResponseDTO.builder()
+                .message("Class state changed to " + changeClassStateDTO.state())
+                .build();
     }
     
     public List<String> listAll() {

@@ -43,6 +43,9 @@ public class StudentsClass {
     @Column(nullable = false)
     private String classGroup;
 
+    @Column
+    private int state;
+
     @ManyToMany(mappedBy = "studentsClasses")
     @EqualsAndHashCode.Exclude // Prevent infinite loop
     @JsonIgnore
