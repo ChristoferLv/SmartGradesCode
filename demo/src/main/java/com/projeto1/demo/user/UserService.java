@@ -16,6 +16,7 @@ import com.projeto1.demo.jwdutils.LoginUserDTO;
 import com.projeto1.demo.jwdutils.RecoveryJwtTokenDto;
 import com.projeto1.demo.jwdutils.SecurityConfiguration;
 import com.projeto1.demo.messages.MessageResponseDTO;
+import com.projeto1.demo.misc.PasswordUtil;
 import com.projeto1.demo.roles.ERole;
 
 @Service
@@ -127,5 +128,20 @@ public class UserService {
         return MessageResponseDTO.builder()
                 .message("Password changed successfully for user ID " + userId)
                 .build();
+    }
+
+    public String changePasswordOfStudent(Long studentId) {
+        // Find the student by ID
+        User student = userRepository.findById(studentId).orElseThrow(() -> new UsernameNotFoundException("Student not found"));
+
+        // Generate the new 8-digit password
+        String newPassword = PasswordUtil.generateRandomPassword(8);
+
+        // Encode the new password and update the user entity
+        student.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(student);
+
+        // Return the new password
+        return newPassword;
     }
 }

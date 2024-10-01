@@ -58,6 +58,12 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/change-password-of/{studentId}")
+    public ResponseEntity<String> changePasswordOfStudent(@PathVariable Long studentId) {
+        String newPassword = userService.changePasswordOfStudent(studentId);
+        return ResponseEntity.ok("New password for student ID " + studentId + ": " + newPassword);
+    }
+
     @GetMapping()
     public List<String> listAllUsers() {
         System.out.println("[User Controller] listAllUsers");
