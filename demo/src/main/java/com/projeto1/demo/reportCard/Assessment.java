@@ -1,6 +1,8 @@
 package com.projeto1.demo.reportCard;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,6 +30,7 @@ public class Assessment {
     @ManyToOne
     @JoinColumn(name = "report_card_id", nullable = false)
     @ToString.Exclude
+    @JsonIgnore
     private ReportCard reportCard; // Reference to the ReportCard it belongs to
 
     @Column(nullable = false)

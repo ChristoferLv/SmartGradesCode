@@ -3,7 +3,9 @@ package com.projeto1.demo.reportCard;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +30,15 @@ public class ReportCardController {
     public MessageResponseDTO createNewReportCard(@RequestBody @Valid ReportCardDTO reportCardDTO) {
         System.out.println("[ReportCard Controller] createNewReportCard " + reportCardDTO.getStudentId());
         return reportCardService.addNewReportCard(reportCardDTO);
+    }
+
+    @GetMapping("/{studentId}")
+    public ResponseEntity<List<ReportCard>> getReportCardsByStudentId(@PathVariable Long studentId) {
+        List<ReportCard> reportCards = reportCardService.listReportCardByUserId(studentId);
+        if (reportCards.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(reportCards);
     }
 
     @GetMapping()
