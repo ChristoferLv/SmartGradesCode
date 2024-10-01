@@ -80,6 +80,7 @@ public class UserService {
         // Create a new user based on the provided DTO and encode the password
         User userToSave = userMapper.toEntity(userDTO);
         userToSave.setPassword(securityConfiguration.passwordEncoder().encode(userDTO.getPassword()));
+        userToSave.setState(UserStateUtil.ACTIVE.getState());
 
         // Save the new user in the repository
         User savedUser = userRepository.save(userToSave);
@@ -144,5 +145,20 @@ public class UserService {
 
         // Return the new password
         return newPassword;
+    }
+
+    public MessageResponseDTO changeUserState(Long userId, ChangeUserStateDTO changeUserStateDTO) {
+        System.out.println("[User Service] changeUserState " + userId + "\n");
+        // Find the user by ID
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            return MessageResponseDTO.builder().message("User with ID " + userId + " not found").build();
+        }
+        // Update the state of the user
+        user.setState(UserStateUtil.fromString(changeUserStateDTO.state()).getState());
+        userRepository.save(user);
+        return MessageResponseDTO.builder()
+                .message("State changed successfully for user ID " + userId)
+                .build();
     }
 }
