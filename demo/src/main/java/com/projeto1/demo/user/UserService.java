@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.projeto1.demo.jwdutils.JwtTokenService;
@@ -32,7 +34,8 @@ public class UserService {
     @Autowired
     private SecurityConfiguration securityConfiguration;
 
- 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // Método responsável por autenticar um usuário e retornar um token JWT
     public RecoveryJwtTokenDto authenticateUser(LoginUserDTO loginUserDto) {
@@ -40,18 +43,22 @@ public class UserService {
         // Cria um objeto de autenticação com o email e a senha do usuário
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                 loginUserDto.email(), loginUserDto.password());
-        //System.out.println("[User Service] usernamePasswordAuthenticationToken " + usernamePasswordAuthenticationToken + "\n");
-        //System.out.println("[User Service] authenticationManager " + usernamePasswordAuthenticationToken.getAuthorities() + "\n");
+        // System.out.println("[User Service] usernamePasswordAuthenticationToken " +
+        // usernamePasswordAuthenticationToken + "\n");
+        // System.out.println("[User Service] authenticationManager " +
+        // usernamePasswordAuthenticationToken.getAuthorities() + "\n");
         // Autentica o usuário com as credenciais fornecidas
-        //System.out.println("[User Service] authenticationBefore");
-        //System.out.println("Username: " + usernamePasswordAuthenticationToken.getPrincipal());
-        //System.out.println("Password: " + usernamePasswordAuthenticationToken.getCredentials());
+        // System.out.println("[User Service] authenticationBefore");
+        // System.out.println("Username: " +
+        // usernamePasswordAuthenticationToken.getPrincipal());
+        // System.out.println("Password: " +
+        // usernamePasswordAuthenticationToken.getCredentials());
 
         Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-        //System.out.println("[User Service] authentication "+"\n");
+        // System.out.println("[User Service] authentication "+"\n");
         // Obtém o objeto UserDetails do usuário autenticado
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        //System.out.println("[User Service] userDetails " + userDetails + "\n");
+        // System.out.println("[User Service] userDetails " + userDetails + "\n");
         // Gera um token JWT para o usuário autenticado
         return new RecoveryJwtTokenDto(jwtTokenService.generateToken(userDetails));
     }
@@ -96,5 +103,29 @@ public class UserService {
         return userRepository.findAll().stream()
                 .map(user -> user.toString())
                 .collect(Collectors.toList());
+    }
+
+    public MessageResponseDTO changeUserPassword(Long userId, PasswordChangeDTO passwordChangeDTO) {
+        System.out.println("[User Service] changeUserPassword " + userId);
+        // Find the user by ID
+        User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        // Check if the old password matches the current password
+        if (!passwordEncoder.matches(passwordChangeDTO.getOldPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Old password is incorrect");
+        }
+
+        // Check if the new password matches the confirmation password
+        if (!passwordChangeDTO.getNewPassword().equals(passwordChangeDTO.getConfirmNewPassword())) {
+            throw new IllegalArgumentException("New passwords do not match");
+        }
+
+        // Encrypt and update the new password
+        user.setPassword(passwordEncoder.encode(passwordChangeDTO.getNewPassword()));
+        userRepository.save(user);
+
+        return MessageResponseDTO.builder()
+                .message("Password changed successfully for user ID " + userId)
+                .build();
     }
 }

@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,6 +47,14 @@ public class UserController {
         System.out.println("[User Controller] registerNewUser " + userDTO.getName());
         int creatorId = userDTO.getCreator();
         return userService.addNewUser(userDTO, creatorId);
+    }
+
+    @PutMapping("/change-password/{id}")
+    public ResponseEntity<MessageResponseDTO> changePassword(@PathVariable Long id,
+            @RequestBody PasswordChangeDTO passwordChangeDTO) {
+                System.out.println("[User Controller] changePassword " + id);
+        MessageResponseDTO response = userService.changeUserPassword(id, passwordChangeDTO);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping()
