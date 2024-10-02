@@ -80,6 +80,21 @@ public class StudentsClassService {
                 .message("Class state changed to " + changeClassStateDTO.state())
                 .build();
     }
+
+    public MessageResponseDTO editClass(Long id, StudentsClassDTO studentsClassDTO) {
+        System.out.println("[Students Class Service] editClass " + id + "\n");
+        StudentsClass studentsClass = studentsClassRepository.findById(id).orElse(null);
+        if (studentsClass == null) {
+            return MessageResponseDTO.builder()
+                    .message("Class not found")
+                    .build();
+        }
+        studentsClass.setClassGroup(studentsClassDTO.getClassGroup());
+        studentsClassRepository.save(studentsClass);
+        return MessageResponseDTO.builder()
+                .message("Class edited")
+                .build();
+    }
     
     public List<String> listAll() {
         System.out.println("[Students Class Service] listAll\n");
