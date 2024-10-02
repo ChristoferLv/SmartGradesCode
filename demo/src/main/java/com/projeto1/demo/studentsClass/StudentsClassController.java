@@ -52,6 +52,12 @@ public class StudentsClassController {
         return studentsClassService.listStudentsInClass(id);
     }
 
+    @PutMapping("/edit/{id}")
+    public MessageResponseDTO editClass(@PathVariable Long id, @RequestBody @Valid StudentsClassDTO studentsClassDTO) {
+        System.out.println("[Students Class Controller] editClass " + id);
+        return studentsClassService.editClass(id, studentsClassDTO);
+    }
+
     @GetMapping
     public List<String> listAll() {
         System.out.println("[Students Class Controller] listAll");
