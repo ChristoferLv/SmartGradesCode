@@ -1,0 +1,131 @@
+[
+{
+  "name": "John Doe",
+  "dateOfBirth": "2000-05-15",
+  "phoneNumber": "44999442410",
+  "email": "johndoe@example.com",
+  "password": "password123",
+  "username": "johndoe",
+  "imageUrl": "https://example.com/image.jpg",
+"creator":1,
+  "roles": [
+    {
+      "name": "TEACHER"
+    }
+  ]
+}
+
+,
+
+{
+  "name": "Jane Smith",
+  "dateOfBirth": "1992-03-22",
+  "phoneNumber": "11234567890",
+  "email": "janesmith@example.com",
+  "password": "password456",
+  "username": "janesmith",
+  "imageUrl": "https://example.com/image1.jpg",
+  "creator": 2,
+  "roles": [
+    {
+      "name": "TEACHER"
+    }
+  ]
+}
+
+,
+
+{
+  "name": "Alice Johnson",
+  "dateOfBirth": "1988-11-10",
+  "phoneNumber": "55411223344",
+  "email": "alicej@example.com",
+  "password": "pass789",
+  "username": "alicejohnson",
+  "imageUrl": "https://example.com/image2.jpg",
+  "creator": 3,
+  "roles": [
+    {
+      "name": "STUDENT"
+    },
+    {
+        "name": "TEACHER"
+    }
+  ]
+}
+
+,
+{
+  "name": "Bob Brown",
+  "dateOfBirth": "1995-06-08",
+  "phoneNumber": "55667788990",
+  "email": "bobb@example.com",
+  "password": "mypassword101",
+  "username": "bobbrown",
+  "imageUrl": "https://example.com/image3.jpg",
+  "creator": 1,
+  "roles": [
+    {
+      "id": 3,
+      "name": "ADMIN"
+    }
+  ]
+}
+,
+
+{
+  "name": "Charlie Davis",
+  "dateOfBirth": "2001-01-20",
+  "phoneNumber": "2211992233",
+  "email": "charlied@example.com",
+  "password": "charliepass123",
+  "username": "charliedavis",
+  "imageUrl": "https://example.com/image4.jpg",
+  "creator": 4,
+  "roles": [
+    {
+      "name": "TEACHER"
+    }
+  ]
+}
+,
+
+{
+  "name": "Diana Martinez",
+  "dateOfBirth": "1990-12-30",
+  "phoneNumber": "4433221100",
+  "email": "dianam@example.com",
+  "password": "dianapass456",
+  "username": "dianamartinez",
+  "imageUrl": "https://example.com/image5.jpg",
+  "creator": 2,
+  "roles": [
+    {
+      "name": "STUDENT"
+    }
+  ]
+}
+
+,
+{
+  "name": "Edward Wilson",
+  "dateOfBirth": "1985-04-13",
+  "phoneNumber": "5566001122",
+  "email": "edwardw@example.com",
+  "password": "edwardpass789",
+  "username": "edwardwilson",
+  "imageUrl": "https://example.com/image6.jpg",
+  "creator": 5,
+  "roles": [
+    {
+      "name": "TEACHER"
+    }
+  ]
+}
+
+
+
+
+
+
+]

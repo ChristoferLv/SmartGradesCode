@@ -49,6 +49,25 @@ public class UserController {
         return userService.addNewUser(userDTO, creatorId);
     }
 
+    @PostMapping("/new-teacher")
+    public MessageResponseDTO createNewTeacher(@RequestBody @Valid UserDTO userDTO) {
+        System.out.println("[User Controller] registerNewTeacher " + userDTO.getName());
+        int creatorId = userDTO.getCreator();
+        return userService.addNewTeacher(userDTO, creatorId);
+    }
+
+    @GetMapping("/list-teachers")
+    public List<UserDTO> listAllTeachers() {
+        System.out.println("[User Controller] listAllTeachers");
+        return userService.listAllTeachers();
+    }
+
+    @GetMapping("/list-students")
+    public List<UserDTO> listAllStudents() {
+        System.out.println("[User Controller] listAllStudents");
+        return userService.listAllStudents();
+    }
+
     @Valid
     @PutMapping("/change-password/{id}")
     public ResponseEntity<MessageResponseDTO> changePassword(@PathVariable Long id,

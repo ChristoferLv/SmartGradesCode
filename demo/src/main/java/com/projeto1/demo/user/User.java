@@ -58,7 +58,7 @@ public class User {
     private int state;
 
     private String imageUrl;
-
+    
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "user_roles",
