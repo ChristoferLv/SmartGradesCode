@@ -1,6 +1,9 @@
 package com.projeto1.demo.user;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,9 @@ import com.projeto1.demo.jwdutils.SecurityConfiguration;
 import com.projeto1.demo.messages.MessageResponseDTO;
 import com.projeto1.demo.misc.PasswordUtil;
 import com.projeto1.demo.roles.ERole;
+import com.projeto1.demo.roles.RoleRepository;
+import com.projeto1.demo.roles.Roles;
+import com.projeto1.demo.roles.RolesDTO;
 
 @Service
 public class UserService {
@@ -37,6 +43,9 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     // Método responsável por autenticar um usuário e retornar um token JWT
     public RecoveryJwtTokenDto authenticateUser(LoginUserDTO loginUserDto) {
@@ -77,8 +86,20 @@ public class UserService {
                     .build();
         }
 
+        Set<Roles> roles = new HashSet<>();
+
+        // Iterate through role names in the DTO and fetch them from the database
+        for (RolesDTO roleDTO : userDTO.getRoles()) {
+            // Fetch the role from the database
+            Optional<Roles> role = roleRepository.findByName(ERole.valueOf(roleDTO.getName()));
+            if (role.isPresent()) {
+                roles.add(role.get());
+            }
+        }
+
         // Create a new user based on the provided DTO and encode the password
         User userToSave = userMapper.toEntity(userDTO);
+        userToSave.setRoles(roles);
         userToSave.setPassword(securityConfiguration.passwordEncoder().encode(userDTO.getPassword()));
         userToSave.setState(UserStateUtil.ACTIVE.getState());
 
@@ -88,6 +109,61 @@ public class UserService {
         return MessageResponseDTO.builder()
                 .message("Created user with ID " + savedUser.getId() + " " + savedUser.toString())
                 .build();
+    }
+
+    public MessageResponseDTO addNewTeacher(UserDTO userDTO, int creatorId) {
+        System.out.println("[User Service] addNewTeacher " + userDTO);
+        System.out.println("[User Service] id of creator " + creatorId + "\n");
+
+        // Check if the creator user is authorized (Admin)
+        User creatorUser = userRepository.findById((long) creatorId).orElse(null);
+        if (creatorUser == null || creatorUser.getRoles().stream()
+                .noneMatch(role -> role.getName().equals(ERole.ADMIN))) {
+            return MessageResponseDTO.builder()
+                    .message("User with ID " + creatorId + " is not authorized to create new teachers")
+                    .build();
+        }
+
+        Set<Roles> roles = new HashSet<>();
+
+        // Iterate through role names in the DTO and fetch them from the database
+        for (RolesDTO roleDTO : userDTO.getRoles()) {
+            // Fetch the role from the database
+            Optional<Roles> role = roleRepository.findByName(ERole.valueOf(roleDTO.getName()));
+            if (role.isPresent()) {
+                roles.add(role.get());
+            }
+        }
+
+        // Create a new teacher user based on the provided DTO and encode the password
+        User teacherToSave = userMapper.toEntity(userDTO);
+        teacherToSave.setRoles(roles);
+        teacherToSave.setPassword(securityConfiguration.passwordEncoder().encode(userDTO.getPassword()));
+        teacherToSave.setState(UserStateUtil.ACTIVE.getState());
+        // teacherToSave.getRoles().add(ERole.TEACHER);
+
+        // Save the new teacher in the repository
+        User savedTeacher = userRepository.save(teacherToSave);
+
+        return MessageResponseDTO.builder()
+                .message("Created teacher with ID " + savedTeacher.getId() + " " + savedTeacher.toString())
+                .build();
+    }
+
+    public List<UserDTO> listAllStudents() {
+        System.out.println("[User Service] listAllStudents\n");
+        return userRepository.findAll().stream()
+                .filter(user -> user.getRoles().stream().anyMatch(role -> role.getName().equals(ERole.STUDENT)))
+                .map(userMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<UserDTO> listAllTeachers() {
+        System.out.println("[User Service] listAllTeachers\n");
+        return userRepository.findAll().stream()
+                .filter(user -> user.getRoles().stream().anyMatch(role -> role.getName().equals(ERole.TEACHER)))
+                .map(userMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     public MessageResponseDTO findByUsername(String username) {
@@ -134,7 +210,8 @@ public class UserService {
     public String changePasswordOfStudent(Long studentId) {
         System.out.println("[User Service] changePasswordOfStudent " + studentId);
         // Find the student by ID
-        User student = userRepository.findById(studentId).orElseThrow(() -> new UsernameNotFoundException("Student not found"));
+        User student = userRepository.findById(studentId)
+                .orElseThrow(() -> new UsernameNotFoundException("Student not found"));
 
         // Generate the new 8-digit password
         String newPassword = PasswordUtil.generateRandomPassword(8);
