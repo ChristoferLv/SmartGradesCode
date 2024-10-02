@@ -97,6 +97,12 @@ public class UserController {
         return userService.changeUserRole(id, rolesDTO);
     }
 
+    @PostMapping("/generate-certificate/{id}")
+    public MessageResponseDTO generateCertificate(@PathVariable Long id) {
+        System.out.println("[User Controller] generateCertificate " + id);
+        return userService.generateCertificate(id);
+    }
+
     @GetMapping()
     public List<String> listAllUsers() {
         System.out.println("[User Controller] listAllUsers");

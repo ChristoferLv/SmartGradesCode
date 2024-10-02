@@ -19,6 +19,7 @@ import com.projeto1.demo.jwdutils.LoginUserDTO;
 import com.projeto1.demo.jwdutils.RecoveryJwtTokenDto;
 import com.projeto1.demo.jwdutils.SecurityConfiguration;
 import com.projeto1.demo.messages.MessageResponseDTO;
+import com.projeto1.demo.misc.CertificateGenerator;
 import com.projeto1.demo.misc.PasswordUtil;
 import com.projeto1.demo.roles.ERole;
 import com.projeto1.demo.roles.RoleRepository;
@@ -258,6 +259,20 @@ public class UserService {
         userRepository.save(user);
         return MessageResponseDTO.builder()
                 .message("Roles changed successfully for user ID " + userId)
+                .build();
+    }
+
+    public MessageResponseDTO generateCertificate(Long userId) {
+        System.out.println("[User Service] generateCertificate " + userId + "\n");
+        // Find the user by ID
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            return MessageResponseDTO.builder().message("User with ID " + userId + " not found").build();
+        }
+        // Generate the certificate for the user
+        CertificateGenerator.generateCertificate(user);
+        return MessageResponseDTO.builder()
+                .message("Certificate generated successfully for user ID " + userId)
                 .build();
     }
 }
