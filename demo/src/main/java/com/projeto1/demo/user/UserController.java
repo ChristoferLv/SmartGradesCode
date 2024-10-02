@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.projeto1.demo.jwdutils.LoginUserDTO;
 import com.projeto1.demo.jwdutils.RecoveryJwtTokenDto;
 import com.projeto1.demo.messages.MessageResponseDTO;
+import com.projeto1.demo.roles.RolesDTO;
 
 import jakarta.validation.Valid;
 
@@ -88,6 +89,12 @@ public class UserController {
     public MessageResponseDTO changeUserState(@PathVariable Long id, @RequestBody ChangeUserStateDTO userStateDTO) {
         System.out.println("[User Controller] changeUserState " + id);
         return userService.changeUserState(id, userStateDTO);
+    }
+
+    @PutMapping("/change-role/{id}")
+    public MessageResponseDTO changeUserRole(@PathVariable Long id, @RequestBody List<RolesDTO> rolesDTO) {
+        System.out.println("[User Controller] changeUserRole " + id);
+        return userService.changeUserRole(id, rolesDTO);
     }
 
     @GetMapping()

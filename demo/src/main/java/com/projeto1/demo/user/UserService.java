@@ -238,4 +238,26 @@ public class UserService {
                 .message("State changed successfully for user ID " + userId)
                 .build();
     }
+
+    public MessageResponseDTO changeUserRole(Long userId, List<RolesDTO> rolesDTO) {
+        System.out.println("[User Service] changeUserRole " + userId + "\n");
+        // Find the user by ID
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            return MessageResponseDTO.builder().message("User with ID " + userId + " not found").build();
+        }
+        // Update the roles of the user
+        Set<Roles> roles = new HashSet<>();
+        for (RolesDTO roleDTO : rolesDTO.stream().collect(Collectors.toList())) {
+            Optional<Roles> role = roleRepository.findByName(ERole.valueOf(roleDTO.getName()));
+            if (role.isPresent()) {
+                roles.add(role.get());
+            }
+        }
+        user.setRoles(roles);
+        userRepository.save(user);
+        return MessageResponseDTO.builder()
+                .message("Roles changed successfully for user ID " + userId)
+                .build();
+    }
 }
