@@ -1,0 +1,30 @@
+.gear{
+  font-size: 20px;
+  border: none;
+  color: black;
+  background-color: transparent;
+}
+
+.gear:hover {
+  color: black;
+  font-size: 22px;
+  background-color: transparent;
+  transition: 0.2s ease-in-out;
+}
+
+.btn-check:checked+.btn, .btn.active, .btn.show, .btn:first-child:active, :not(.btn-check)+.btn:active {
+  color: black;
+  background-color: transparent;
+}
+
+.dropdown-toggle::after {
+  display: none !important; 
+}
+
+.modal-invite * {
+  box-shadow: none !important;
+}
+
+.dropdown-item-no-highlight:focus {
+  background-color: transparent !important;
+}
