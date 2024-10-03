@@ -1,0 +1,21 @@
+.container-student-lesson-page * {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
+.react-player {
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 16/9 !important;
+}
+
+.container-student-lesson-page .flag-completed-lesson, .container-student-lesson-page .flag-is-professor {
+  background-color: #0E6216;
+  color: white;
+  font-weight: bold;
+  padding: 0 10px;
+  border-radius: 5px;
+}
