@@ -103,8 +103,8 @@ public class UserController {
         return userService.generateCertificate(id);
     }
 
-    @GetMapping()
-    public List<String> listAllUsers() {
+    @GetMapping
+    public List<UserDTO> listAllUsers() {
         System.out.println("[User Controller] listAllUsers");
         return userService.listAll();
     }

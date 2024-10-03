@@ -177,12 +177,13 @@ public class UserService {
                 .build();
     }
 
-    public List<String> listAll() {
+    public List<UserDTO> listAll() {
         System.out.println("[User Service] listAll\n");
         return userRepository.findAll().stream()
-                .map(user -> user.toString())
+                .map(user -> userMapper.toDTO(user)) // Map User entity to UserDTO
                 .collect(Collectors.toList());
     }
+    
 
     public MessageResponseDTO changeUserPassword(Long userId, PasswordChangeDTO passwordChangeDTO) {
         System.out.println("[User Service] changeUserPassword " + userId);

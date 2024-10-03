@@ -18,10 +18,7 @@ function CardCourses({ teste, showProgress = false }) {
     setCourseInfoPromUserEnrolledCourse(courseInfoFromUser);
   }, [user])
 
-  let description = teste.description;
-  if (description.length > 100) {
-    description = description.substring(0, 100);
-  }
+
 
   return (
     <Card className="cardAula" style={{ width: '15rem' }}>
@@ -32,10 +29,10 @@ function CardCourses({ teste, showProgress = false }) {
       }
       <Card.Body>
         <Card.Title className="cardAula-title">
-          {teste.title}
+          {teste.name}
         </Card.Title>
         <Card.Text className="cardAula-description">
-          {description}
+          
         </Card.Text>
       </Card.Body>
     </Card>

@@ -31,6 +31,7 @@ import BookmarksPage from '../pages/BookmarksPage/bookmark_page';
 import NotesPage from '../pages/NotesPage';
 import { EditCategoryPage } from '../pages/EditCategoryPage';
 import { EditCategoryLessonsOrder } from '../pages/EditCategoryLessonOrder';
+import UsersPage from '../pages/UsersPage/UsersPage';
 
 const SidebarLayout = () => (
   <>
@@ -57,14 +58,14 @@ function DefaultRoutes() {
 
   return (
     <BrowserRouter>
-      <AuthProvider>
+      {/*<AuthProvider>*/}
         <Routes>
           <Route path='/login' element={<LoginPage />} />
           <Route path='/register' element={<RegisterScreen />} />
           <Route path='/recuperar-senha' element={<PasswordRecoveryPage />} />
           <Route path='/alterar-senha' element={<ChangePasswordPage />} />
           <Route element={<SidebarLayout />}>
-            <Route path='/' element={<Home />} />
+            <Route path='/' element={<UsersPage />} />
             <Route path="/courses/:id" element={<CourseDetails />} />
             <Route path="/student/lessons/:id" element={<StudentLessonPage />} />
             <Route path="/student/courses/:id" element={<StrictRoute roles={[Roles.STUDENT, Roles.PROFESSOR, Roles.ADMIN]}><CourseDetails /></StrictRoute>} />
@@ -87,7 +88,7 @@ function DefaultRoutes() {
             <Route path="*" element={< h2 className="w-100 vh-100 d-flex flex-row justify-content-center align-items-center font-weight-bold-important">Ops! Você está perdido ?!<br />Esta rota não existe ;(</h2>} />
           </Route>
         </Routes>
-      </AuthProvider>
+      {/*</AuthProvider>*/}
     </BrowserRouter>
   )
 }
