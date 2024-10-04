@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle'
 import Avatar from 'react-avatar'
-import CardCourses from '../../components/CardCourses'
+import UserCard from '../../components/UserCard/user_card'
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 import Container from 'react-bootstrap/Container'
@@ -85,7 +85,7 @@ function UsersPage() {
           <Row className="home-card">
             <div className="col">
 
-              <h1 className="mt-3 mb-3 fs-5 fw-bold">Todos os cursos</h1>
+              <h1 className="mt-3 mb-3 fs-5 fw-bold">Users List</h1>
 
               <div className="mb-3 container-input" onChange={(e) => handleSearch(e)}>
                 <input placeholder="Buscar cursos" className='input-search' />
@@ -101,7 +101,7 @@ function UsersPage() {
                         {searchData.map((course) => (
                           <Col xs={12} lg={4} key={course.id}>
                             <Link to={`/courses/${course.id}`}>
-                              <CardCourses teste={course} />
+                              <UserCard teste={course} />
                             </Link>
                           </Col>
                         ))}
@@ -114,7 +114,7 @@ function UsersPage() {
                       {usersData.map((course) => (
                         <Col xs={12} lg={4} key={course.id}>
                           <Link to={`/courses/${course.name}`}>
-                            <CardCourses teste={course} />
+                            <UserCard user={course} />
                           </Link>
                         </Col>
                       ))}
