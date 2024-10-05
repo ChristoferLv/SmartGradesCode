@@ -66,12 +66,26 @@ public class UserService {
         // usernamePasswordAuthenticationToken.getCredentials());
 
         Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-        // System.out.println("[User Service] authentication "+"\n");
+        System.out.println("[User Service] authentication "+"\n");
         // Obtém o objeto UserDetails do usuário autenticado
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        // System.out.println("[User Service] userDetails " + userDetails + "\n");
+        System.out.println("[User Service] userDetails " + userDetails + "\n");
         // Gera um token JWT para o usuário autenticado
         return new RecoveryJwtTokenDto(jwtTokenService.generateToken(userDetails));
+    }
+
+    public UserDTO getUserInfo(String token) {
+        System.out.println("[User Service] getUserInfo\n");
+        
+        // Get the subject (typically the username) from the token
+        String username = jwtTokenService.getSubjectFromToken(token);
+        
+        // Find the user by email (or username) and convert it to a DTO
+        User user = userRepository.findByEmail(username)
+                         .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        
+        // Return the DTO
+        return userMapper.toDTO(user);
     }
 
     public MessageResponseDTO addNewUser(UserDTO userDTO, int creatorId) {

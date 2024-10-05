@@ -1,34 +1,21 @@
-import { HttpResponse, HttpStatus, BASE_URL } from "./default";
+import { HttpResponse, HttpStatus, BASE_URL, BASE_URLv1 } from "./default";
 import { AUTH_DEBUG } from "./default";
 
 const getUserInfo = async (jwt) => {
-    const url = `${BASE_URL}/user-info/`;
-    try {
-        const options = {
-            method: 'GET',
-            credentials: 'include',
-            headers: {
-                jwt: jwt,
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-            },
-        }
-
-        const response = await fetch(url, options);
-        if (response.ok) {
-            const data = await response.json();
-
-            if(data.photo && data.photo.length > 0 && !data.photo.includes('http'))
-                data.photo = BASE_URL + data.photo
-                
-            AUTH_DEBUG && console.log("AuthAPI::getUserInfo(): ", data);
-            return new HttpResponse(HttpStatus.OK, data);
-        } else throw new Error("Error on getUserInfo()");
-    } catch (error) {
-        console.warn(error)
-        return new HttpResponse(HttpStatus.ERROR, null);
-    }
-}
+    let headersList = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${jwt}`
+       }
+       
+       let response = await fetch("http://localhost:8080/api/v1/user/user-info", { 
+         method: "GET",
+         headers: headersList
+       });
+       
+       let data = await response.text();
+       console.log(data);
+       
+};
 
 const fetchRegister = async (formValues) => {
     const url = `${BASE_URL}/user/`
@@ -60,12 +47,11 @@ const fetchRegister = async (formValues) => {
 }
 
 const login = async (email, password) => {
-    const url = `${BASE_URL}/login/`
+    const url = `${BASE_URLv1}/user/login`
     var errorMessage;
     try {
         const options = {
             method: 'POST',
-            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json'
@@ -76,6 +62,7 @@ const login = async (email, password) => {
         const response = await fetch(url, options);
         if (response.ok) {
             const data = await response.json();
+            console.log(data)
             AUTH_DEBUG && console.log("AuthAPI::login(): ", data.token);
             return new HttpResponse(HttpStatus.OK, data);
         } else {

@@ -40,7 +40,9 @@ const LoginPage = () => {
   }
 
   const saveUserDataOnLocalStorage = () => {
+    console.log('LoginPage::saveUserDataOnLocalStorage(): ')
     const jwt = localStorage.getItem('token')
+    console.log('LoginPage::saveUserDataOnLocalStorage(): ', jwt)
     AuthAPI.getUserInfo(jwt).then((response) => {
       if (response.status === HttpStatus.OK) {
         localStorage.setItem('userData', JSON.stringify(response.data))
@@ -78,8 +80,8 @@ const LoginPage = () => {
         }
         setIsLoading(false)
       } else {
-        //console.log(responseLogin)
-        notifyError('Falha ao executar login. ' + responseLogin.data.error)
+        console.log(responseLogin)
+        //notifyError('Falha ao executar login. ' + responseLogin.data.error)
       }
       setIsLoading(false)
     }

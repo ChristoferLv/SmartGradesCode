@@ -58,7 +58,7 @@ function DefaultRoutes() {
 
   return (
     <BrowserRouter>
-      {/*<AuthProvider>*/}
+      <AuthProvider>
         <Routes>
           <Route path='/login' element={<LoginPage />} />
           <Route path='/register' element={<RegisterScreen />} />
@@ -88,7 +88,7 @@ function DefaultRoutes() {
             <Route path="*" element={< h2 className="w-100 vh-100 d-flex flex-row justify-content-center align-items-center font-weight-bold-important">Ops! Você está perdido ?!<br />Esta rota não existe ;(</h2>} />
           </Route>
         </Routes>
-      {/*</AuthProvider>*/}
+      </AuthProvider>
     </BrowserRouter>
   )
 }
