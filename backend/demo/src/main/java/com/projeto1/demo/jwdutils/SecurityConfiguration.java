@@ -4,6 +4,7 @@ package com.projeto1.demo.jwdutils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,7 +29,8 @@ public class SecurityConfiguration {
 
      // Endpoints que requerem autenticação para serem acessados
      public static final String [] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
-        "/api/v1/user/test"
+        "/api/v1/user/test",
+        "/api/v1/user/user-info"
 };
 
 
@@ -37,9 +39,10 @@ public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws
     return httpSecurity.csrf(csrf -> csrf.disable()) // Disable CSRF protection
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless session policy
             .authorizeHttpRequests(auth -> auth
+            .requestMatchers(HttpMethod.OPTIONS).permitAll() // Allow preflight requests
                 .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).permitAll() // Public endpoints
                 .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED).authenticated() // Secure endpoints
-                .anyRequest().permitAll() // TROCAR PARA DENYALL QUANDO FINALIZADO !!!!!!!!!!!!!!!!!!!!!!!!!!!
+                .anyRequest().denyAll() // TROCAR PARA DENYALL QUANDO FINALIZADO !!!!!!!!!!!!!!!!!!!!!!!!!!!
             )
             // Only add the authentication filter for endpoints that require authentication
             .addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

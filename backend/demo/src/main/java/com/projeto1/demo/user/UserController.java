@@ -1,10 +1,12 @@
 package com.projeto1.demo.user;
 
 import java.util.List;
+import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +20,7 @@ import com.projeto1.demo.jwdutils.RecoveryJwtTokenDto;
 import com.projeto1.demo.messages.MessageResponseDTO;
 import com.projeto1.demo.roles.RolesDTO;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @RestController
@@ -38,8 +41,30 @@ public class UserController {
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
+    @GetMapping("/user-info")
+    public UserDTO getUserInfo(HttpServletRequest request) {
+        System.out.println("[User Controller] getUserInfo");
+        //System.out.println("Request Headers do controller: " + Collections.list(request.getHeaderNames()));
+        //System.out.println("Request: " + request);
+
+        // Get the Authorization header from the request
+        String authorizationHeader = request.getHeader("Authorization");
+        //System.out.println("Authorization Header: " + authorizationHeader);
+
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("JWT Token is missing or malformed");
+        }
+
+        // Extract the token by removing the "Bearer " prefix
+        String token = authorizationHeader.substring(7);
+
+        // Pass the token to the service to get user info
+        return userService.getUserInfo(token);
+    }
+
     @GetMapping("/test")
     public ResponseEntity<String> getAuthenticationTest() {
+        System.out.println("[User Controller] getAuthenticationTest");
         return new ResponseEntity<>("Autenticado com sucesso", HttpStatus.OK);
     }
 

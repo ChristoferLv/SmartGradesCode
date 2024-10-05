@@ -1,11 +1,10 @@
-import { BASE_URL, AUTH_DEBUG, HttpStatus, HttpResponse } from './default';
+import { BASE_URL, AUTH_DEBUG, HttpStatus, HttpResponse, BASE_URLv1 } from './default';
 
 const listUsers = async() => {
-    const url = `${BASE_URL}/api/v1/user`;
+    const url = `${BASE_URLv1}/user`;
     try {
         const options = {
             method: 'GET',
-            credentials: 'include',
             headers: {
                 // jwt: jwt,
                 'Content-Type': 'application/json',
