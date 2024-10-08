@@ -47,6 +47,7 @@ public class JwtTokenService {
             throw new JWTVerificationException("Token inválido ou expirado.");
         }
     }
+    
 
     private Instant creationDate() {
         return ZonedDateTime.now(ZoneId.of("America/Recife")).toInstant();

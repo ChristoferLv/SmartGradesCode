@@ -2,6 +2,8 @@ package com.projeto1.demo.user;
 
 import java.util.List;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.projeto1.demo.jwdutils.LoginUserDTO;
 import com.projeto1.demo.jwdutils.RecoveryJwtTokenDto;
@@ -35,21 +38,29 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<RecoveryJwtTokenDto> authenticateUser(@RequestBody LoginUserDTO loginUserDto) {
-        System.out.println("[User Controller] authenticateUser " + loginUserDto.email());
-        RecoveryJwtTokenDto token = userService.authenticateUser(loginUserDto);
-        return new ResponseEntity<>(token, HttpStatus.OK);
+    public ResponseEntity<?> authenticateUser(@RequestBody LoginUserDTO loginUserDto) {
+        try {
+            System.out.println("[User Controller] authenticateUser " + loginUserDto.email());
+            RecoveryJwtTokenDto token = userService.authenticateUser(loginUserDto);
+            return new ResponseEntity<>(token, HttpStatus.OK);
+        } catch (ResponseStatusException e) {
+            // Retornar uma resposta mais clara com a mensagem de erro no corpo
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getReason());
+            return new ResponseEntity<>(errorResponse, e.getStatusCode());
+        }
     }
 
     @GetMapping("/user-info")
     public UserDTO getUserInfo(HttpServletRequest request) {
         System.out.println("[User Controller] getUserInfo");
-        //System.out.println("Request Headers do controller: " + Collections.list(request.getHeaderNames()));
-        //System.out.println("Request: " + request);
+        // System.out.println("Request Headers do controller: " +
+        // Collections.list(request.getHeaderNames()));
+        // System.out.println("Request: " + request);
 
         // Get the Authorization header from the request
         String authorizationHeader = request.getHeader("Authorization");
-        //System.out.println("Authorization Header: " + authorizationHeader);
+        // System.out.println("Authorization Header: " + authorizationHeader);
 
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             throw new RuntimeException("JWT Token is missing or malformed");
@@ -95,11 +106,22 @@ public class UserController {
     }
 
     @Valid
-    @PutMapping("/change-password/{id}")
-    public ResponseEntity<MessageResponseDTO> changePassword(@PathVariable Long id,
+    @PutMapping("/change-password")
+    public ResponseEntity<MessageResponseDTO> changePassword(HttpServletRequest request,
             @RequestBody PasswordChangeDTO passwordChangeDTO) {
-        System.out.println("[User Controller] changePassword " + id);
-        MessageResponseDTO response = userService.changeUserPassword(id, passwordChangeDTO);
+        System.out.println("[User Controller] changePassword");
+
+        String authorizationHeader = request.getHeader("Authorization");
+        // System.out.println("Authorization Header: " + authorizationHeader);
+
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("JWT Token is missing or malformed");
+        }
+
+        // Extract the token by removing the "Bearer " prefix
+        String token = authorizationHeader.substring(7);
+
+        MessageResponseDTO response = userService.changeUserPassword(passwordChangeDTO, token);
         return ResponseEntity.ok(response);
     }
 
