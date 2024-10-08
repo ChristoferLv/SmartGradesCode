@@ -18,8 +18,5 @@ public class PasswordChangeDTO {
     @NotNull
     @Size(min = 6, max = 50)
     private String newPassword;
-    @NotNull
-    @Size(min = 6, max = 50)
-    private String confirmNewPassword;
 
 }

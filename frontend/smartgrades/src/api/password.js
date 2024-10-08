@@ -1,18 +1,17 @@
-import { AUTH_DEBUG, BASE_URL, HttpResponse, HttpStatus } from "./default";
+import { AUTH_DEBUG, BASE_URL, BASE_URLv1, HttpResponse, HttpStatus } from "./default";
 
 const fetchChange = async (oldPassword, newPassword, jwt) => {
-    const url = `${BASE_URL}/change-password`
+    const url = `${BASE_URLv1}/user/change-password`
     var errorMessage;
     try {
         const options = {
             method: 'PUT',
-            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json', 
-                'jwt': jwt
+                "Authorization": `Bearer ${jwt}`
             },
-            body: JSON.stringify({ old_password: oldPassword, new_password: newPassword })
+            body: JSON.stringify({ oldPassword: oldPassword, newPassword: newPassword })
         }
 
         const response = await fetch(url, options);

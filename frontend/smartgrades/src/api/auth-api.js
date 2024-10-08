@@ -73,7 +73,6 @@ const login = async (email, password) => {
         const response = await fetch(url, options);
         if (response.ok) {
             const data = await response.json();
-            //console.log(data)
             AUTH_DEBUG && console.log("AuthAPI::login(): ", data.token);
             return new HttpResponse(HttpStatus.OK, data);
         } else {
