@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.time.ZonedDateTime;
+import java.time.ZoneId;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -117,6 +119,7 @@ public class UserService {
         userToSave.setRoles(roles);
         userToSave.setPassword(securityConfiguration.passwordEncoder().encode(userDTO.getPassword()));
         userToSave.setState(UserStateUtil.ACTIVE.getState());
+        userToSave.setCreatedAt(ZonedDateTime.now(ZoneId.of("America/Recife")).toInstant().toString());
 
         // Save the new user in the repository
         User savedUser = userRepository.save(userToSave);
