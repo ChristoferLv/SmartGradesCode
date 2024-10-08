@@ -5,10 +5,12 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.projeto1.demo.jwdutils.SecurityConfiguration;
 import com.projeto1.demo.roles.ERole;
 import com.projeto1.demo.roles.RoleRepository;
 import com.projeto1.demo.roles.Roles;
@@ -46,14 +48,16 @@ public class RoleDataLoader {
             }
 
 
-            
+            SecurityConfiguration sec = new SecurityConfiguration();
             // Verificar se o usuário admin já existe
             Optional<User> adminUserOpt = userRepository.findByUsername("admin");
             if (adminUserOpt.isEmpty()) {
                 // Criar o usuário admin com role ADMIN se não existir
                 User adminUser = new User();
                 adminUser.setUsername("admin");
-                adminUser.setPassword("admin123"); // Sem criptografia, apenas texto simples
+                String password = "admin";
+
+                adminUser.setPassword(sec.passwordEncoder().encode(password)); // Já criptografada
 
                 // Adicionar o role ADMIN ao usuário
                 Set<Roles> roles = new HashSet<>();

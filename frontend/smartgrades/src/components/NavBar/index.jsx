@@ -84,7 +84,7 @@ const SideNav = () => {
             <NavText text='GERAL' />
             <NavGroupFlush>
               <NavLinkTo title='Home' href='/' icon={<FAIcon Icon={AiFillHome} />} />
-              <StrictRoute roles={[Roles.STUDENT, Roles.ADMIN, Roles.PROFESSOR]}>
+              <StrictRoute roles={[Roles.STUDENT, Roles.ADMIN, Roles.TEACHER]}>
                 <NavLinkTo title='Meu Perfil' href='/perfil' icon={<FAIcon Icon={FaUser} />} />
               </StrictRoute>
               <OnlyNotLogged>
@@ -104,8 +104,8 @@ const SideNav = () => {
             </StrictRoute>
 
 
-            <StrictRoute roles={[Roles.PROFESSOR]}>
-              <NavText text='PROFESSOR' />
+            <StrictRoute roles={[Roles.TEACHER]}>
+              <NavText text='TEACHER' />
               <NavGroupFlush>
                 <NavLinkTo title='Meus cursos' href='/professor/courses' icon={<FAIcon Icon={ImBooks} />} />
                 <NavLinkTo title='Criar curso' href='/professor/courses/create' icon={<FAIcon Icon={SiBookstack} />} />
@@ -121,7 +121,7 @@ const SideNav = () => {
             </StrictRoute>
             
           </Card.Body>
-          <StrictRoute roles={[Roles.STUDENT, Roles.ADMIN, Roles.PROFESSOR]}>
+          <StrictRoute roles={[Roles.STUDENT, Roles.ADMIN, Roles.TEACHER]}>
             <Card.Footer style={{backgroundColor: "white"}}>
               <NavLinkTo title='Sair' href='/logout' icon={<FAIcon Icon={TbLogin} />} />
             </Card.Footer>
