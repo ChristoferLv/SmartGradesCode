@@ -24,6 +24,7 @@ public class UserDTO {
     @NotNull
     @Size(min = 2, max = 11)
     private String dateOfBirth;
+    private String createdAt;
     @NotNull
     @Size(min = 2, max = 11)
     private String phoneNumber;

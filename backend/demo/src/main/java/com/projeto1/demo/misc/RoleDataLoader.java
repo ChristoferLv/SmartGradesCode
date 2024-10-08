@@ -3,6 +3,8 @@ package com.projeto1.demo.misc;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.time.ZonedDateTime;
+import java.time.ZoneId;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Security;
@@ -55,7 +57,7 @@ public class RoleDataLoader {
                 // Criar o usuário admin com role ADMIN se não existir
                 User adminUser = new User();
                 adminUser.setUsername("admin");
-                String password = "admin";
+                String password = "1234";
 
                 adminUser.setPassword(sec.passwordEncoder().encode(password)); // Já criptografada
 
@@ -68,12 +70,65 @@ public class RoleDataLoader {
                 adminUser.setUsername("admin");
                 adminUser.setEmail("admin@email.com");
                 adminUser.setName("admin");
+                adminUser.setCreatedAt(ZonedDateTime.now(ZoneId.of("America/Recife")).toInstant().toString());
 
                 // Salvar o usuário admin
                 userRepository.save(adminUser);
                 System.out.println("Usuário admin criado com sucesso!");
             } else {
                 System.out.println("Usuário admin já existe!");
+            }
+
+            // Verificar se o usuário professor já existe
+            Optional<User> teacherUserOpt = userRepository.findByUsername("teacher");
+            if (teacherUserOpt.isEmpty()) {
+                // Criar o usuário professor com role TEACHER se não existir
+                User teacherUser = new User();
+                teacherUser.setUsername("teacher");
+                String password = "1234";
+
+                teacherUser.setPassword(sec.passwordEncoder().encode(password)); // Já criptografada
+
+                // Adicionar o role TEACHER ao usuário
+                Set<Roles> roles = new HashSet<>();
+                roles.add(roleRepository.findByName(ERole.TEACHER).get());
+                teacherUser.setRoles(roles);
+                teacherUser.setDateOfBirth("2000-01-01");
+                teacherUser.setPhoneNumber("4499999999");
+                teacherUser.setUsername("teacher");
+                teacherUser.setEmail("teacher@email.com");
+                teacherUser.setName("teacher");
+                teacherUser.setCreatedAt(ZonedDateTime.now(ZoneId.of("America/Recife")).toInstant().toString());
+                userRepository.save(teacherUser);
+                System.out.println("Usuário teacher criado com sucesso!");
+            } else {
+                System.out.println("Usuário teacher já existe!");
+            }
+
+            // Verificar se o usuário aluno já existe
+            Optional<User> studentUserOpt = userRepository.findByUsername("student");
+            if (studentUserOpt.isEmpty()) {
+                // Criar o usuário aluno com role STUDENT se não existir
+                User studentUser = new User();
+                studentUser.setUsername("student");
+                String password = "1234";
+
+                studentUser.setPassword(sec.passwordEncoder().encode(password)); // Já criptografada
+
+                // Adicionar o role STUDENT ao usuário
+                Set<Roles> roles = new HashSet<>();
+                roles.add(roleRepository.findByName(ERole.STUDENT).get());
+                studentUser.setRoles(roles);
+                studentUser.setDateOfBirth("2000-01-01");
+                studentUser.setPhoneNumber("4499999999");
+                studentUser.setUsername("student");
+                studentUser.setEmail("student@email.com");
+                studentUser.setName("student");
+                studentUser.setCreatedAt(ZonedDateTime.now(ZoneId.of("America/Recife")).toInstant().toString());
+                userRepository.save(studentUser);
+                System.out.println("Usuário student criado com sucesso!");
+            } else {
+                System.out.println("Usuário student já existe!");
             }
 
         };

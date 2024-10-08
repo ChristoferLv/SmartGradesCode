@@ -42,6 +42,9 @@ public class User {
     private String dateOfBirth;
 
     @Column(nullable = false)
+    private String createdAt;
+
+    @Column(nullable = false)
     private String phoneNumber;
 
     

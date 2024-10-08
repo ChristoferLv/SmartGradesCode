@@ -71,7 +71,7 @@ const UserProfileScreen = () => {
     const month = dateObj.getMonth() + 1;
     const year = dateObj.getFullYear();
 
-    const formattedDate = `Usuário desde: ${month}/${year}`;
+    const formattedDate = `Aluno desde: ${month}/${year}`;
     return formattedDate // saída: "23/4/2023"
 
   }
@@ -278,34 +278,10 @@ const UserProfileScreen = () => {
               </Row>
               <Card.Footer className="d-flex justify-content-center align-items-center">
                 <p className="mt-0 mb-0 fs-6" style={{ color: '#727273' }}>
-                  {date(user.created)}
+                  {date(user.createdAt)}
                 </p>
               </Card.Footer>
             </Card>
-            {
-              user?.role?.includes(Roles.STUDENT)
-              && (!user?.role?.includes(Roles.TEACHER) ?? false)
-              && (!user?.role?.includes(Roles.ADMIN) ?? false) &&
-              <Card style={{ cursor: 'pointer', width: '90%' }} className='mt-1' onClick={handleShowModal}>
-                <Col style={{ backgroundColor: "#0E6216", color: "white" }} className="d-flex justify-content-center align-items-center bg-gradient">
-                  <p className="m-1">Tornar-me professor!</p>
-                </Col>
-              </Card>
-            }
-
-            <Modal show={showModal} onHide={handleCloseModal} className="modal-invite">
-              <Modal.Header closeButton>
-                <Modal.Title>Tornar-se professor</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <Form onSubmit={handleSubmit}>
-                  <Form.Group controlId="authorizationCode">
-                    <Form.Control autoComplete="off" type="text" placeholder="Cole o código aqui" value={authorizationCode} onChange={(e) => setAuthorizationCode(e.target.value)} />
-                  </Form.Group>
-                  <Button disabled={authorizationCode?.length < 3} className='mt-2' variant="success" type="submit">Utilizar convite</Button>
-                </Form>
-              </Modal.Body>
-            </Modal>
           </Col>
           <Col>
             <Row>
@@ -347,38 +323,6 @@ const UserProfileScreen = () => {
                       <div className="mb-3 d-flex justify-content-between align-items-center">
                         <p className="mt-0 mb-0 fs-6" style={{ color: '#727273' }}>
                           {user.about}
-                        </p>
-                      </div>
-                    )}
-                  </Col>
-                </Row>
-                {user.contactLink && 
-                  <Row className="mb-3">
-                    <Col className="d-flex justify-content-between align-items-center">
-                      <h1 className="fw-bold fs-5" style={{ color: '#727273' }}>
-                        Rede Social
-                      </h1>
-                    </Col>
-                  </Row>
-                }
-                <Row>
-                <Col>
-                    {editando ? (
-                      <div className="mb-3">
-                        <span className="ms-1">
-                          Insira o link completo do LinkedIn ou Instagram: 
-                        </span>
-                        <textarea
-                          rows={1}
-                          className="form-control mt-1"
-                          value={newLink}
-                          onChange={(e) => setNewLink(e.target.value)}
-                        />
-                      </div>
-                    ) : (
-                      <div className="mb-3 d-flex justify-content-between align-items-center">
-                        <p className="mt-0 mb-0 fs-6" style={{ color: '#727273' }}>
-                          {user.contactLink == "https://www.exemplo.com" ? "": user.contactLink}
                         </p>
                       </div>
                     )}
