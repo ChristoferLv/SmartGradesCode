@@ -2,20 +2,31 @@ import { HttpResponse, HttpStatus, BASE_URL, BASE_URLv1 } from "./default";
 import { AUTH_DEBUG } from "./default";
 
 const getUserInfo = async (jwt) => {
-    let headersList = {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${jwt}`
-       }
-       
-       let response = await fetch("http://localhost:8080/api/v1/user/user-info", { 
-         method: "GET",
-         headers: headersList
-       });
-       
-       let data = await response.text();
-       console.log(data);
-       
-};
+    const url = `${BASE_URLv1}/user/user-info`;
+    try {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${jwt}`,
+                'Content-Type': 'application/json'
+            },
+        }
+
+        const response = await fetch(url, options);
+        if (response.ok) {
+            const data = await response.json();
+            /*
+                        if(data.photo && data.photo.length > 0 && !data.photo.includes('http'))
+                            data.photo = BASE_URL + data.photo
+              */
+            AUTH_DEBUG && console.log("AuthAPI::getUserInfo(): ", data);
+            return new HttpResponse(HttpStatus.OK, data);
+        } else throw new Error("Error on getUserInfo()");
+    } catch (error) {
+        console.warn(error)
+        return new HttpResponse(HttpStatus.ERROR, null);
+    }
+}
 
 const fetchRegister = async (formValues) => {
     const url = `${BASE_URL}/user/`
@@ -62,7 +73,7 @@ const login = async (email, password) => {
         const response = await fetch(url, options);
         if (response.ok) {
             const data = await response.json();
-            console.log(data)
+            //console.log(data)
             AUTH_DEBUG && console.log("AuthAPI::login(): ", data.token);
             return new HttpResponse(HttpStatus.OK, data);
         } else {
@@ -100,7 +111,7 @@ const getCoursesData = async (jwt) => {
     }
 }
 
-const getProfessorCourses = async(professorId, page = 1, size = 10) => {
+const getProfessorCourses = async (professorId, page = 1, size = 10) => {
     const url = `${BASE_URL}/courses/courses?page=${page}&size=${size}&professor=${professorId}`
     try {
         const options = {
@@ -120,13 +131,13 @@ const getProfessorCourses = async(professorId, page = 1, size = 10) => {
             AUTH_DEBUG && console.log("AuthAPI::getProfessorCourses(): ", data);
             return new HttpResponse(HttpStatus.OK, data);
         } else throw new Error("Error on getProfessorCourses()");
-     } catch (error) {
-            console.warn(error)
-            return new HttpResponse(HttpStatus.ERROR, null);
-     }
+    } catch (error) {
+        console.warn(error)
+        return new HttpResponse(HttpStatus.ERROR, null);
+    }
 }
 
-const getStudentCourses = async(studentId, page = 1, size = 10) => {
+const getStudentCourses = async (studentId, page = 1, size = 10) => {
     const url = `${BASE_URL}/courses/courses?page=${page}&size=${size}&student=${studentId}`
     try {
         const options = {
@@ -146,10 +157,10 @@ const getStudentCourses = async(studentId, page = 1, size = 10) => {
             AUTH_DEBUG && console.log("AuthAPI::getStudentCourses(): ", data);
             return new HttpResponse(HttpStatus.OK, data);
         } else throw new Error("Error on getStudentCourses()");
-     } catch (error) {
-            console.warn(error)
-            return new HttpResponse(HttpStatus.ERROR, null);
-     }
+    } catch (error) {
+        console.warn(error)
+        return new HttpResponse(HttpStatus.ERROR, null);
+    }
 }
 
 const getProfessorPerfil = async (id, jwt) => {

@@ -29,7 +29,7 @@ function UsersPage() {
 
   const getUsers = async (e) => {
     const responseCourses = await UserAPI.listUsers();
-    console.log(responseCourses);
+    //console.log(responseCourses);
     if (responseCourses.status === HttpStatus.OK) {
       setUsersData(responseCourses.data)
       setIsFetched(true)
