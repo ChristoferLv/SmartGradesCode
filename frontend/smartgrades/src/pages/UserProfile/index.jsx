@@ -284,7 +284,7 @@ const UserProfileScreen = () => {
             </Card>
             {
               user?.role?.includes(Roles.STUDENT)
-              && (!user?.role?.includes(Roles.PROFESSOR) ?? false)
+              && (!user?.role?.includes(Roles.TEACHER) ?? false)
               && (!user?.role?.includes(Roles.ADMIN) ?? false) &&
               <Card style={{ cursor: 'pointer', width: '90%' }} className='mt-1' onClick={handleShowModal}>
                 <Col style={{ backgroundColor: "#0E6216", color: "white" }} className="d-flex justify-content-center align-items-center bg-gradient">

@@ -5,7 +5,8 @@ const hasRoles = (context, roles) => {
 
   const userHasOneOf = (roles) => {
     for(let role of roles){
-      if(user.role?.includes(role)) return true
+      console.log(role)
+      if(user.roles?.some(userRole => userRole.name === role)) return true
     }
     return false
   }

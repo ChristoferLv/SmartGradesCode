@@ -24,7 +24,7 @@ export class HttpResponse {
 }
 
 export const Roles = {
-  STUDENT: 1,
-  PROFESSOR: 2,
-  ADMIN: 3
+  STUDENT: "STUDENT",
+  TEACHER: "TEACHER",
+  ADMIN: "ADMIN"
 }

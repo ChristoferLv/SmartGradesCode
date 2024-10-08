@@ -30,7 +30,8 @@ public class SecurityConfiguration {
      // Endpoints que requerem autenticação para serem acessados
      public static final String [] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
         "/api/v1/user/test",
-        "/api/v1/user/user-info"
+        "/api/v1/user/user-info",
+        "/api/v1/user/change-role",
 };
 
 
@@ -42,7 +43,7 @@ public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws
             .requestMatchers(HttpMethod.OPTIONS).permitAll() // Allow preflight requests
                 .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).permitAll() // Public endpoints
                 .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED).authenticated() // Secure endpoints
-                .anyRequest().denyAll() // TROCAR PARA DENYALL QUANDO FINALIZADO !!!!!!!!!!!!!!!!!!!!!!!!!!!
+                .anyRequest().permitAll() // TROCAR PARA DENYALL QUANDO FINALIZADO !!!!!!!!!!!!!!!!!!!!!!!!!!!
             )
             // Only add the authentication filter for endpoints that require authentication
             .addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
