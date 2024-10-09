@@ -22,7 +22,7 @@ public class AcademicPeriod {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name; // e.g., "2021-2"
 
 }
