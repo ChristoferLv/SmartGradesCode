@@ -79,7 +79,7 @@ public class StudentsClassController {
     }
 
     @GetMapping
-    public List<String> listAll() {
+    public List<StudentsClassDTO> listAll() {
         System.out.println("[Students Class Controller] listAll");
         return studentsClassService.listAll();
     }

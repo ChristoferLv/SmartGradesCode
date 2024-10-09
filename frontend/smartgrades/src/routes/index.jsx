@@ -33,6 +33,7 @@ import { EditCategoryPage } from '../pages/EditCategoryPage';
 import { EditCategoryLessonsOrder } from '../pages/EditCategoryLessonOrder';
 import UsersPage from '../pages/UsersPage/UsersPage';
 import NewClassScreen from '../pages/CreateClass';
+import ClassesListPage from '../pages/ClassesList/classes_list';
 
 const SidebarLayout = () => (
   <>
@@ -68,6 +69,11 @@ function DefaultRoutes() {
           <Route element={<SidebarLayout />}>
             <Route path='/' element={<UsersPage />} />
             <Route path="/courses/:id" element={<CourseDetails />} />
+            <Route path='/teacher/classes' element={<StrictRoute roles={[Roles.TEACHER]}><ClassesListPage /></StrictRoute>} />
+            <Route path='/teacher/classes/create' element={<StrictRoute roles={[Roles.TEACHER]}><NewClassScreen /></StrictRoute>} />
+
+
+
             <Route path="/student/lessons/:id" element={<StudentLessonPage />} />
             <Route path="/student/courses/:id" element={<StrictRoute roles={[Roles.STUDENT, Roles.TEACHER, Roles.ADMIN]}><CourseDetails /></StrictRoute>} />
             <Route path="/student/courses/professor/:id" element={<TeacherProfile />} />
@@ -76,7 +82,7 @@ function DefaultRoutes() {
             <Route path="/professor/courses" element={<StrictRoute roles={[Roles.TEACHER]}><ProfessorCoursesPage /></StrictRoute>} />
             <Route path="/student/marked-courses" element={<StrictRoute roles={[Roles.STUDENT]}><BookmarksPage /></StrictRoute>} />
             <Route path="/student/enrolled-courses" element={<StrictRoute roles={[Roles.STUDENT]}><StudentCoursesPage /></StrictRoute>} />
-            <Route path="/professor/courses/create" element={<StrictRoute roles={[Roles.TEACHER]}><NewClassScreen /></StrictRoute>} />
+            <Route path="/professor/courses/create" element={<StrictRoute roles={[Roles.TEACHER]}><NewCourseScreen /></StrictRoute>} />
             <Route path="/professor/courses/edit/:id" element={<StrictRoute roles={[Roles.TEACHER]}><EditCourseScreen /></StrictRoute>} />
             <Route path="/professor/courses/edit/:id/categories" element={<StrictRoute roles={[Roles.TEACHER]}><EditCategoryPage /></StrictRoute>} />
             <Route path="/professor/courses/edit/category-lessons-order/:categoryId" element={<StrictRoute roles={[Roles.TEACHER]}><EditCategoryLessonsOrder /></StrictRoute>} />
