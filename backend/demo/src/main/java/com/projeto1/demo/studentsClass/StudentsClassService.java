@@ -1,12 +1,17 @@
 package com.projeto1.demo.studentsClass;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.projeto1.demo.messages.MessageResponseDTO;
+import com.projeto1.demo.reportCard.AcademicPeriod;
+import com.projeto1.demo.reportCard.AcademicPeriodRepository;
 import com.projeto1.demo.user.User;
 import com.projeto1.demo.user.UserRepository;
 
@@ -16,6 +21,8 @@ public class StudentsClassService {
     private final StudentsClassRepository studentsClassRepository;
     private final StudentsClassMapper studentsClassMapper = StudentsClassMapper.INSTANCE;
     private final UserRepository userRepository;
+    @Autowired
+    private AcademicPeriodRepository academicPeriodRepository;
 
     @Autowired
     public StudentsClassService(StudentsClassRepository studentsClassRepository, UserRepository userRepository) {
@@ -23,15 +30,56 @@ public class StudentsClassService {
         this.userRepository = userRepository;
     }
 
-    public MessageResponseDTO addNewClass(StudentsClassDTO studentsClassDTO) {
-        System.out.println("[Students Class Service] addNewClass " + studentsClassDTO.getLevel() + "\n");
+   public MessageResponseDTO addNewClass(StudentsClassDTO studentsClassDTO) {
+    System.out.println("[Students Class Service] addNewClass " + studentsClassDTO.getLevel() + "\n");
+
+    // Check if a class with the same level, period, and classGroup already exists
+    Optional<StudentsClass> existingClass = studentsClassRepository.findByLevelAndPeriodNameAndClassGroup(
+        studentsClassDTO.getLevel(),
+        studentsClassDTO.getPeriod().getName(),
+        studentsClassDTO.getClassGroup() // Assuming DTO has classGroup field
+    );
+
+    if (existingClass.isPresent()) {
+        // Return an error message if class exists
+        System.out.println("[Students Class Service] Error: A class with the same level, period, and class group already exists.");
+        throw new ResponseStatusException(HttpStatus.CONFLICT, "Error: A class with the same level, period, and class group already exists.");
+    }
+
+    try {
+        // Map DTO to entity
         StudentsClass studentsClassToSave = studentsClassMapper.toModel(studentsClassDTO);
+
+        // Find existing AcademicPeriod or create a new one
+        String periodName = studentsClassDTO.getPeriod().getName(); // Assuming DTO has period name
+        Optional<AcademicPeriod> existingPeriod = academicPeriodRepository.findByName(periodName);
+
+        if (existingPeriod.isPresent()) {
+            // Use the existing period
+            studentsClassToSave.setPeriod(existingPeriod.get());
+        } else {
+            // Create new period and set it
+            AcademicPeriod newPeriod = new AcademicPeriod();
+            newPeriod.setName(periodName);
+            studentsClassToSave.setPeriod(newPeriod);
+        }
+
+        // Set state and save the class
         studentsClassToSave.setState(1);
         studentsClassRepository.save(studentsClassToSave);
+
+        System.out.println("[Students Class Service] Created class with ID " + studentsClassToSave.getId());
+        
         return MessageResponseDTO.builder()
                 .message("Created class with ID " + studentsClassToSave.getId() + " " + studentsClassToSave.toString())
                 .build();
+
+    } catch (Exception e) {
+        System.out.println("[Students Class Service] Error: " + e.getMessage());
+        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred while creating the class.");
     }
+}
+
 
     public MessageResponseDTO enrollStudentInClass(Long studentId, Long classId) {
         System.out.println("[Students Class Service] enrollStudentInClass " + studentId + " " + classId + "\n");
@@ -95,7 +143,7 @@ public class StudentsClassService {
                 .message("Class edited")
                 .build();
     }
-    
+
     public List<String> listAll() {
         System.out.println("[Students Class Service] listAll\n");
         return studentsClassRepository.findAll().stream()
