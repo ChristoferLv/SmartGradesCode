@@ -144,10 +144,10 @@ public class StudentsClassService {
                 .build();
     }
 
-    public List<String> listAll() {
+    public List<StudentsClassDTO> listAll() {
         System.out.println("[Students Class Service] listAll\n");
         return studentsClassRepository.findAll().stream()
-                .map(studentsClass -> studentsClass.getId() + ": " + studentsClass.toString())
+                .map(studentsClass -> studentsClassMapper.toDTO(studentsClass))
                 .collect(Collectors.toList());
     }
 }

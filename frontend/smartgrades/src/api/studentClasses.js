@@ -23,11 +23,40 @@ const createClass = async (body, jwt) => {
             throw new Error("Error on Register()")
         }
     } catch (error) {
-        console.warn(error)
         return new HttpResponse(HttpStatus.ERROR, errorMessage);
     }
 }
 
+const getClasses = async(jwt) => {
+    const url = `${BASE_URLv1}/classes`
+    var errorMessage;
+    try {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${jwt}`
+            }
+        }
+
+        const response = await fetch(url, options);
+
+        if (response.ok) {
+            const data = await response.json();
+            //AUTH_DEBUG && console.log("AuthAPI::getBookmarks(): ", data);
+            return new HttpResponse(HttpStatus.OK, data);
+        } else {
+            errorMessage = await response.json();
+            throw new Error("Error on Register()")
+        }
+     } catch (error) {
+            return new HttpResponse(HttpStatus.ERROR, errorMessage);
+     }
+}
+
+
 export const ClassesAPI = {
-    createClass
+    createClass,
+    getClasses
 }
