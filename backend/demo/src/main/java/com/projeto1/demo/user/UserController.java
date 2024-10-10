@@ -80,10 +80,20 @@ public class UserController {
     }
 
     @PostMapping
-    public MessageResponseDTO createNewUser(@RequestBody @Valid UserDTO userDTO) {
+    public MessageResponseDTO createNewUser(@RequestBody @Valid UserDTO userDTO, HttpServletRequest request) {
         System.out.println("[User Controller] registerNewUser " + userDTO.getName());
-        int creatorId = userDTO.getCreator();
-        return userService.addNewUser(userDTO, creatorId);
+
+        String authorizationHeader = request.getHeader("Authorization");
+        // System.out.println("Authorization Header: " + authorizationHeader);
+
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("JWT Token is missing or malformed");
+        }
+
+        // Extract the token by removing the "Bearer " prefix
+        String token = authorizationHeader.substring(7);
+
+        return userService.addNewUser(userDTO, token);
     }
 
     @PostMapping("/new-teacher")

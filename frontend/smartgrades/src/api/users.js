@@ -1,12 +1,42 @@
 import { BASE_URL, AUTH_DEBUG, HttpStatus, HttpResponse, BASE_URLv1 } from './default';
 
-const listUsers = async() => {
+const registerUser = async (formValues, jwt) => {
+    const url = `${BASE_URLv1}/user`
+    var errorMessage;
+    try {
+        const options = {
+            method: 'POST',
+            body: JSON.stringify(
+                formValues
+            ),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+                Authorization: `Bearer ${jwt}`
+            }
+        }
+
+        const response = await fetch(url, options);
+        if (response.ok) {
+            const data = await response.json();
+            AUTH_DEBUG && console.log("AuthAPI::Register(): ", data.token);
+            return new HttpResponse(HttpStatus.OK, data);
+        } else {
+            errorMessage = await response.json();
+            throw new Error("Error on Register()")
+        }
+    } catch (error) {
+        console.warn(error)
+        return new HttpResponse(HttpStatus.ERROR, errorMessage);
+    }
+}
+
+const listUsers = async(jwt) => {
     const url = `${BASE_URLv1}/user`;
     try {
         const options = {
             method: 'GET',
             headers: {
-                // jwt: jwt,
+                "Authorization": `Bearer ${jwt}`,
                 'Content-Type': 'application/json',
                 Accept: 'application/json'
             }
@@ -26,5 +56,6 @@ const listUsers = async() => {
 }
 
 export const UserAPI = {
-    listUsers
+    listUsers,
+    registerUser
 }

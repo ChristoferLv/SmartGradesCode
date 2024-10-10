@@ -25,10 +25,10 @@ function UsersPage() {
   const [searchData, setSearchData] = useState([])
   const [searchValue, setSearchValue] = useState('')
 
-  const { logged, user } = useAuthContext()
+  const { logged, user, token } = useAuthContext()
 
   const getUsers = async (e) => {
-    const responseCourses = await UserAPI.listUsers();
+    const responseCourses = await UserAPI.listUsers(token);
     //console.log(responseCourses);
     if (responseCourses.status === HttpStatus.OK) {
       setUsersData(responseCourses.data)
@@ -53,8 +53,7 @@ function UsersPage() {
   return (
     <>
 
-      <Container fluid>
-
+      <Container fluid className='mb-2'>
         <Col>
           <Navbar>
             {logged && user ? (

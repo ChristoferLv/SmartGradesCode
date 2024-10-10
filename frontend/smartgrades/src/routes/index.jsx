@@ -9,7 +9,7 @@ import NewCourseScreen from "../pages/CreateCourse";
 import NewLessonScreen from '../pages/CreateLesson';
 import EditCourseScreen from '../pages/EditCourse';
 import Home from "../pages/Home/Home";
-import SideNav from '../components/NavBar';
+import SideNav from '../components/NavBar/nav_bar';
 import { AuthProvider, useAuthContext } from '../contexts/AuthContext';
 import { StrictRoute } from '../contexts/StrictRoute';
 import { Roles } from '../api/default';
@@ -34,6 +34,7 @@ import { EditCategoryLessonsOrder } from '../pages/EditCategoryLessonOrder';
 import UsersPage from '../pages/UsersPage/UsersPage';
 import NewClassScreen from '../pages/CreateClass';
 import ClassesListPage from '../pages/ClassesList/classes_list';
+import RegisterStudentScreen from '../pages/RegisterStudent/register_student_screen';
 
 const SidebarLayout = () => (
   <>
@@ -67,11 +68,11 @@ function DefaultRoutes() {
           <Route path='/recuperar-senha' element={<PasswordRecoveryPage />} />
           <Route path='/alterar-senha' element={<ChangePasswordPage />} />
           <Route element={<SidebarLayout />}>
-            <Route path='/' element={<UsersPage />} />
+            <Route path='/' element={<StrictRoute roles={[Roles.TEACHER]}><UsersPage /></StrictRoute>} />
             <Route path="/courses/:id" element={<CourseDetails />} />
             <Route path='/teacher/classes' element={<StrictRoute roles={[Roles.TEACHER]}><ClassesListPage /></StrictRoute>} />
             <Route path='/teacher/classes/create' element={<StrictRoute roles={[Roles.TEACHER]}><NewClassScreen /></StrictRoute>} />
-
+            <Route path='/teacher/register-student' element={<StrictRoute roles={[Roles.TEACHER]}><RegisterStudentScreen /></StrictRoute>} />
 
 
             <Route path="/student/lessons/:id" element={<StudentLessonPage />} />
