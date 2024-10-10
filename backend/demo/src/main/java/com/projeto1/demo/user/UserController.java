@@ -115,6 +115,12 @@ public class UserController {
         return userService.listAllStudents();
     }
 
+    @GetMapping("/get-user-by-id/{id}")
+    public UserDTO getUserById(@PathVariable Long id) {
+        System.out.println("[User Controller] getUserById " + id);
+        return userService.getUserById(id);
+    }
+
     @Valid
     @PutMapping("/change-password")
     public ResponseEntity<MessageResponseDTO> changePassword(HttpServletRequest request,
@@ -153,6 +159,13 @@ public class UserController {
         System.out.println("[User Controller] changeUserRole " + id);
         return userService.changeUserRole(id, rolesDTO);
     }
+
+    @PutMapping("/update-user/{id}")
+    public MessageResponseDTO updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+        System.out.println("[User Controller] updateUser " + id);
+        return userService.updateUser(id, userDTO);
+    }
+
 
     @PostMapping("/generate-certificate/{id}")
     public MessageResponseDTO generateCertificate(@PathVariable Long id) {
