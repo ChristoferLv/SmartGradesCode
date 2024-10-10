@@ -1,5 +1,5 @@
 import React from 'react';
-import './style.css'
+import './nav_bar.css'
 import { Navbar, Card, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { SiBookstack, SiNotepadplusplus } from 'react-icons/si'
 import { FaBookmark, FaUser } from 'react-icons/fa'
@@ -12,6 +12,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { OnlyNotLogged, StrictRoute } from '../../contexts/StrictRoute';
 import { Roles } from '../../api/default';
 import { faNoteSticky } from '@fortawesome/free-solid-svg-icons';
+import { IoAdd } from 'react-icons/io5';
 
 
 const NavLinkTo = ({ href, title, icon }) => (
@@ -109,6 +110,7 @@ const SideNav = () => {
               <NavGroupFlush>
                 <NavLinkTo title='Turmas' href='/teacher/classes' icon={<FAIcon Icon={ImBooks} />} />
                 <NavLinkTo title='Criar turma' href='/teacher/classes/create' icon={<FAIcon Icon={SiBookstack} />} />
+                <NavLinkTo title='Registrar Aluno' href='/teacher/register-student' icon={<FAIcon Icon={IoAdd} />} />
               </NavGroupFlush>
             </StrictRoute>
 

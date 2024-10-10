@@ -54,59 +54,65 @@ public class UserService {
     private RoleRepository roleRepository;
 
     // Método responsável por autenticar um usuário e retornar um token JWT
-   public RecoveryJwtTokenDto authenticateUser(LoginUserDTO loginUserDto) {
-    System.out.println("[User Service] authenticateUser " + loginUserDto.email() + "\n");
-    
-    try {
-        // Cria um objeto de autenticação com o email e a senha do usuário
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                loginUserDto.email(), loginUserDto.password());
-        
-        // Autentica o usuário
-        Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-        System.out.println("[User Service] authentication \n");
-        
-        // Obtém o objeto UserDetails do usuário autenticado
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        System.out.println("[User Service] userDetails " + userDetails + "\n");
-        
-        // Gera um token JWT para o usuário autenticado
-        return new RecoveryJwtTokenDto(jwtTokenService.generateToken(userDetails));
-    
-    } catch (BadCredentialsException e) {
-        // Lidar com a exceção de credenciais inválidas
-        System.out.println("[User Service] Erro: Credenciais inválidas");
-        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário ou senha inválidos.");
-    }
-}
+    public RecoveryJwtTokenDto authenticateUser(LoginUserDTO loginUserDto) {
+        System.out.println("[User Service] authenticateUser " + loginUserDto.email() + "\n");
 
+        try {
+            // Cria um objeto de autenticação com o email e a senha do usuário
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                    loginUserDto.email(), loginUserDto.password());
+
+            // Autentica o usuário
+            Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+            System.out.println("[User Service] authentication \n");
+
+            // Obtém o objeto UserDetails do usuário autenticado
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            System.out.println("[User Service] userDetails " + userDetails + "\n");
+
+            // Gera um token JWT para o usuário autenticado
+            return new RecoveryJwtTokenDto(jwtTokenService.generateToken(userDetails));
+
+        } catch (BadCredentialsException e) {
+            // Lidar com a exceção de credenciais inválidas
+            System.out.println("[User Service] Erro: Credenciais inválidas");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário ou senha inválidos.");
+        }
+    }
 
     public UserDTO getUserInfo(String token) {
         System.out.println("[User Service] getUserInfo\n");
-        
+
         // Get the subject (typically the username) from the token
         String username = jwtTokenService.getSubjectFromToken(token);
-        
+
         // Find the user by email (or username) and convert it to a DTO
         User user = userRepository.findByEmail(username)
-                         .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
         // Return the DTO
         return userMapper.toDTO(user);
     }
 
-    public MessageResponseDTO addNewUser(UserDTO userDTO, int creatorId) {
+    public MessageResponseDTO addNewUser(UserDTO userDTO, String token) {
         System.out.println("[User Service] addNewUser " + userDTO);
-        System.out.println("[User Service] id of creator " + creatorId + "\n");
 
         // Check if the creator user is authorized (Teacher or Admin)
-        User creatorUser = userRepository.findById((long) creatorId).orElse(null);
-        if (creatorUser == null || creatorUser.getRoles().stream()
-                .noneMatch(role -> role.getName().equals(ERole.TEACHER) || role.getName().equals(ERole.ADMIN))) {
-            return MessageResponseDTO.builder()
-                    .message("User with ID " + creatorId + " is not authorized to create new users")
-                    .build();
+        String username = jwtTokenService.getSubjectFromToken(token);
+
+        // Find the user by email (or username) and convert it to a DTO
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        // Check if the creator user has either TEACHER or ADMIN role
+        boolean hasAuthority = user.getRoles().stream()
+                .map(role -> role.getName()) // Adjust based on your role structure
+                .anyMatch(roleName -> roleName.equals(ERole.ADMIN) || roleName.equals(ERole.TEACHER));
+
+        if (!hasAuthority) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "User does not have the required role to add a new user.");
         }
+        System.out.println(hasAuthority);
 
         Set<Roles> roles = new HashSet<>();
 
@@ -205,18 +211,17 @@ public class UserService {
                 .map(user -> userMapper.toDTO(user)) // Map User entity to UserDTO
                 .collect(Collectors.toList());
     }
-    
 
     public MessageResponseDTO changeUserPassword(PasswordChangeDTO passwordChangeDTO, String token) {
         System.out.println("[User Service] changeUserPassword\n");
         // Find the user by ID
 
-         // Get the subject (typically the username) from the token
-         String username = jwtTokenService.getSubjectFromToken(token);
-        
-         // Find the user by email (or username) and convert it to a DTO
-         User user = userRepository.findByEmail(username)
-                          .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        // Get the subject (typically the username) from the token
+        String username = jwtTokenService.getSubjectFromToken(token);
+
+        // Find the user by email (or username) and convert it to a DTO
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         // Check if the old password matches the current password
         if (!passwordEncoder.matches(passwordChangeDTO.getOldPassword(), user.getPassword())) {
