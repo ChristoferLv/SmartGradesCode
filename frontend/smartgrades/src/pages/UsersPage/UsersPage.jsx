@@ -15,6 +15,7 @@ import { AuthAPI } from '../../api/auth-api'
 import { HttpStatus } from '../../api/default'
 import { useAuthContext } from '../../contexts/AuthContext'
 import { Link } from 'react-router-dom'
+import Form from 'react-bootstrap/Form';
 import './UsersPage.css'
 import { UserAPI } from '../../api/users'
 
@@ -24,14 +25,24 @@ function UsersPage() {
   const [isFetched, setIsFetched] = useState(false)
   const [searchData, setSearchData] = useState([])
   const [searchValue, setSearchValue] = useState('')
+  const [listStudents, setListStudents] = useState(false)
 
   const { logged, user, token } = useAuthContext()
 
+  const handleSwitchChange = (e) => {
+    setListStudents(e.target.checked);
+  }
+
   const getUsers = async (e) => {
-    const responseCourses = await UserAPI.listUsers(token);
+    let response;
+    if(listStudents){
+      response = await UserAPI.listStudents(token);
+    }else{
+      response = await UserAPI.listUsers(token);
+    }
     //console.log(responseCourses);
-    if (responseCourses.status === HttpStatus.OK) {
-      setUsersData(responseCourses.data)
+    if (response.status === HttpStatus.OK) {
+      setUsersData(response.data)
       setIsFetched(true)
     }
   }
@@ -46,7 +57,7 @@ function UsersPage() {
 
   useEffect(() => {
     getUsers()
-  }, [])
+  }, [listStudents])
 
 
 
@@ -56,13 +67,9 @@ function UsersPage() {
       <Container fluid className='mb-2'>
         <Col>
           <Navbar>
-            {logged && user ? (
+            {logged && user && (
               <p style={{ color: '#0f5b7a' }} className="mt-3 fs-6 fw-bold">
                 &#128075;&nbsp; Hey, {user?.name?.split(' ')[0]}!
-              </p>
-            ) : (
-              <p style={{ color: '#0f5b7a' }} className="mt-3 fs-6 fw-bold">
-                &#128075;&nbsp; BEM-VINDO!
               </p>
             )}
 
@@ -85,6 +92,14 @@ function UsersPage() {
             <div className="col">
 
               <h1 className="mt-3 mb-3 fs-5 fw-bold">Users List</h1>
+              <Form>
+                <Form.Check // prettier-ignore
+                  type="switch"
+                  id="usersSwitch"
+                  label="Only Students"
+                  onChange={handleSwitchChange}
+                />
+              </Form>
 
               <div className="mb-3 container-input" onChange={(e) => handleSearch(e)}>
                 <input placeholder="Buscar cursos" className='input-search' />
