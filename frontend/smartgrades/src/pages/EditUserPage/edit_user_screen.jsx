@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { UserAPI } from '../../api/users';
 import { useAuthContext } from '../../contexts/AuthContext';
+import "./edit_user_screen.css"
 
 export default function EditUserScreen() {
     const { id } = useParams(); // Assuming the user id comes from the route params
@@ -56,7 +57,16 @@ export default function EditUserScreen() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormValues({ ...formValues, [name]: value });
+        if (name === "phoneNumber") {
+            if (value.length > 15) {
+                return;
+            }
+            const formattedValue = value.replace(/\D/g, '');
+
+            setFormValues({ ...formValues, [name]: formattedValue });
+        } else {
+            setFormValues({ ...formValues, [name]: value });
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -69,7 +79,6 @@ export default function EditUserScreen() {
             const response = await UserAPI.updateUser(id, formValues, token);
             if (response.status === 200) {
                 notifySuccess("User updated successfully");
-                navigate('/users'); // Redirect after successful update
             } else {
                 notifyError("Error updating user");
             }
@@ -86,6 +95,14 @@ export default function EditUserScreen() {
             notifyError("Error resetting password");
         }
     };
+
+    function formatPhoneNumber(number) {
+        const formattedValue = number.replace(/\D/g, '')
+        if (!number) return '';
+        if (formattedValue.length === 11) {
+            return formattedValue.replace(/^(\d{2})(\d{1})(\d{4})(\d{4})/, '($1) $2$3-$4');
+        }
+    }
 
     const validate = (values) => {
         const errors = {};
@@ -104,7 +121,7 @@ export default function EditUserScreen() {
 
         if (!values.phoneNumber) {
             errors.phoneNumber = "Phone number is required";
-        } else if (!regexPhone.test(values.phoneNumber)) {
+        } else if (!regexPhone.test(formatPhoneNumber(values.phoneNumber))) {
             errors.phoneNumber = "Invalid phone number format";
         }
 
@@ -123,11 +140,11 @@ export default function EditUserScreen() {
                         border="0"
                     />
                 </div>
-                <div className="row">
+                <div className="row d-flex align-items-center justify-content-between">
                     <div className="col">
                         <p className="fw-bold fs-4 ms-1 mt-5">Edit User</p>
                     </div>
-                    <div className="col d-flex justify-content-end">
+                    <div className="col-auto">
                         <Button
                             className="ms-3 mt-5"
                             variant="success"
@@ -139,6 +156,7 @@ export default function EditUserScreen() {
                     </div>
                 </div>
             </div>
+
 
             <div className="row ps-1 mt-2">
                 <Form onSubmit={handleSubmit}>
@@ -177,7 +195,7 @@ export default function EditUserScreen() {
                             name="phoneNumber"
                             placeholder="Phone Number"
                             className="form-control"
-                            value={formValues.phoneNumber}
+                            value={formatPhoneNumber(formValues.phoneNumber)}
                             onChange={handleChange}
                         />
                     </div>
@@ -197,7 +215,7 @@ export default function EditUserScreen() {
                     </div>
                     <div className="mt-3">
                         <p className='m-0 ms-1'>State</p>
-                        <select
+                        <Form.Select
                             name="state"
                             className="form-control"
                             value={formValues.state}
@@ -207,7 +225,8 @@ export default function EditUserScreen() {
                             <option value={1}>ACTIVE</option>
                             <option value={2}>ENROLLED</option>
                             <option value={3}>FINISHED</option>
-                        </select>
+                        </Form.Select>
+
                     </div>
 
                     <div className="row mt-3">
@@ -228,13 +247,17 @@ export default function EditUserScreen() {
                                 Update User
                             </button>
                         </div>
+                        <div className="col-auto text-end">
+                            <button
+                                className="btn btn-danger"
+
+                            >
+                                Cancel
+                            </button>
+                        </div>
                     </div>
+
                 </Form>
-                {newPassword && (
-                    <div className="mt-3">
-                        <p className="fw-bold">New Password: {newPassword}</p>
-                    </div>
-                )}
             </div>
         </div>
     );

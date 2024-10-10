@@ -300,6 +300,25 @@ public class UserService {
                 .build();
     }
 
+    public MessageResponseDTO updateUser(Long userId, UserDTO userDTO) {
+        System.out.println("[User Service] updateUser " + userId + "\n");
+        // Find the user by ID
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            return MessageResponseDTO.builder().message("User with ID " + userId + " not found").build();
+        }
+        // Update the user entity
+        user.setName(userDTO.getName());
+        user.setEmail(userDTO.getEmail());
+        user.setPhoneNumber(userDTO.getPhoneNumber());
+        user.setUsername(userDTO.getUsername());
+        user.setState(userDTO.getState());
+        userRepository.save(user);
+        return MessageResponseDTO.builder()
+                .message("User updated successfully for user ID " + userId)
+                .build();
+    }
+
     public MessageResponseDTO generateCertificate(Long userId) {
         System.out.println("[User Service] generateCertificate " + userId + "\n");
         // Find the user by ID

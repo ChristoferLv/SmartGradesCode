@@ -99,9 +99,33 @@ const getUserById = async (id, jwt) => {
     }
 }
 
+const updateUser = async (id,formValues,jwt) => {
+    const url = `${BASE_URLv1}/user/update-user/${id}`;
+    try {
+        const options = {
+            method: 'PUT',
+            body: JSON.stringify(formValues),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+                Authorization: `Bearer ${jwt}`
+            }
+        }
+        const response = await fetch(url, options);
+        if (response.ok) {
+            const data = await response.json();
+            AUTH_DEBUG && console.log("AuthAPI::updateUser(): ", data);
+            return new HttpResponse(HttpStatus.OK, data);
+        } else throw new Error("Error on updateUser()");
+    }catch (error) {
+        console.warn(error)
+        return new HttpResponse(HttpStatus.ERROR, null);
+    }
+}
+
 export const UserAPI = {
     listUsers,
     registerUser,
     listStudents,
-    getUserById
+    getUserById,
+    updateUser
 }

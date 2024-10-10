@@ -160,6 +160,13 @@ public class UserController {
         return userService.changeUserRole(id, rolesDTO);
     }
 
+    @PutMapping("/update-user/{id}")
+    public MessageResponseDTO updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+        System.out.println("[User Controller] updateUser " + id);
+        return userService.updateUser(id, userDTO);
+    }
+
+
     @PostMapping("/generate-certificate/{id}")
     public MessageResponseDTO generateCertificate(@PathVariable Long id) {
         System.out.println("[User Controller] generateCertificate " + id);

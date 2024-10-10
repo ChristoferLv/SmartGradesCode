@@ -32,7 +32,8 @@ public class SecurityConfiguration {
         "/api/v1/user/user-info",
         "/api/v1/user/change-role",
         "/api/v1/user",
-        "/api/v1/user/get-user-by-id/"
+        "/api/v1/user/get-user-by-id",
+        "/api/v1/user/update-user"
 };
 
 
