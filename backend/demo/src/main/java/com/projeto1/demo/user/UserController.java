@@ -115,6 +115,12 @@ public class UserController {
         return userService.listAllStudents();
     }
 
+    @GetMapping("/get-user-by-id/{id}")
+    public UserDTO getUserById(@PathVariable Long id) {
+        System.out.println("[User Controller] getUserById " + id);
+        return userService.getUserById(id);
+    }
+
     @Valid
     @PutMapping("/change-password")
     public ResponseEntity<MessageResponseDTO> changePassword(HttpServletRequest request,

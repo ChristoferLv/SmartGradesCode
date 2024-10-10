@@ -66,8 +66,8 @@ const ClassesListPage = () => {
                         ) : (
                             <Container fluid>
                                 <div class="d-flex align-items-center justify-content-center" style={{ "height": "350px" }}>
-                                    <span><h1>Você não tem nenhum curso marcado.</h1>
-                                        <p className='fs-5' style={{ color: "#1dbfb0", cursor: "pointer" }} onClick={() => { navigate('/') }}>Clique aqui e procure algo do seu interesse <FontAwesomeIcon className='fs-5' style={{ color: "yellow" }} icon={faHandPointLeft} /></p></span>
+                                    <span><h1>Nenhuma turma cadastrada.</h1>
+                                       </span>
                                 </div>
                             </Container>
                         )

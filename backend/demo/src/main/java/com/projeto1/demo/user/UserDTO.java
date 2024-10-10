@@ -42,4 +42,5 @@ public class UserDTO {
     @NotNull
     private Set<RolesDTO> roles;
     private int creator; 
+    private int state;
 }

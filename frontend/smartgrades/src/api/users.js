@@ -30,7 +30,7 @@ const registerUser = async (formValues, jwt) => {
     }
 }
 
-const listUsers = async(jwt) => {
+const listUsers = async (jwt) => {
     const url = `${BASE_URLv1}/user`;
     try {
         const options = {
@@ -49,13 +49,13 @@ const listUsers = async(jwt) => {
             AUTH_DEBUG && console.log("AuthAPI::getStudentCourses(): ", data);
             return new HttpResponse(HttpStatus.OK, data);
         } else throw new Error("Error on getStudentCourses()");
-     } catch (error) {
-            console.warn(error)
-            return new HttpResponse(HttpStatus.ERROR, null);
-     }
+    } catch (error) {
+        console.warn(error)
+        return new HttpResponse(HttpStatus.ERROR, null);
+    }
 }
 
-const listStudents = async(jwt) => {
+const listStudents = async (jwt) => {
     const url = `${BASE_URLv1}/user/list-students`;
     try {
         const options = {
@@ -74,14 +74,34 @@ const listStudents = async(jwt) => {
             AUTH_DEBUG && console.log("AuthAPI::getStudentCourses(): ", data);
             return new HttpResponse(HttpStatus.OK, data);
         } else throw new Error("Error on getStudentCourses()");
-     } catch (error) {
-            console.warn(error)
-            return new HttpResponse(HttpStatus.ERROR, null);
-     }
+    } catch (error) {
+        console.warn(error)
+        return new HttpResponse(HttpStatus.ERROR, null);
+    }
+}
+
+const getUserById = async (id, jwt) => {
+    const url = `${BASE_URLv1}/user/get-user-by-id/${id}`;
+    try {
+        const options = {
+            method: 'GET',
+            headers: { "Authorization": `Bearer ${jwt}` },
+        }
+        const response = await fetch(url, options);
+        if (response.ok) {
+            const data = await response.json();
+            AUTH_DEBUG && console.log("AuthAPI::getUserById(): ", data);
+            return new HttpResponse(HttpStatus.OK, data);
+        } else throw new Error("Error on getUserById()");
+    }catch (error) {
+        console.warn(error)
+        return new HttpResponse(HttpStatus.ERROR, null);
+    }
 }
 
 export const UserAPI = {
     listUsers,
     registerUser,
-    listStudents
+    listStudents,
+    getUserById
 }

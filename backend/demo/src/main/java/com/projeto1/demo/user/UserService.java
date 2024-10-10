@@ -195,6 +195,15 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    public UserDTO getUserById(Long id) {
+        System.out.println("[User Service] getUserById " + id);
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null) {
+            return null;
+        }
+        return userMapper.toDTO(user);
+    }
+
     public MessageResponseDTO findByUsername(String username) {
         System.out.println("[User Service] findByUsername " + username);
         User user = userRepository.findByUsername(username).orElse(null);

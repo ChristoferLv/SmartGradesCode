@@ -124,6 +124,7 @@ public class RoleDataLoader {
                 studentUser.setUsername("student");
                 studentUser.setEmail("student@email.com");
                 studentUser.setName("student");
+                studentUser.setState(1);
                 studentUser.setCreatedAt(ZonedDateTime.now(ZoneId.of("America/Recife")).toInstant().toString());
                 userRepository.save(studentUser);
                 System.out.println("Usuário student criado com sucesso!");

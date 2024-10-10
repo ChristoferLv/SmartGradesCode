@@ -74,9 +74,9 @@ export const NewClassScreen = () => {
   const sendForm = async () => {
     // Validation checks
     var estadoAux = {
-      level: formValores.level.trim().length >= 3,
-      period: formValores.period.trim().length >= 2,
-      group: formValores.group.trim().length >= 3,
+      level: formValores.level?.trim().length >= 3,
+      period: formValores.period?.trim().length >= 2,
+      group: formValores.group?.trim().length >= 3,
     }
 
     setEstado({ ...estadoAux })
@@ -132,7 +132,7 @@ export const NewClassScreen = () => {
                         onBlur={() =>
                           setEstado({
                             ...estado,
-                            level: formValores.level.trim().length >= 3,
+                            level: formValores.level?.trim().length >= 3,
                           })
                         }
                       />
@@ -153,7 +153,7 @@ export const NewClassScreen = () => {
                         onBlur={() =>
                           setEstado({
                             ...estado,
-                            period: formValores.period.trim().length >= 3,
+                            period: formValores.period?.trim().length >= 3,
                           })
                         }
                       />
@@ -174,7 +174,7 @@ export const NewClassScreen = () => {
                         onBlur={() =>
                           setEstado({
                             ...estado,
-                            group: formValores.group.trim().length >= 3,
+                            group: formValores.group?.trim().length >= 3,
                           })
                         }
                       />

@@ -32,9 +32,10 @@ import NotesPage from '../pages/NotesPage';
 import { EditCategoryPage } from '../pages/EditCategoryPage';
 import { EditCategoryLessonsOrder } from '../pages/EditCategoryLessonOrder';
 import UsersPage from '../pages/UsersPage/UsersPage';
-import NewClassScreen from '../pages/CreateClass';
+import NewClassScreen from '../pages/CreateClass/create_class';
 import ClassesListPage from '../pages/ClassesList/classes_list';
 import RegisterStudentScreen from '../pages/RegisterStudent/register_student_screen';
+import EditUserScreen from '../pages/EditUserPage/edit_user_screen';
 
 const SidebarLayout = () => (
   <>
@@ -73,7 +74,8 @@ function DefaultRoutes() {
             <Route path='/teacher/classes' element={<StrictRoute roles={[Roles.TEACHER]}><ClassesListPage /></StrictRoute>} />
             <Route path='/teacher/classes/create' element={<StrictRoute roles={[Roles.TEACHER]}><NewClassScreen /></StrictRoute>} />
             <Route path='/teacher/register-student' element={<StrictRoute roles={[Roles.TEACHER]}><RegisterStudentScreen /></StrictRoute>} />
-
+            <Route path='/teacher/users' element={<StrictRoute roles={[Roles.TEACHER]}><UsersPage /></StrictRoute>} />
+            <Route path='/teacher/edit-user/:id' element={<StrictRoute roles={[Roles.TEACHER]}><EditUserScreen /></StrictRoute>} />
 
             <Route path="/student/lessons/:id" element={<StudentLessonPage />} />
             <Route path="/student/courses/:id" element={<StrictRoute roles={[Roles.STUDENT, Roles.TEACHER, Roles.ADMIN]}><CourseDetails /></StrictRoute>} />

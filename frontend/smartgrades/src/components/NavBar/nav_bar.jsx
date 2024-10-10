@@ -108,9 +108,10 @@ const SideNav = () => {
             <StrictRoute roles={[Roles.TEACHER]}>
               <NavText text='TEACHER' />
               <NavGroupFlush>
-                <NavLinkTo title='Turmas' href='/teacher/classes' icon={<FAIcon Icon={ImBooks} />} />
-                <NavLinkTo title='Criar turma' href='/teacher/classes/create' icon={<FAIcon Icon={SiBookstack} />} />
+                <NavLinkTo title='List users' href='/teacher/users' icon={<FAIcon Icon={FaUser} />} />
                 <NavLinkTo title='Registrar Aluno' href='/teacher/register-student' icon={<FAIcon Icon={IoAdd} />} />
+                <NavLinkTo title='Criar turma' href='/teacher/classes/create' icon={<FAIcon Icon={SiBookstack} />} />
+                <NavLinkTo title='Turmas' href='/teacher/classes' icon={<FAIcon Icon={ImBooks} />} />
               </NavGroupFlush>
             </StrictRoute>
 
