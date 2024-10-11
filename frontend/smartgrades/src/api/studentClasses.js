@@ -55,8 +55,67 @@ const getClasses = async(jwt) => {
      }
 }
 
+const getClassById = async (id, jwt) => {
+    const url = `${BASE_URLv1}/classes/get-class-by-id/${id}`
+    var errorMessage;
+    try {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${jwt}`
+            }
+        }
+
+        const response = await fetch(url, options);
+
+        if (response.ok) {
+            const data = await response.json();
+            //AUTH_DEBUG && console.log("AuthAPI::getBookmarks(): ", data);
+            return new HttpResponse(HttpStatus.OK, data);
+        } else {
+            errorMessage = await response.json();
+            throw new Error("Error on Register()")
+        }
+     } catch (error) {
+            return new HttpResponse(HttpStatus.ERROR, errorMessage);
+     }
+}
+
+const updateClass = async (id,formValues,jwt) => {
+    const url = `${BASE_URLv1}/classes/update-class/${id}`
+    var errorMessage;
+    try {
+        const options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${jwt}`
+            },
+            body: JSON.stringify(formValues)
+        }
+
+        const response = await fetch(url, options);
+
+        if (response.ok) {
+            const data = await response.json();
+            //AUTH_DEBUG && console.log("AuthAPI::getBookmarks(): ", data);
+            return new HttpResponse(HttpStatus.OK, data);
+        } else {
+            errorMessage = await response.json();
+            throw new Error("Error on Register()")
+        }
+     } catch (error) {
+            return new HttpResponse(HttpStatus.ERROR, errorMessage);
+     }
+}
+
 
 export const ClassesAPI = {
     createClass,
-    getClasses
+    getClasses,
+    getClassById,
+    updateClass
 }

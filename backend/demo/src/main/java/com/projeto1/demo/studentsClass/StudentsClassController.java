@@ -72,7 +72,7 @@ public class StudentsClassController {
         return studentsClassService.listStudentsInClass(id);
     }
 
-    @PutMapping("/edit/{id}")
+    @PutMapping("/update-class/{id}")
     public MessageResponseDTO editClass(@PathVariable Long id, @RequestBody @Valid StudentsClassDTO studentsClassDTO) {
         System.out.println("[Students Class Controller] editClass " + id);
         return studentsClassService.editClass(id, studentsClassDTO);
@@ -82,5 +82,11 @@ public class StudentsClassController {
     public List<StudentsClassDTO> listAll() {
         System.out.println("[Students Class Controller] listAll");
         return studentsClassService.listAll();
+    }
+
+    @GetMapping("/get-class-by-id/{id}")
+    public StudentsClassDTO findById(@PathVariable Long id) {
+        System.out.println("[Students Class Controller] findById " + id);
+        return studentsClassService.findClassById(id);
     }
 }
