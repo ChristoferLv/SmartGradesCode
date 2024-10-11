@@ -122,10 +122,34 @@ const updateUser = async (id,formValues,jwt) => {
     }
 }
 
+const resetPassword = async (id, jwt) => {
+    const url = `${BASE_URLv1}/user/change-password-of/${id}`;
+    try {
+        const options = {
+            method: 'PUT',
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${jwt}`,
+                Accept: 'application/json'
+            }
+        }
+        const response = await fetch(url, options);
+        if (response.ok) {
+            const data = await response.json();
+            AUTH_DEBUG && console.log("AuthAPI::resetPassword(): ", data);
+            return new HttpResponse(HttpStatus.OK, data);
+        } else throw new Error("Error on resetPassword()");
+    }catch (error) {
+        console.warn(error)
+        return new HttpResponse(HttpStatus.ERROR, null);
+    }
+}
+
 export const UserAPI = {
     listUsers,
     registerUser,
     listStudents,
     getUserById,
-    updateUser
+    updateUser,
+    resetPassword
 }

@@ -7,9 +7,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.time.ZonedDateTime;
 import java.time.ZoneId;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -246,22 +249,28 @@ public class UserService {
                 .build();
     }
 
-    public String changePasswordOfStudent(Long studentId) {
-        System.out.println("[User Service] changePasswordOfStudent " + studentId);
-        // Find the student by ID
-        User student = userRepository.findById(studentId)
-                .orElseThrow(() -> new UsernameNotFoundException("Student not found"));
+    public ResponseEntity<?> changePasswordOfStudent(Long studentId) {
+    System.out.println("[User Service] changePasswordOfStudent " + studentId);
 
-        // Generate the new 8-digit password
-        String newPassword = PasswordUtil.generateRandomPassword(8);
+    // Find the student by ID
+    User student = userRepository.findById(studentId)
+            .orElseThrow(() -> new UsernameNotFoundException("Student not found"));
 
-        // Encode the new password and update the user entity
-        student.setPassword(passwordEncoder.encode(newPassword));
-        userRepository.save(student);
+    // Generate the new 8-digit password
+    String newPassword = PasswordUtil.generateRandomPassword(6);
 
-        // Return the new password
-        return newPassword;
-    }
+    // Encode the new password and update the user entity
+    student.setPassword(passwordEncoder.encode(newPassword));
+    userRepository.save(student);
+
+    // Create a response map
+    Map<String, String> response = new HashMap<>();
+    response.put("newPassword", newPassword);
+
+    // Return the response map as JSON
+    return ResponseEntity.ok(response);
+}
+
 
     public MessageResponseDTO changeUserState(Long userId, ChangeUserStateDTO changeUserStateDTO) {
         System.out.println("[User Service] changeUserState " + userId + "\n");
