@@ -81,20 +81,23 @@ public class StudentsClassService {
 }
 
 
-    public MessageResponseDTO enrollStudentInClass(Long studentId, Long classId) {
+        public MessageResponseDTO enrollStudentInClass(Long studentId, Long classId) {
         System.out.println("[Students Class Service] enrollStudentInClass " + studentId + " " + classId + "\n");
         User student = userRepository.findById(studentId).orElse(null);
         StudentsClass studentsClass = studentsClassRepository.findById(classId).orElse(null);
-
+    
         if (student == null || studentsClass == null) {
             return MessageResponseDTO.builder()
                     .message("Student or class not found")
                     .build();
         }
-
+    
         student.getStudentsClasses().add(studentsClass);
         studentsClass.getStudents().add(student);
-
+    
+        // Change the user state to ENROLLED
+        student.setState(2); // Assuming 2 represents the ENROLLED state
+    
         userRepository.save(student); // Persist the changes
         // studentsClassRepository.save(studentsClass); // Persist the changes
         return MessageResponseDTO.builder()

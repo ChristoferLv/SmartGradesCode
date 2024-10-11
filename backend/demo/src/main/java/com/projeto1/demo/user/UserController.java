@@ -172,6 +172,12 @@ public class UserController {
         return userService.generateCertificate(id);
     }
 
+    @GetMapping("/list-active-users")
+    public List<UserDTO> listActiveUsers(){
+        System.out.println("[User Controller] listActiveUsers");
+        return userService.listActiveUsers();
+    }
+
     @GetMapping
     public List<UserDTO> listAllUsers() {
         System.out.println("[User Controller] listAllUsers");

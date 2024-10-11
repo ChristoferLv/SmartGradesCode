@@ -27,7 +27,7 @@ const createClass = async (body, jwt) => {
     }
 }
 
-const getClasses = async(jwt) => {
+const getClasses = async (jwt) => {
     const url = `${BASE_URLv1}/classes`
     var errorMessage;
     try {
@@ -50,9 +50,9 @@ const getClasses = async(jwt) => {
             errorMessage = await response.json();
             throw new Error("Error on Register()")
         }
-     } catch (error) {
-            return new HttpResponse(HttpStatus.ERROR, errorMessage);
-     }
+    } catch (error) {
+        return new HttpResponse(HttpStatus.ERROR, errorMessage);
+    }
 }
 
 const getClassById = async (id, jwt) => {
@@ -78,12 +78,12 @@ const getClassById = async (id, jwt) => {
             errorMessage = await response.json();
             throw new Error("Error on Register()")
         }
-     } catch (error) {
-            return new HttpResponse(HttpStatus.ERROR, errorMessage);
-     }
+    } catch (error) {
+        return new HttpResponse(HttpStatus.ERROR, errorMessage);
+    }
 }
 
-const updateClass = async (id,formValues,jwt) => {
+const updateClass = async (id, formValues, jwt) => {
     const url = `${BASE_URLv1}/classes/update-class/${id}`
     var errorMessage;
     try {
@@ -107,9 +107,38 @@ const updateClass = async (id,formValues,jwt) => {
             errorMessage = await response.json();
             throw new Error("Error on Register()")
         }
-     } catch (error) {
-            return new HttpResponse(HttpStatus.ERROR, errorMessage);
-     }
+    } catch (error) {
+        return new HttpResponse(HttpStatus.ERROR, errorMessage);
+    }
+}
+
+const enrollStudentInClass = async (values, jwt) => {
+    const url = `${BASE_URLv1}/classes/enroll`;
+    var errorMessage;
+    try {
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${jwt}`
+            },
+            body: JSON.stringify(values)
+        }
+
+        const response = await fetch(url, options);
+
+        if (response.ok) {
+            const data = await response.json();
+            //AUTH_DEBUG && console.log("AuthAPI::getBookmarks(): ", data);
+            return new HttpResponse(HttpStatus.OK, data);
+        } else {
+            errorMessage = await response.json();
+            throw new Error("Error on Register()")
+        }
+    } catch (error) {
+        return new HttpResponse(HttpStatus.ERROR, errorMessage);
+    }
 }
 
 
@@ -117,5 +146,6 @@ export const ClassesAPI = {
     createClass,
     getClasses,
     getClassById,
-    updateClass
+    updateClass,
+    enrollStudentInClass
 }

@@ -224,6 +224,14 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    public List<UserDTO> listActiveUsers() {
+        System.out.println("[User Service] listActiveUsers\n");
+        return userRepository.findAll().stream()
+                .filter(user -> user.getState() == (UserStateUtil.ACTIVE.getState()))
+                .map(user -> userMapper.toDTO(user)) // Map User entity to UserDTO
+                .collect(Collectors.toList());
+    }
+
     public MessageResponseDTO changeUserPassword(PasswordChangeDTO passwordChangeDTO, String token) {
         System.out.println("[User Service] changeUserPassword\n");
         // Find the user by ID

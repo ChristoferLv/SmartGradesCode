@@ -123,6 +123,16 @@ export default function EditClassScreen() {
                     <div className="col">
                         <p className="fw-bold fs-4 ms-1 mt-5">Edit Class</p>
                     </div>
+                    <div className="col-auto">
+                        <Button
+                            className="ms-3 mt-5"
+                            variant="success"
+                            onClick={() => navigate(`/teacher/enroll-student/${id}`)}
+                            style={{ padding: '0.25rem 0.5rem' }} // Ajuste o padding conforme necessário
+                        >
+                            Enrol Students
+                        </Button>
+                    </div>
                 </div>
             </div>
 
