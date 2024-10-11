@@ -35,6 +35,8 @@ public class SecurityConfiguration {
         "/api/v1/user/get-user-by-id",
         "/api/v1/user/update-user",
         "/api/v1/user/change-password-of",
+        "/api/v1/classes/get-class-by-id",
+        "/api/v1/classes/update-class"
 };
 
 

@@ -138,6 +138,7 @@ public class StudentsClassService {
                     .build();
         }
         studentsClass.setClassGroup(studentsClassDTO.getClassGroup());
+        studentsClass.setState(studentsClassDTO.getState());
         studentsClassRepository.save(studentsClass);
         return MessageResponseDTO.builder()
                 .message("Class edited")
@@ -149,5 +150,14 @@ public class StudentsClassService {
         return studentsClassRepository.findAll().stream()
                 .map(studentsClass -> studentsClassMapper.toDTO(studentsClass))
                 .collect(Collectors.toList());
+    }
+
+    public StudentsClassDTO findClassById(Long id) {
+        System.out.println("[Students Class Service] findClassById " + id + "\n");
+        StudentsClass studentsClass = studentsClassRepository.findById(id).orElse(null);
+        if (studentsClass == null) {
+            return null;
+        }
+        return studentsClassMapper.toDTO(studentsClass);
     }
 }
