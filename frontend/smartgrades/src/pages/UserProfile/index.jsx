@@ -13,6 +13,7 @@ import './style.css'
 import DropdownMenu from 'react-bootstrap/esm/DropdownMenu'
 import DropdownToggle from 'react-bootstrap/esm/DropdownToggle'
 import { toast } from 'react-toastify'
+import { UserAPI } from '../../api/users'
 
 const UserProfileScreen = () => {
   const navigate = useNavigate()
@@ -51,7 +52,7 @@ const UserProfileScreen = () => {
   useEffect(() => {
     const fetchFunction = async () => {
       if (imagesToUpdate && imagesToUpdate.length) {
-        const response = await ProfileAPI.updateUserPicture(imagesToUpdate[0], user.id);
+        const response = await UserAPI.uploadProfilePicture(imagesToUpdate[0], token);
         if (response.status !== HttpStatus.OK) {
           notifyError("Falha na alteração da foto de perfil.")
         } else {
@@ -74,22 +75,6 @@ const UserProfileScreen = () => {
     const formattedDate = `Aluno desde: ${month}/${year}`;
     return formattedDate // saída: "23/4/2023"
 
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const response = await ProfileAPI.putInvite(user.id, authorizationCode, token);
-    //console.log("response: ", response)
-
-    if (response.status !== HttpStatus.OK) {
-      //console.log(response)
-      setAuthorizationCode('')
-      notifyError("Falha ao alterar permissões.")
-    } else {
-      refreshUserOnContext()
-      notifySuccess("Permissões atualizadas com sucesso. Agora você é um professor :)");
-      handleCloseModal()
-    }
   }
 
   const changePass = () => {

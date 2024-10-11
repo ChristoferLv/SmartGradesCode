@@ -14,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -47,7 +48,6 @@ public class User {
     @Column(nullable = false)
     private String phoneNumber;
 
-    
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -60,22 +60,17 @@ public class User {
     @Column
     private int state;
 
-    private String imageUrl;
-    
+    // private String imageUrl;
+    @Lob // To handle large objects in H2
+    private byte[] profilePicture;
+
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "user_roles",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Roles> roles = new HashSet<>();
 
     // Many-to-Many relationship with StudentsClass
     @ManyToMany
-    @JoinTable(
-        name = "user_students_class",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "students_class_id")
-    )
+    @JoinTable(name = "user_students_class", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "students_class_id"))
     @ToString.Exclude // Prevent circular references
     @EqualsAndHashCode.Exclude // Prevent circular references
     private Set<StudentsClass> studentsClasses = new HashSet<>();

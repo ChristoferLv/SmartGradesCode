@@ -4,6 +4,7 @@ import java.util.Set;
 
 import com.projeto1.demo.roles.RolesDTO;
 
+import jakarta.persistence.Lob;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -43,4 +44,5 @@ public class UserDTO {
     private Set<RolesDTO> roles;
     private int creator; 
     private int state;
+    private byte[] profilePicture;
 }
