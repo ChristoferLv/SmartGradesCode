@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Spinner, Button, Col, Row } from "react-bootstrap";
-import { toast } from 'react-toastify';
+import { Bounce, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { UserAPI } from '../../api/users';
@@ -28,6 +28,19 @@ export default function EditUserScreen() {
     const navigate = useNavigate();
     const { token } = useAuthContext();
 
+    const notifyNewewPasswor = (text) =>
+        toast.success("New password: " + text, {
+            position: "top-center",
+            autoClose: false,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Bounce,
+        });
+
     const notifySuccess = (text) =>
         toast.success(text, {
             position: 'top-right',
@@ -47,7 +60,7 @@ export default function EditUserScreen() {
         const fetchUserData = async () => {
             const response = await UserAPI.getUserById(id, token);
             if (response.status === 200) {
-                setFormValues(response.data);
+                 setFormValues(response.data);
             } else {
                 notifyError("Error fetching user data");
             }
@@ -58,12 +71,12 @@ export default function EditUserScreen() {
     const handleChange = (e) => {
         const { name, value } = e.target;
         if (name === "phoneNumber") {
-            if (value.length > 15) {
-                return;
-            }
+            if (value.length > 15) return;
+        
             const formattedValue = value.replace(/\D/g, '');
-
-            setFormValues({ ...formValues, [name]: formattedValue });
+            const formattedPhoneNumber = formatPhoneNumber(formattedValue);
+    
+            setFormValues({ ...formValues, [name]: formattedPhoneNumber });
         } else {
             setFormValues({ ...formValues, [name]: value });
         }
@@ -76,7 +89,9 @@ export default function EditUserScreen() {
         setIsLoading(true);
 
         if (Object.keys(formErrors).length === 0) {
-            const response = await UserAPI.updateUser(id, formValues, token);
+            const unformattedPhone  = formValues.phoneNumber.replace(/\D/g, '');
+
+            const response = await UserAPI.updateUser(id, {...formValues, "phoneNumber":unformattedPhone}, token);
             if (response.status === 200) {
                 notifySuccess("User updated successfully");
             } else {
@@ -89,8 +104,7 @@ export default function EditUserScreen() {
     const handleResetPassword = async () => {
         const response = await UserAPI.resetPassword(id, token);
         if (response.status === 200) {
-            setNewPassword(response.data.newPassword);
-            notifySuccess("Password reset successfully");
+            notifyNewewPasswor(response.data.newPassword);
         } else {
             notifyError("Error resetting password");
         }
@@ -195,7 +209,7 @@ export default function EditUserScreen() {
                             name="phoneNumber"
                             placeholder="Phone Number"
                             className="form-control"
-                            value={formatPhoneNumber(formValues.phoneNumber)}
+                            value={formValues.phoneNumber}
                             onChange={handleChange}
                         />
                     </div>

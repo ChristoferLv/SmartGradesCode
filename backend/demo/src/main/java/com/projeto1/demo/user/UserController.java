@@ -142,10 +142,9 @@ public class UserController {
     }
 
     @PutMapping("/change-password-of/{studentId}")
-    public ResponseEntity<String> changePasswordOfStudent(@PathVariable Long studentId) {
+    public ResponseEntity<?> changePasswordOfStudent(@PathVariable Long studentId) {
         System.out.println("[User Controller] changePasswordOfStudent " + studentId);
-        String newPassword = userService.changePasswordOfStudent(studentId);
-        return ResponseEntity.ok("New password for student ID " + studentId + ": " + newPassword);
+        return userService.changePasswordOfStudent(studentId);
     }
 
     @PutMapping("/change-state/{id}")

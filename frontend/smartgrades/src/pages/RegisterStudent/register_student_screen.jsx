@@ -121,7 +121,6 @@ export default function RegisterStudentScreen() {
     setIsLoading(true);
     console.log(formErrors)
     if (Object.keys(formErrors).length === 0 && isSubmit) {
-      console.log(formValues)
         const response = await AuthAPI.fetchRegister(formValues);
         if (response.status === HttpStatus.OK) {
             notifySuccess("Registrado com sucesso!");
