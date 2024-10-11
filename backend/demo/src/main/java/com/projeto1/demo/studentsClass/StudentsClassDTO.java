@@ -1,6 +1,12 @@
 package com.projeto1.demo.studentsClass;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.projeto1.demo.reportCard.AcademicPeriod;
+import com.projeto1.demo.user.User;
+import com.projeto1.demo.user.UserDTO;
+import com.projeto1.demo.user.UserDTOSimplified;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -26,7 +32,7 @@ public class StudentsClassDTO {
     @NotNull
     @Size(min = 2, max = 40)
     private String classGroup;
-
+    private Set<UserDTOSimplified> students = new HashSet<>();
     @Min(0)
     @Max(5)
     private int state;

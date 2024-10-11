@@ -53,7 +53,6 @@ public class StudentsClass {
 
     @ManyToMany(mappedBy = "studentsClasses")
     @EqualsAndHashCode.Exclude // Prevent infinite loop
-    @JsonIgnore
     private Set<User> students = new HashSet<>();
 
     // Getters and Setters
