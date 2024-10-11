@@ -26,8 +26,9 @@ export default function EditUserScreen() {
     const [isLoading, setIsLoading] = useState(false);
     const [newPassword, setNewPassword] = useState('');
     const navigate = useNavigate();
-    const { token } = useAuthContext();
-
+    const { token, user } = useAuthContext();
+    const availableRoles = ["ADMIN", "TEACHER", "STUDENT"];
+    const [selectedRoles, setSelectedRoles] = useState([]);
     const notifyNewewPasswor = (text) =>
         toast.success("New password: " + text, {
             position: "top-center",
@@ -40,6 +41,10 @@ export default function EditUserScreen() {
             theme: "colored",
             transition: Bounce,
         });
+
+    const hasRole = (roleName) => {
+        return user.roles.some(role => role.name === roleName);
+    };
 
     const notifySuccess = (text) =>
         toast.success(text, {
@@ -55,30 +60,59 @@ export default function EditUserScreen() {
             theme: 'light',
         });
 
-    // Fetch user data on page load
-    useEffect(() => {
-        const fetchUserData = async () => {
-            const response = await UserAPI.getUserById(id, token);
-            if (response.status === 200) {
-                 setFormValues(response.data);
-            } else {
-                notifyError("Error fetching user data");
-            }
-        };
-        fetchUserData();
-    }, [id, token]);
+        useEffect(() => {
+            const fetchUserData = async () => {
+                const response = await UserAPI.getUserById(id, token);
+                if (response.status === 200) {
+                    setFormValues(response.data);
+                    
+                    // Set selected roles based on the fetched user data
+                    const userRoles = response.data.roles.map(role => role.name);
+                    setSelectedRoles(userRoles);
+                } else {
+                    notifyError("Error fetching user data");
+                }
+            };
+            fetchUserData();
+        }, [id, token]);
+    
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         if (name === "phoneNumber") {
             if (value.length > 15) return;
-        
+
             const formattedValue = value.replace(/\D/g, '');
             const formattedPhoneNumber = formatPhoneNumber(formattedValue);
-    
+
             setFormValues({ ...formValues, [name]: formattedPhoneNumber });
         } else {
             setFormValues({ ...formValues, [name]: value });
+        }
+    };
+
+    const handleRoleChange = (roleName) => {
+        // Check if the current user is trying to remove their own ADMIN role
+        if (roleName === "ADMIN" && selectedRoles.includes("ADMIN") && user.id === parseInt(id)) {
+            notifyError("You cannot remove your own ADMIN role.");
+            return;
+        }
+    
+        if (selectedRoles.includes(roleName)) {
+            setSelectedRoles(selectedRoles.filter(role => role !== roleName));
+        } else {
+            setSelectedRoles([...selectedRoles, roleName]);
+        }
+    };
+    
+
+    const handleRoleUpdate = async () => {
+        const rolesToUpdate = selectedRoles.map(role => ({ name: role }));
+        const response = await UserAPI.updateUserRoles(id, rolesToUpdate, token); // Assuming API to update roles
+        if (response.status === 200) {
+            notifySuccess("Roles updated successfully");
+        } else {
+            notifyError("Error updating roles");
         }
     };
 
@@ -89,9 +123,9 @@ export default function EditUserScreen() {
         setIsLoading(true);
 
         if (Object.keys(formErrors).length === 0) {
-            const unformattedPhone  = formValues.phoneNumber.replace(/\D/g, '');
+            const unformattedPhone = formValues.phoneNumber.replace(/\D/g, '');
 
-            const response = await UserAPI.updateUser(id, {...formValues, "phoneNumber":unformattedPhone}, token);
+            const response = await UserAPI.updateUser(id, { ...formValues, "phoneNumber": unformattedPhone }, token);
             if (response.status === 200) {
                 notifySuccess("User updated successfully");
             } else {
@@ -242,6 +276,22 @@ export default function EditUserScreen() {
                         </Form.Select>
 
                     </div>
+
+                    {user && hasRole("ADMIN") && (
+                        <div className="mt-3">
+                            <p className='m-0 ms-1'>Roles</p>
+                            {availableRoles.map((role) => (
+                                <Form.Check
+                                    key={role}
+                                    type="checkbox"
+                                    label={role}
+                                    checked={selectedRoles.includes(role)}
+                                    onChange={() => handleRoleChange(role)}
+                                />
+                            ))}
+                            <Button className="mt-2" onClick={handleRoleUpdate}>Update Roles</Button>
+                        </div>
+                    )}
 
                     <div className="row mt-3">
                         <div className="col text-start">
