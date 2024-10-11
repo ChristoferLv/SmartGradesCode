@@ -199,7 +199,7 @@ public class UserService {
     }
 
     public UserDTO getUserById(Long id) {
-        System.out.println("[User Service] getUserById " + id);
+        System.out.println("[User Service] getUserById " + id + "\n");
         User user = userRepository.findById(id).orElse(null);
         if (user == null) {
             return null;

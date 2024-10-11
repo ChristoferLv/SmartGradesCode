@@ -38,6 +38,7 @@ import RegisterStudentScreen from '../pages/RegisterStudent/register_student_scr
 import EditUserScreen from '../pages/EditUserPage/edit_user_screen';
 import EditClassScreen from '../pages/EditClassPage/edit_class_screen';
 import EnrollStudentsScreen from '../pages/EnrollStudentPage/enroll_student_screen';
+import TeachersPage from '../pages/ListTeachersPage/list_teachers_page';
 
 const SidebarLayout = () => (
   <>
@@ -71,15 +72,17 @@ function DefaultRoutes() {
           <Route path='/recuperar-senha' element={<PasswordRecoveryPage />} />
           <Route path='/alterar-senha' element={<ChangePasswordPage />} />
           <Route element={<SidebarLayout />}>
-            <Route path='/' element={<StrictRoute roles={[Roles.TEACHER]}><UsersPage /></StrictRoute>} />
+            <Route path='/' element={<StrictRoute roles={[Roles.TEACHER, Roles.ADMIN]}><UsersPage /></StrictRoute>} />
             <Route path="/courses/:id" element={<CourseDetails />} />
-            <Route path='/teacher/classes' element={<StrictRoute roles={[Roles.TEACHER]}><ClassesListPage /></StrictRoute>} />
-            <Route path='/teacher/classes/create' element={<StrictRoute roles={[Roles.TEACHER]}><NewClassScreen /></StrictRoute>} />
-            <Route path='/teacher/register-student' element={<StrictRoute roles={[Roles.TEACHER]}><RegisterStudentScreen /></StrictRoute>} />
-            <Route path='/teacher/users' element={<StrictRoute roles={[Roles.TEACHER]}><UsersPage /></StrictRoute>} />
-            <Route path='/teacher/edit-user/:id' element={<StrictRoute roles={[Roles.TEACHER]}><EditUserScreen /></StrictRoute>} />
-            <Route path="/teacher/edit-class/:id" element={<StrictRoute roles={[Roles.TEACHER]}><EditClassScreen /></StrictRoute>} />
-            <Route path='/teacher/enroll-student/:id' element={<StrictRoute roles={[Roles.TEACHER]}><EnrollStudentsScreen /></StrictRoute>} />
+            <Route path='/teacher/classes' element={<StrictRoute roles={[Roles.TEACHER, Roles.ADMIN]}><ClassesListPage /></StrictRoute>} />
+            <Route path='/teacher/classes/create' element={<StrictRoute roles={[Roles.TEACHER, Roles.ADMIN]}><NewClassScreen /></StrictRoute>} />
+            <Route path='/teacher/register-student' element={<StrictRoute roles={[Roles.TEACHER, Roles.ADMIN]}><RegisterStudentScreen /></StrictRoute>} />
+            <Route path='/teacher/users' element={<StrictRoute roles={[Roles.TEACHER, Roles.ADMIN]}><UsersPage /></StrictRoute>} />
+            <Route path='/teacher/edit-user/:id' element={<StrictRoute roles={[Roles.TEACHER, Roles.ADMIN]}><EditUserScreen /></StrictRoute>} />
+            <Route path="/teacher/edit-class/:id" element={<StrictRoute roles={[Roles.TEACHER, Roles.ADMIN]}><EditClassScreen /></StrictRoute>} />
+            <Route path='/teacher/enroll-student/:id' element={<StrictRoute roles={[Roles.TEACHER, Roles.ADMIN]}><EnrollStudentsScreen /></StrictRoute>} />
+
+            <Route path='/admin/list-teachers' element={<StrictRoute roles={[Roles.ADMIN]}><TeachersPage /></StrictRoute>} />
 
             <Route path="/student/lessons/:id" element={<StudentLessonPage />} />
             <Route path="/student/courses/:id" element={<StrictRoute roles={[Roles.STUDENT, Roles.TEACHER, Roles.ADMIN]}><CourseDetails /></StrictRoute>} />

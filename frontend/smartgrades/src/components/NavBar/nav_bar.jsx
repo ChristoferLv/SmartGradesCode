@@ -105,7 +105,7 @@ const SideNav = () => {
             </StrictRoute>
 
 
-            <StrictRoute roles={[Roles.TEACHER]}>
+            <StrictRoute roles={[Roles.TEACHER, Roles.ADMIN]}>
               <NavText text='TEACHER' />
               <NavGroupFlush>
                 <NavLinkTo title='List users' href='/teacher/users' icon={<FAIcon Icon={FaUser} />} />
@@ -118,8 +118,7 @@ const SideNav = () => {
             <StrictRoute roles={[Roles.ADMIN]}>
               <NavText text='ADMIN' />
               <NavGroupFlush>
-                <NavLinkTo title='Gerar Convite' href='/admin/generate-invite' icon={<FAIcon Icon={BsKeyFill} />} />
-                <NavLinkTo title='Gerenciar Professores' href='/admin/manage-teachers' icon={<FAIcon Icon={BsReverseListColumnsReverse} />} />
+                <NavLinkTo title='Teachers List' href='/admin/list-teachers' icon={<FAIcon Icon={BsReverseListColumnsReverse} />} />
               </NavGroupFlush>
             </StrictRoute>
             

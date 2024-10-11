@@ -154,7 +154,7 @@ public class UserController {
     }
 
     @PutMapping("/change-role/{id}")
-    public MessageResponseDTO changeUserRole(@PathVariable Long id, @RequestBody List<RolesDTO> rolesDTO) {
+    public MessageResponseDTO changeUserRole(@PathVariable Long id, @RequestBody List<RolesDTO> rolesDTO, HttpServletRequest request) {
         System.out.println("[User Controller] changeUserRole " + id);
         return userService.changeUserRole(id, rolesDTO);
     }
