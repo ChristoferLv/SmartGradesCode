@@ -7,6 +7,6 @@ import lombok.Data;
 @Builder
 public class AssessmentDTO {
 
-    private String skill; // e.g., "Speaking", "Listening"
-    private String rating; // e.g., "Excellent", "Very Good"
+    private String skill; // "Speaking", "Listening, Reading, Writing/Grammar, Effort, Attendance, Content Retention, Homework"
+    private String rating; // "Excellent", "Very Good, Good, Satisfactory, Poor"
 }

@@ -80,8 +80,8 @@ public class StudentsClassController {
         return studentsClassService.changeClassState(id, changeClassStateDTO);
     }
 
-    @GetMapping("/enroll/{id}")
-    public MessageResponseDTO listStudentsInClass(@PathVariable Long id) {
+    @GetMapping("/students-enrolled/{id}")
+    public ResponseEntity<?> listStudentsInClass(@PathVariable Long id) {
         return studentsClassService.listStudentsInClass(id);
     }
     

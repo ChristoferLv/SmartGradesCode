@@ -198,6 +198,34 @@ const getEnroledClassesOfStudent = async (id, jwt) => {
     }
 }
 
+const listStudentsInClass = async (classId, jwt) => {
+    const url = `${BASE_URLv1}/classes/students-enrolled/${classId}`; // Modify URL to match the backend endpoint
+    try {
+        const options = {
+            method: 'GET',
+            headers: {
+                "Authorization": `Bearer ${jwt}`, // Include the JWT token
+                'Content-Type': 'application/json',
+                Accept: 'application/json'
+            }
+        };
+
+        const response = await fetch(url, options);
+
+        if (response.ok) {
+            const data = await response.json(); // Parse the response as JSON
+            console.log("listStudentsInClass: ", data); // Debugging log to check the response
+            return new HttpResponse(HttpStatus.OK, data); // Assuming you have HttpResponse to handle responses
+        } else {
+            throw new Error("Error fetching students in the class");
+        }
+    } catch (error) {
+        console.warn("listStudentsInClass Error: ", error);
+        return new HttpResponse(HttpStatus.ERROR, null);
+    }
+};
+
+
 
 export const ClassesAPI = {
     createClass,
@@ -206,5 +234,6 @@ export const ClassesAPI = {
     updateClass,
     enrollStudentInClass,
     unenrollStudentInClass,
-    getEnroledClassesOfStudent
+    getEnroledClassesOfStudent,
+    listStudentsInClass
 }

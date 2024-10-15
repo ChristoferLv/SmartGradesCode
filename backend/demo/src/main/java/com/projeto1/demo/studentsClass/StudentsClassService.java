@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -14,6 +15,7 @@ import com.projeto1.demo.messages.MessageResponseDTO;
 import com.projeto1.demo.reportCard.AcademicPeriod;
 import com.projeto1.demo.reportCard.AcademicPeriodRepository;
 import com.projeto1.demo.user.User;
+import com.projeto1.demo.user.UserDTOSimplified;
 import com.projeto1.demo.user.UserRepository;
 
 @Service
@@ -155,16 +157,22 @@ public class StudentsClassService {
 
     }
 
-    public MessageResponseDTO listStudentsInClass(Long id) {
+    //Return a list of students in a class or a message if the class is not found
+    public ResponseEntity<?> listStudentsInClass(Long id) {
         System.out.println("[Students Class Service] listStudentsInClass " + id + "\n");
         StudentsClass studentsClass = studentsClassRepository.findById(id).orElse(null);
         if (studentsClass == null) {
-            return MessageResponseDTO.builder()
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(MessageResponseDTO.builder()
                     .message("Class not found")
-                    .build();
+                    .build());
         }
-        return MessageResponseDTO.builder()
-                .message("Students in class " + studentsClass.getLevel() + ": " + studentsClass.getStudents()).build();
+        //Return list of students with userDTOSimplified
+        return ResponseEntity.ok(studentsClass.getStudents().stream()
+                .map(student -> UserDTOSimplified.builder()
+                        .id(student.getId())
+                        .name(student.getName())
+                        .build())
+                .collect(Collectors.toList()));
     }
 
     public MessageResponseDTO changeClassState(Long id, ChangeClassStateDTO changeClassStateDTO) {

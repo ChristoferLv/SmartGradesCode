@@ -21,8 +21,8 @@ export default function ClassDetailsScreen() {
             studentId: studentId,
             classId: id,
         };
-    
-      const response = await ClassesAPI.unenrollStudentInClass(enrollmentDTO, token);
+
+        const response = await ClassesAPI.unenrollStudentInClass(enrollmentDTO, token);
         if (response.status === 200) {
             notify.notifySuccess("Student unenrolled successfully.");
             setClassDetails({
@@ -117,6 +117,11 @@ export default function ClassDetailsScreen() {
                                             >
                                                 Unenroll
                                             </Button>
+                                            <Link to={`/teacher/report-card-form/${id}/${student.id}`}>
+                                                <Button variant="primary" className="ms-2">
+                                                    Report Card
+                                                </Button>
+                                            </Link>
                                         </td>
                                     </tr>
                                 ))}

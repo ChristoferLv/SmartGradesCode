@@ -22,6 +22,7 @@ public class ReportCardService {
     public MessageResponseDTO addNewReportCard(ReportCardDTO reportCardDTO) {
        ReportCard reportCard = reportCardMapper.toModel(reportCardDTO);
 
+       reportCard.setFinalGrade(Math.round((reportCardDTO.getOT() + reportCardDTO.getWT())/2));
 
         // 2. Convert and save assessments
         List<Assessment> assessments = reportCardDTO.getAssessments().stream()

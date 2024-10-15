@@ -10,13 +10,11 @@ public interface ReportCardMapper {
 
     // Map ReportCardDTO to ReportCard (entity)
     @Mapping(source = "studentId", target = "student.id")
-    @Mapping(source = "periodId", target = "period.id")
     @Mapping(source = "studentClassId", target = "studentClass.id") // Correct mapping for StudentsClass
     ReportCard toModel(ReportCardDTO reportCardDTO);
 
     // Map ReportCard (entity) to ReportCardDTO
     @Mapping(source = "student.id", target = "studentId")// Mapping student name
-    @Mapping(source = "period.id", target = "periodId")
     @Mapping(source = "studentClass.id", target = "studentClassId") // Correct mapping for StudentsClass
     ReportCardDTO toDTO(ReportCard reportCard);
 
