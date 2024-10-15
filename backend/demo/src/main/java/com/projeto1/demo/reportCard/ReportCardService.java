@@ -22,6 +22,7 @@ public class ReportCardService {
     public MessageResponseDTO addNewReportCard(ReportCardDTO reportCardDTO) {
        ReportCard reportCard = reportCardMapper.toModel(reportCardDTO);
 
+       reportCard.setFinalGrade(Math.round((reportCardDTO.getOT() + reportCardDTO.getWT())/2));
 
         // 2. Convert and save assessments
         List<Assessment> assessments = reportCardDTO.getAssessments().stream()
@@ -41,9 +42,13 @@ public class ReportCardService {
         return MessageResponseDTO.builder().message("ReportCard created with ID " + reportCard.getId()).build();
     }
 
-    public List<ReportCard> listReportCardByUserId(Long studentId) {
+    public List<ReportCardDTO> listReportCardByUserId(Long studentId) {
         System.out.println("[ReportCard Service] listReportCardByUserId " + studentId);
-        return reportCardRepository.findByStudentId(studentId);
+        return reportCardRepository.findByStudentId(studentId).stream()
+                .map(reportCard -> {
+                    return reportCardMapper.toDTO(reportCard);
+                })
+                .collect(Collectors.toList());
     }
 
     public List<String> listAll() {

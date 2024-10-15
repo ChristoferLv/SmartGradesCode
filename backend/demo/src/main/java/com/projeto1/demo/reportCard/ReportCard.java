@@ -37,10 +37,6 @@ public class ReportCard {
     @JoinColumn(name = "student_id", nullable = false)
     private User student; // Entity reference to the student
 
-    @ManyToOne
-    @JoinColumn(name = "period_id", nullable = false)
-    private AcademicPeriod period; // Entity reference to the academic period
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EvaluationType evaluationType; // FIRST_EVALUATION or FINAL_EVALUATION
