@@ -291,5 +291,5 @@ export const UserAPI = {
     getActiveUsers,
     getTeachers,
     updateUserRoles,
-    uploadProfilePicture
+    uploadProfilePicture,
 }

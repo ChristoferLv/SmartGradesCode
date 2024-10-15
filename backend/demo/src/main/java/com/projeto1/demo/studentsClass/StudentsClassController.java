@@ -58,6 +58,19 @@ public class StudentsClassController {
                 .message("Student enrolled in class")
                 .build();
     }
+    
+    @PostMapping("/unenroll")
+    public MessageResponseDTO unenrollStudentInClass(@RequestBody EnrollmentRequestDTO enrollmentRequest) {
+        studentsClassService.unenrollStudentInClass(enrollmentRequest.getStudentId(), enrollmentRequest.getClassId());
+        return MessageResponseDTO.builder()
+                .message("Student unenrolled in class")
+                .build();
+    }
+
+    @GetMapping ("/get-enrolled-class/{id}")
+    public List<StudentClassDTOSimplified> getClassStudentIsEnroled(@PathVariable Long id) {
+        return studentsClassService.getClassStudentIsEnroled(id);
+    }
 
     // Change state of a class
     @PutMapping("/update-state/{id}")
@@ -71,6 +84,7 @@ public class StudentsClassController {
     public MessageResponseDTO listStudentsInClass(@PathVariable Long id) {
         return studentsClassService.listStudentsInClass(id);
     }
+    
 
     @PutMapping("/update-class/{id}")
     public MessageResponseDTO editClass(@PathVariable Long id, @RequestBody @Valid StudentsClassDTO studentsClassDTO) {

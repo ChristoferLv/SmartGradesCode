@@ -3,6 +3,7 @@ package com.projeto1.demo.studentsClass;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,79 +31,128 @@ public class StudentsClassService {
         this.userRepository = userRepository;
     }
 
-   public MessageResponseDTO addNewClass(StudentsClassDTO studentsClassDTO) {
-    System.out.println("[Students Class Service] addNewClass " + studentsClassDTO.getLevel() + "\n");
+    public MessageResponseDTO addNewClass(StudentsClassDTO studentsClassDTO) {
+        System.out.println("[Students Class Service] addNewClass " + studentsClassDTO.getLevel() + "\n");
 
-    // Check if a class with the same level, period, and classGroup already exists
-    Optional<StudentsClass> existingClass = studentsClassRepository.findByLevelAndPeriodNameAndClassGroup(
-        studentsClassDTO.getLevel(),
-        studentsClassDTO.getPeriod().getName(),
-        studentsClassDTO.getClassGroup() // Assuming DTO has classGroup field
-    );
+        // Check if a class with the same level, period, and classGroup already exists
+        Optional<StudentsClass> existingClass = studentsClassRepository.findByLevelAndPeriodNameAndClassGroup(
+                studentsClassDTO.getLevel(),
+                studentsClassDTO.getPeriod().getName(),
+                studentsClassDTO.getClassGroup() // Assuming DTO has classGroup field
+        );
 
-    if (existingClass.isPresent()) {
-        // Return an error message if class exists
-        System.out.println("[Students Class Service] Error: A class with the same level, period, and class group already exists.");
-        throw new ResponseStatusException(HttpStatus.CONFLICT, "Error: A class with the same level, period, and class group already exists.");
-    }
-
-    try {
-        // Map DTO to entity
-        StudentsClass studentsClassToSave = studentsClassMapper.toModel(studentsClassDTO);
-
-        // Find existing AcademicPeriod or create a new one
-        String periodName = studentsClassDTO.getPeriod().getName(); // Assuming DTO has period name
-        Optional<AcademicPeriod> existingPeriod = academicPeriodRepository.findByName(periodName);
-
-        if (existingPeriod.isPresent()) {
-            // Use the existing period
-            studentsClassToSave.setPeriod(existingPeriod.get());
-        } else {
-            // Create new period and set it
-            AcademicPeriod newPeriod = new AcademicPeriod();
-            newPeriod.setName(periodName);
-            studentsClassToSave.setPeriod(newPeriod);
+        if (existingClass.isPresent()) {
+            // Return an error message if class exists
+            System.out.println(
+                    "[Students Class Service] Error: A class with the same level, period, and class group already exists.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Error: A class with the same level, period, and class group already exists.");
         }
 
-        // Set state and save the class
-        studentsClassToSave.setState(1);
-        studentsClassRepository.save(studentsClassToSave);
+        try {
+            // Map DTO to entity
+            StudentsClass studentsClassToSave = studentsClassMapper.toModel(studentsClassDTO);
 
-        System.out.println("[Students Class Service] Created class with ID " + studentsClassToSave.getId());
-        
-        return MessageResponseDTO.builder()
-                .message("Created class with ID " + studentsClassToSave.getId() + " " + studentsClassToSave.toString())
-                .build();
+            // Find existing AcademicPeriod or create a new one
+            String periodName = studentsClassDTO.getPeriod().getName(); // Assuming DTO has period name
+            Optional<AcademicPeriod> existingPeriod = academicPeriodRepository.findByName(periodName);
 
-    } catch (Exception e) {
-        System.out.println("[Students Class Service] Error: " + e.getMessage());
-        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred while creating the class.");
+            if (existingPeriod.isPresent()) {
+                // Use the existing period
+                studentsClassToSave.setPeriod(existingPeriod.get());
+            } else {
+                // Create new period and set it
+                AcademicPeriod newPeriod = new AcademicPeriod();
+                newPeriod.setName(periodName);
+                studentsClassToSave.setPeriod(newPeriod);
+            }
+
+            // Set state and save the class
+            studentsClassToSave.setState(1);
+            studentsClassRepository.save(studentsClassToSave);
+
+            System.out.println("[Students Class Service] Created class with ID " + studentsClassToSave.getId());
+
+            return MessageResponseDTO.builder()
+                    .message("Created class with ID " + studentsClassToSave.getId() + " "
+                            + studentsClassToSave.toString())
+                    .build();
+
+        } catch (Exception e) {
+            System.out.println("[Students Class Service] Error: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error occurred while creating the class.");
+        }
     }
-}
 
-
-        public MessageResponseDTO enrollStudentInClass(Long studentId, Long classId) {
+    public MessageResponseDTO enrollStudentInClass(Long studentId, Long classId) {
         System.out.println("[Students Class Service] enrollStudentInClass " + studentId + " " + classId + "\n");
         User student = userRepository.findById(studentId).orElse(null);
         StudentsClass studentsClass = studentsClassRepository.findById(classId).orElse(null);
-    
+
         if (student == null || studentsClass == null) {
             return MessageResponseDTO.builder()
                     .message("Student or class not found")
                     .build();
         }
-    
+
         student.getStudentsClasses().add(studentsClass);
         studentsClass.getStudents().add(student);
-    
+
         // Change the user state to ENROLLED
         student.setState(2); // Assuming 2 represents the ENROLLED state
-    
+
         userRepository.save(student); // Persist the changes
-        // studentsClassRepository.save(studentsClass); // Persist the changes
+        studentsClassRepository.save(studentsClass); // Persist the changes
         return MessageResponseDTO.builder()
                 .message("Student " + student.getName() + " enrolled in class " + studentsClass.getLevel())
                 .build();
+    }
+
+    public MessageResponseDTO unenrollStudentInClass(Long studentId, Long classId) {
+        System.out.println("[Students Class Service] unenrollStudentInClass " + studentId + " " + classId + "\n");
+        User student = userRepository.findById(studentId).orElse(null);
+        StudentsClass studentsClass = studentsClassRepository.findById(classId).orElse(null);
+        student.getStudentsClasses().remove(studentsClass);
+        studentsClass.getStudents().remove(student);
+
+        student.setState(1);
+
+        userRepository.save(student);
+        studentsClassRepository.save(studentsClass);
+        return MessageResponseDTO.builder()
+                .message("Student " + student.getName() + " unenrolled in class " + studentsClass.getLevel())
+                .build();
+
+    }
+
+    public List<StudentClassDTOSimplified> getClassStudentIsEnroled(Long id) {
+        System.out.println("[Students Class Service] getClassStudentIsEnroled " + id + "\n");
+        User student = userRepository.findById(id).orElse(null);
+        if (student == null) {
+            return null;
+        }
+
+        // Filter the student's classes to return only the active ones
+        List<StudentsClass> activeClasses = student.getStudentsClasses().stream()
+                .filter(studentClass -> studentClass.getState() == 1) // Assuming state == 1 means 'ACTIVE'
+                .collect(Collectors.toList());
+
+        // If no active classes are found, return null or handle accordingly
+        if (activeClasses.isEmpty()) {
+        // return empty List
+            return new ArrayList<StudentClassDTOSimplified>();
+        }
+
+        // Convert the active classes to a DTO (adjust this part based on your DTO
+        // structure)
+        return activeClasses.stream().map(activeClass -> StudentClassDTOSimplified.builder()
+                .id(activeClass.getId())
+                .level(activeClass.getLevel())
+                .period(activeClass.getPeriod())
+                .classGroup(activeClass.getClassGroup())
+                .build()).collect(Collectors.toList());
+
     }
 
     public MessageResponseDTO listStudentsInClass(Long id) {

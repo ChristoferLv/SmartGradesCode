@@ -10,12 +10,14 @@ import { UserAPI } from '../../api/users'
 import './user_details_screen.css'
 import { toast } from 'react-toastify'
 import { notify } from '../../toasts/toasts'
+import { ClassesAPI } from '../../api/studentClasses'
 
 const UserDetailsScreen = () => {
     const navigate = useNavigate()
     const { id } = useParams()
     const { logged, user, token, refreshUserOnContext } = useAuthContext();
     const [userInfo, setUserInfo] = useState(null);  // For storing fetched user information
+    const [enroledClasses, setEnroledClasses] = useState(null);
 
     const notifyError = (texto) => toast.error(texto, { ...notifyError });
     const notifySuccess = (texto) => toast.success(texto, { ...notifySuccess });
@@ -32,6 +34,20 @@ const UserDetailsScreen = () => {
         };
         fetchUserData();
     }, [token, user]);
+
+    useEffect(() => {
+        console.log("CHAMADO");
+        const fetchEnroledClasses = async () => {
+            const response = await ClassesAPI.getEnroledClassesOfStudent(id, token);
+            console.log(response);
+            if (response.status === HttpStatus.OK) {
+                setEnroledClasses(response.data);
+            } else {
+                notifyError("Error fetching enroled classes.");
+            }
+        };
+        fetchEnroledClasses();
+    }, [userInfo]);
 
     const handleEditClick = () => {
         navigate(`/teacher/edit-user/${id}`);  // Navigate to the edit screen
@@ -79,7 +95,7 @@ const UserDetailsScreen = () => {
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
-
+    
             <Container>
                 <Row className="d-flex justify-content-center gap-4">
                     <Col className='pe-0' xs={3}>
@@ -134,15 +150,34 @@ const UserDetailsScreen = () => {
                                 <Row className="mb-3">
                                     <Col className="d-flex justify-content-between align-items-center">
                                         <h1 className="fw-bold fs-5" style={{ color: '#727273' }}>
-                                            About Me
+                                            Enrolled Classes
                                         </h1>
                                     </Col>
                                 </Row>
                                 <Row>
                                     <Col>
-                                        <p className="mt-0 mb-0 fs-6" style={{ color: '#727273' }}>
-                                            {userInfo.about}
-                                        </p>
+                                        {enroledClasses && enroledClasses.length > 0 ? (
+                                            <ul>
+                                                {enroledClasses.map((studentClass) => (
+                                                    <li key={studentClass.id} style={{ color: '#727273' }}>
+                                                        <p className="mb-1">
+                                                            <strong>Level:</strong> {studentClass.level}
+                                                        </p>
+                                                        <p className="mb-1">
+                                                            <strong>Period:</strong> {studentClass.period.name}
+                                                        </p>
+                                                        <p className="mb-1">
+                                                            <strong>Class Group:</strong> {studentClass.classGroup}
+                                                        </p>
+                                                        <hr />
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        ) : (
+                                            <p className="mt-0 mb-0 fs-6" style={{ color: '#727273' }}>
+                                                Not enrolled in any classes.
+                                            </p>
+                                        )}
                                     </Col>
                                 </Row>
                             </Card>
@@ -152,6 +187,6 @@ const UserDetailsScreen = () => {
             </Container>
         </>
     ) : <></>
-}
+}    
 
 export default UserDetailsScreen;
