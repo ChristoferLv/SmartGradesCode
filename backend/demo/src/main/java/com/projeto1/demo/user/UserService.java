@@ -349,4 +349,24 @@ public class UserService {
                 .message("Certificate generated successfully for user ID " + userId)
                 .build();
     }
+
+    public MessageResponseDTO uploadProfilePicture(byte[] image, String token) {
+        // Decodificar o token para obter o ID do usuário
+        Long userId = jwtTokenService.getUserIdFromToken(token);
+        System.out.println("[User Service] uploadProfilePicture " + userId + "\n");
+
+        // Encontrar o usuário pelo ID
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            return MessageResponseDTO.builder().message("User with ID " + userId + " not found").build();
+        }
+
+        // Atualizar a foto de perfil do usuário
+        user.setProfilePicture(image);
+        userRepository.save(user);
+
+        return MessageResponseDTO.builder()
+                .message("Profile picture uploaded successfully for user ID " + userId)
+                .build();
+    }
 }

@@ -38,6 +38,7 @@ public class SecurityConfiguration {
         "/api/v1/user/list-active-users",
         "/api/v1/user/list-teachers",
         "/api/v1/user/change-role",
+        "/api/v1/user/upload-profile-picture",
         "/api/v1/classes/get-class-by-id",
         "/api/v1/classes/update-class",
         "/api/v1/classes/enroll",

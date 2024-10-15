@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Base64;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -182,5 +183,25 @@ public class UserController {
     public List<UserDTO> listAllUsers() {
         System.out.println("[User Controller] listAllUsers");
         return userService.listAll();
+    }
+
+    @PostMapping("/upload-profile-picture")
+    public ResponseEntity<MessageResponseDTO> uploadProfilePicture(@RequestBody ProfilePictureDTO profilePictureDTO, HttpServletRequest request) {
+        String authorizationHeader = request.getHeader("Authorization");
+        // System.out.println("Authorization Header: " + authorizationHeader);
+
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("JWT Token is missing or malformed");
+        }
+
+        // Extract the token by removing the "Bearer " prefix
+        String token = authorizationHeader.substring(7);
+        
+        String base64Image = profilePictureDTO.getImage();
+
+        // Decode Base64 string to byte array
+        byte[] imageBytes = Base64.getDecoder().decode(base64Image.split(",")[1]); // Splitting to get the image part
+        MessageResponseDTO response = userService.uploadProfilePicture(imageBytes, token);
+        return ResponseEntity.ok(response);
     }
 }
