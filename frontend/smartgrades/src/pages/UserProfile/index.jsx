@@ -84,26 +84,26 @@ const UserProfileScreen = () => {
   const editar = () => {
     setNewName(user.name)
     setAboutText(user.about)
-    setNewLink(user.contactLink == "https://www.exemplo.com" ? "": user.contactLink)
+    setNewLink(user.contactLink == "https://www.exemplo.com" ? "" : user.contactLink)
     setEditando(true)
   }
 
   const salvarAlteracoes = async () => {
     if (Object.keys(validateEditing()).length === 0 && editando) {
       var link = "";
-      if(newLink){
-        if(newLink.length === 0){
+      if (newLink) {
+        if (newLink.length === 0) {
           link = "https://www.exemplo.com";
-        }else{
+        } else {
           link = newLink;
-          if(!link.includes("https")){
+          if (!link.includes("https")) {
             link = "https://" + newLink;
           }
         }
-      }else{
+      } else {
         link = "https://www.exemplo.com";
       }
-      if (user.name !== newName || aboutText !== user.about  || newLink !== user.contactLink) {
+      if (user.name !== newName || aboutText !== user.about || newLink !== user.contactLink) {
         const response = await ProfileAPI.fetchEdit(newName, aboutText, link, user.id)
         if (response.status !== HttpStatus.OK) {
           notifyError("Falha na edição de perfil.");
@@ -176,17 +176,17 @@ const UserProfileScreen = () => {
             <Row className='align-items-center'>
               <Col>
                 <Navbar.Text>
-                    <Dropdown>
-                      <DropdownToggle className='gear'>
-                        <FontAwesomeIcon
-                          icon={faBars}
-                        />
-                      </DropdownToggle>
-                      <DropdownMenu>
-                        <Dropdown.Item className="dropdown-item-no-highlight" onClick={() => editar()}>Editar Perfil</Dropdown.Item>
-                        <Dropdown.Item className="dropdown-item-no-highlight" onClick={() => changePass()}>Alterar Senha</Dropdown.Item>
-                      </DropdownMenu>
-                    </Dropdown>
+                  <Dropdown>
+                    <DropdownToggle className='gear'>
+                      <FontAwesomeIcon
+                        icon={faBars}
+                      />
+                    </DropdownToggle>
+                    <DropdownMenu>
+                      <Dropdown.Item className="dropdown-item-no-highlight" onClick={() => editar()}>Editar Perfil</Dropdown.Item>
+                      <Dropdown.Item className="dropdown-item-no-highlight" onClick={() => changePass()}>Alterar Senha</Dropdown.Item>
+                    </DropdownMenu>
+                  </Dropdown>
                 </Navbar.Text>
               </Col>
               <Col>
@@ -222,7 +222,11 @@ const UserProfileScreen = () => {
                       overlay={<Tooltip>Mudar foto de Perfil</Tooltip>}
                     >
                       <label className='d-flex justify-content-center' htmlFor="input-files-user-photo-update" >
-                        {user.photo ? <img src={user.photo} style={{ width: '70%', aspectRatio: 1, borderRadius: '50%', objectFit: 'fill', objectPosition: 'center', cursor: 'pointer' }} alt="profile"/>
+                        {user.profilePicture ? <img
+                          src={`data:image/jpeg;base64,${user.profilePicture}`} // Ajuste o tipo de imagem conforme necessário
+                          style={{ width: '70%', aspectRatio: 1, borderRadius: '50%', objectFit: 'fill', objectPosition: 'center', cursor: 'pointer' }}
+                          alt="profile"
+                        />
                           : <Avatar
                             name={user.name && user.name.split(' ')[0]}
                             color="#0f5b7a"

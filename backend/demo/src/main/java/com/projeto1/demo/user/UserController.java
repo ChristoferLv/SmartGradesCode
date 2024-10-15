@@ -186,7 +186,7 @@ public class UserController {
     }
 
     @PostMapping("/upload-profile-picture")
-    public MessageResponseDTO uploadProfilePicture(@RequestBody ProfilePictureDTO profilePictureDTO, HttpServletRequest request) {
+    public ResponseEntity<MessageResponseDTO> uploadProfilePicture(@RequestBody ProfilePictureDTO profilePictureDTO, HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
         // System.out.println("Authorization Header: " + authorizationHeader);
 
@@ -201,6 +201,7 @@ public class UserController {
 
         // Decode Base64 string to byte array
         byte[] imageBytes = Base64.getDecoder().decode(base64Image.split(",")[1]); // Splitting to get the image part
-        return userService.uploadProfilePicture(imageBytes, token);
+        MessageResponseDTO response = userService.uploadProfilePicture(imageBytes, token);
+        return ResponseEntity.ok(response);
     }
 }

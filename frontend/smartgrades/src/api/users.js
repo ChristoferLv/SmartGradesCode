@@ -1,4 +1,5 @@
 import { BASE_URL, AUTH_DEBUG, HttpStatus, HttpResponse, BASE_URLv1 } from './default';
+import Compressor from 'compressorjs';
 
 const registerUser = async (formValues, jwt) => {
     const url = `${BASE_URLv1}/user`
@@ -217,6 +218,25 @@ const uploadProfilePicture = async (imageFile, jwt) => {
     const url = `${BASE_URLv1}/user/upload-profile-picture`;
     var errorMessage;
 
+   //Compress imageFile and convert to base64
+    const compressImage = async (imageFile) => {
+        return new Promise((resolve, reject) => {
+            new Compressor(imageFile, {
+                quality: 0.6,
+                success(result) {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(result);
+                    reader.onload = () => resolve(reader.result);
+                },
+                error(error) {
+                    console.warn(error);
+                    reject(error);
+                },
+            });
+        });
+    };
+
+
     try {
         // Convert the image file to Base64
         const toBase64 = file =>
@@ -227,7 +247,7 @@ const uploadProfilePicture = async (imageFile, jwt) => {
                 reader.onerror = error => reject(error);
             });
 
-        const base64Image = await toBase64(imageFile);
+        const base64Image = await compressImage(imageFile);
 
         // Prepare the profile picture object
         const profilePictureDTO = {
@@ -249,14 +269,14 @@ const uploadProfilePicture = async (imageFile, jwt) => {
         if (response.ok) {
             const data = await response.json();
             console.log("Profile picture uploaded successfully", data);
-            return { status: 'success', data };
+            return new HttpResponse(HttpStatus.OK, data);
         } else {
             errorMessage = await response.json();
             throw new Error("Error uploading profile picture");
         }
     } catch (error) {
         console.warn(error);
-        return { status: 'error', message: errorMessage };
+        return new HttpResponse(HttpStatus.ERROR, errorMessage);
     }
 }
 
