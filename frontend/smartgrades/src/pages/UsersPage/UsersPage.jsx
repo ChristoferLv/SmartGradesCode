@@ -127,7 +127,7 @@ function UsersPage() {
                     <Row className="g-4">
                       {usersData.map((course) => (
                         <Col xs={12} lg={4} key={course.id}>
-                          <Link to={`/teacher/edit-user/${course.id}`}>
+                          <Link to={`/teacher/user-profile/${course.id}`}>
                             <UserCard user={course} />
                           </Link>
                         </Col>
