@@ -86,7 +86,7 @@ function DefaultRoutes() {
             <Route path='/teacher/enroll-student/:id' element={<StrictRoute roles={[Roles.TEACHER, Roles.ADMIN]}><EnrollStudentsScreen /></StrictRoute>} />
             <Route path='/teacher/user-profile/:id' element={<StrictRoute roles={[Roles.TEACHER, Roles.ADMIN]}><UserDetailsScreen /></StrictRoute>} />
             <Route path='/teacher/class-details/:id' element={<StrictRoute roles={[Roles.TEACHER, Roles.ADMIN]}><ClassDetailsScreen /></StrictRoute>} />
-            <Route path='/teacher/report-card-form/:classId/:studentId' element={<StrictRoute roles={[Roles.TEACHER, Roles.ADMIN]}><ReportCardForm /></StrictRoute>} />
+            <Route path='/teacher/report-card-form/:classId' element={<StrictRoute roles={[Roles.TEACHER, Roles.ADMIN]}><ReportCardForm /></StrictRoute>} />
 
 
 

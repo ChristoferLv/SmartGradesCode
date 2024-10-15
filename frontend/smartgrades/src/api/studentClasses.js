@@ -1,4 +1,4 @@
-import { BASE_URLv1, HttpResponse, HttpStatus } from "./default"
+import { AUTH_DEBUG, BASE_URLv1, HttpResponse, HttpStatus } from "./default"
 
 const createClass = async (body, jwt) => {
     console.log("ClassesAPI::createClass() body: ", body)
@@ -214,7 +214,7 @@ const listStudentsInClass = async (classId, jwt) => {
 
         if (response.ok) {
             const data = await response.json(); // Parse the response as JSON
-            console.log("listStudentsInClass: ", data); // Debugging log to check the response
+            AUTH_DEBUG && console.log("listStudentsInClass: ", data); // Debugging log to check the response
             return new HttpResponse(HttpStatus.OK, data); // Assuming you have HttpResponse to handle responses
         } else {
             throw new Error("Error fetching students in the class");
@@ -223,7 +223,32 @@ const listStudentsInClass = async (classId, jwt) => {
         console.warn("listStudentsInClass Error: ", error);
         return new HttpResponse(HttpStatus.ERROR, null);
     }
-};
+}
+
+const submitReportCard = async (reportCardDTO, jwt) => {
+    const url = `${BASE_URLv1}/reportCard`;
+    try {
+        const options = {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${jwt}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(reportCardDTO),
+        };
+        const response = await fetch(url, options);
+        console.log("submitReportCard response: ", response)
+        if (response.ok) {
+            const data = await response.json();
+            return new HttpResponse(HttpStatus.OK, data);
+        } else {
+            throw new Error("Error submitting report card");
+        }
+    } catch (error) {
+        console.log("submitReportCard Error: ", error);
+        return new HttpResponse(HttpStatus.ERROR, null);
+    }
+}
 
 
 
@@ -235,5 +260,6 @@ export const ClassesAPI = {
     enrollStudentInClass,
     unenrollStudentInClass,
     getEnroledClassesOfStudent,
-    listStudentsInClass
+    listStudentsInClass,
+    submitReportCard
 }

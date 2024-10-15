@@ -6,24 +6,24 @@ import { ClassesAPI } from '../../api/studentClasses';
 import { useAuthContext } from '../../contexts/AuthContext';
 import { HttpStatus } from '../../api/default';
 
-const ReportCardForm = ({ teacherId, studentClassId }) => {
+const ReportCardForm = () => {
     const [students, setStudents] = useState([]); // List of students in the class
     const [studentId, setStudentId] = useState(''); // Selected student
     const [evaluationType, setEvaluationType] = useState('FIRST_EVALUATION'); // Evaluation type
     const [assessments, setAssessments] = useState([{ skill: 'Speaking', rating: '' }, { skill: 'Listening', rating: '' },
     { skill: 'Reading', rating: '' }, { skill: 'Writing/grammar', rating: '' }, { skill: 'Effort', rating: '' },
-     { skill: 'Attendance', rating: '' }, { skill: 'Content Retention ', rating: '' },{ skill: 'Homework', rating: '' }
+    { skill: 'Attendance', rating: '' }, { skill: 'Content Retention ', rating: '' }, { skill: 'Homework', rating: '' }
     ]); // List of assessments
     const [OT, setOT] = useState(''); // Oral Test grade
     const [WT, setWT] = useState(''); // Written Test grade
-    const classID = useParams();
-    const {token} = useAuthContext();
+    const { classId } = useParams();
+    const { token } = useAuthContext();
 
 
     // Fetch students in the selected class
     useEffect(() => {
         const fetchStudents = async () => {
-            const response = await ClassesAPI.listStudentsInClass(classID, token);
+            const response = await ClassesAPI.listStudentsInClass(classId, token);
             if (response.status === HttpStatus.OK) {
                 setStudents(response.data);
             } else {
@@ -34,42 +34,34 @@ const ReportCardForm = ({ teacherId, studentClassId }) => {
     }, [token]);
 
     // Handle form submission
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const reportCardDTO = {
             studentId,
-            studentClassId,
+            studentClassId: classId,
             evaluationType,
             assessments,
             OT: parseInt(OT, 10),
             WT: parseInt(WT, 10),
         };
 
-        axios.post('/api/report-cards', reportCardDTO)
-            .then(response => {
-                alert('Report card created successfully!');
-                // Clear form after submission
-                setStudentId('');
-                setEvaluationType('FIRST_EVALUATION');
-                setAssessments([{ skill: '', rating: '' }]);
-                setOT('');
-                setWT('');
-            })
-            .catch(error => {
-                console.error('Error creating report card', error);
-                alert('Failed to create report card.');
-            });
+        const response = await ClassesAPI.submitReportCard(reportCardDTO, token);
+        if (response.status === HttpStatus.OK) {
+            console.log('Report card submitted successfully');
+        } else {
+            console.error('Error submitting report card');
+        };
     };
 
     // Handle change in assessments
     const handleAssessmentChange = (index, field, value) => {
-        const newAssessments = [...assessments];
-        newAssessments[index][field] = value;
-        setAssessments(newAssessments);
+        const updatedAssessments = [...assessments];
+        updatedAssessments[index][field] = value;
+        setAssessments(updatedAssessments);
     };
 
-   
+
 
     return (
         <Card className='mb-2' style={{ padding: '20px', marginTop: '20px' }}>
@@ -100,7 +92,7 @@ const ReportCardForm = ({ teacherId, studentClassId }) => {
 
                 {/* Assessments */}
                 <h5>Assessments</h5>
-                                {assessments.map((assessment, index) => (
+                {assessments.map((assessment, index) => (
                     <Row key={index} className="mb-3">
                         <Col md={6}>
                             <Form.Group controlId={`skill-${index}`}>

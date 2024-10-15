@@ -94,6 +94,11 @@ export default function ClassDetailsScreen() {
             <div className="row">
                 <div className="col">
                     <h3>Enrolled Students</h3>
+                    <Link to={`/teacher/report-card-form/${id}`}>
+                                                <Button variant="primary" className="ms-2 mb-3">
+                                                    Submit Report Card
+                                                </Button>
+                                            </Link>
                     {classDetails.students && classDetails.students.length > 0 ? (
                         <Table striped bordered hover>
                             <thead>
@@ -117,11 +122,6 @@ export default function ClassDetailsScreen() {
                                             >
                                                 Unenroll
                                             </Button>
-                                            <Link to={`/teacher/report-card-form/${id}/${student.id}`}>
-                                                <Button variant="primary" className="ms-2">
-                                                    Report Card
-                                                </Button>
-                                            </Link>
                                         </td>
                                     </tr>
                                 ))}

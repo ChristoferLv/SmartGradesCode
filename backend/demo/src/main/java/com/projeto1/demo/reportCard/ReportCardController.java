@@ -32,9 +32,9 @@ public class ReportCardController {
         return reportCardService.addNewReportCard(reportCardDTO);
     }
 
-    @GetMapping("/{studentId}")
-    public ResponseEntity<List<ReportCard>> getReportCardsByStudentId(@PathVariable Long studentId) {
-        List<ReportCard> reportCards = reportCardService.listReportCardByUserId(studentId);
+    @GetMapping("/list-report-cards-from/{studentId}")
+    public ResponseEntity<List<ReportCardDTO>> getReportCardsByStudentId(@PathVariable Long studentId) {
+        List<ReportCardDTO> reportCards = reportCardService.listReportCardByUserId(studentId);
         if (reportCards.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
