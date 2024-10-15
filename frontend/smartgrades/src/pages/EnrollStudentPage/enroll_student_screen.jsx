@@ -53,6 +53,7 @@ export default function EnrollStudentsScreen() {
         const response = await ClassesAPI.enrollStudentInClass(enrollmentDTO, token);
         if (response.status === 200) {
             toast.success("Student enrolled successfully", { autoClose: 5000 });
+            setStudents(students.filter(student => student.id !== studentId));
         } else {
             toast.error("Error enrolling student", { autoClose: 5000 });
         }

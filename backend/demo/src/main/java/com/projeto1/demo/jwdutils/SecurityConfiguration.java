@@ -42,6 +42,7 @@ public class SecurityConfiguration {
         "/api/v1/classes/get-class-by-id",
         "/api/v1/classes/update-class",
         "/api/v1/classes/enroll",
+        "/api/v1/classes/get-enrolled-class"
 };
 
 

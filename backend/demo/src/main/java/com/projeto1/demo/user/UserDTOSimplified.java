@@ -1,5 +1,7 @@
 package com.projeto1.demo.user;
 
+import com.projeto1.demo.studentsClass.StudentClassDTOSimplified;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

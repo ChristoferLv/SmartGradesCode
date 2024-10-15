@@ -141,11 +141,70 @@ const enrollStudentInClass = async (values, jwt) => {
     }
 }
 
+const unenrollStudentInClass = async (values, jwt) => {
+    const url = `${BASE_URLv1}/classes/unenroll`;
+    var errorMessage;
+    try {
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${jwt}`
+            },
+            body: JSON.stringify(values)
+        }
+
+        const response = await fetch(url, options);
+
+        if (response.ok) {
+            const data = await response.json();
+            //AUTH_DEBUG && console.log("AuthAPI::getBookmarks(): ", data);
+            return new HttpResponse(HttpStatus.OK, data);
+        } else {
+            errorMessage = await response.json();
+            throw new Error("Error on Register()")
+        }
+    } catch (error) {
+        return new HttpResponse(HttpStatus.ERROR, errorMessage);
+    }
+}
+
+const getEnroledClassesOfStudent = async (id, jwt) => {
+    const url = `${BASE_URLv1}/classes/get-enrolled-class/${id}`
+    var errorMessage;
+    try {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${jwt}`
+            }
+        }
+
+        const response = await fetch(url, options);
+
+        if (response.ok) {
+            const data = await response.json();
+            //AUTH_DEBUG && console.log("AuthAPI::getBookmarks(): ", data);
+            return new HttpResponse(HttpStatus.OK, data);
+        } else {
+            errorMessage = await response.json();
+            throw new Error("Error on Register()")
+        }
+    } catch (error) {
+        return new HttpResponse(HttpStatus.ERROR, errorMessage);
+    }
+}
+
 
 export const ClassesAPI = {
     createClass,
     getClasses,
     getClassById,
     updateClass,
-    enrollStudentInClass
+    enrollStudentInClass,
+    unenrollStudentInClass,
+    getEnroledClassesOfStudent
 }
