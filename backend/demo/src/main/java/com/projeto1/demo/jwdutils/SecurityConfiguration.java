@@ -46,6 +46,8 @@ public class SecurityConfiguration {
         "/api/v1/classes/students-enrolled",
         "/api/v1/reportCard",
         "/api/v1/reportCard/list-report-cards-from",
+        "/api/v1/reportCard/get-report-card",
+        "/api/v1/reportCard/update-report-card",
 };
 
 

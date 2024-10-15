@@ -7,31 +7,44 @@ import { useAuthContext } from '../../contexts/AuthContext';
 import { HttpStatus } from '../../api/default';
 import { ReportCardAPI } from '../../api/reportCard';
 
-const ReportCardForm = () => {
-    const [students, setStudents] = useState([]); // List of students in the class
+const EditReportCard = () => {
     const [studentId, setStudentId] = useState(''); // Selected student
+    const [studentClassId, setStudentClassId] = useState(''); // Selected class
     const [evaluationType, setEvaluationType] = useState('FIRST_EVALUATION'); // Evaluation type
-    const [assessments, setAssessments] = useState([{ skill: 'Speaking', rating: '' }, { skill: 'Listening', rating: '' },
-    { skill: 'Reading', rating: '' }, { skill: 'Writing/grammar', rating: '' }, { skill: 'Effort', rating: '' },
-    { skill: 'Attendance', rating: '' }, { skill: 'Content Retention ', rating: '' }, { skill: 'Homework', rating: '' }
+    const [assessments, setAssessments] = useState([
+        { skill: 'Speaking', rating: '' },
+        { skill: 'Listening', rating: '' },
+        { skill: 'Reading', rating: '' },
+        { skill: 'Writing/grammar', rating: '' },
+        { skill: 'Effort', rating: '' },
+        { skill: 'Attendance', rating: '' },
+        { skill: 'Content Retention ', rating: '' },
+        { skill: 'Homework', rating: '' }
     ]); // List of assessments
     const [OT, setOT] = useState(''); // Oral Test grade
     const [WT, setWT] = useState(''); // Written Test grade
-    const { classId } = useParams();
+    const { reportCardId } = useParams();
     const { token } = useAuthContext();
 
-
-    // Fetch students in the selected class
+  
+    // Fetch report card data
     useEffect(() => {
-        const fetchStudents = async () => {
-            const response = await ClassesAPI.listStudentsInClass(classId, token);
+        const fetchReportCard = async () => {
+            const response = await ReportCardAPI.getReportCard(reportCardId, token);
             if (response.status === HttpStatus.OK) {
-                setStudents(response.data);
+                console.log('Report card data: ', response.data);
+                const reportCard = response.data;
+                setStudentId(reportCard.studentId);
+                setStudentClassId(reportCard.studentClassId);
+                setEvaluationType(reportCard.evaluationType);
+                setAssessments(reportCard.assessments);
+                setOT(reportCard.ot);
+                setWT(reportCard.wt);
             } else {
-                console.error('Error fetching students in class');
+                console.error('Error fetching report card data');
             }
         };
-        fetchStudents();
+        fetchReportCard();
     }, [token]);
 
     // Handle form submission
@@ -40,19 +53,20 @@ const ReportCardForm = () => {
 
         const reportCardDTO = {
             studentId,
-            studentClassId: classId,
+            reportCardId,
+            studentClassId,
             evaluationType,
             assessments,
             OT: parseInt(OT, 10),
             WT: parseInt(WT, 10),
         };
 
-        const response = await ReportCardAPI.submitReportCard(reportCardDTO, token);
+        const response = await ReportCardAPI.updateReportCard(reportCardId, reportCardDTO, token);
         if (response.status === HttpStatus.OK) {
             console.log('Report card submitted successfully');
         } else {
             console.error('Error submitting report card');
-        };
+        }
     };
 
     // Handle change in assessments
@@ -62,33 +76,23 @@ const ReportCardForm = () => {
         setAssessments(updatedAssessments);
     };
 
-
-
     return (
+        console.log('EditReportCard'),
         <Card className='mb-2' style={{ padding: '20px', marginTop: '20px' }}>
             <Form onSubmit={handleSubmit}>
-                <h1>Create Report Card</h1>
+                <h1>Edit Report Card</h1>
 
                 {/* Select Student */}
-                <Form.Group controlId="studentSelect" className="mb-3">
-                    <Form.Label>Select Student</Form.Label>
-                    <Form.Select value={studentId} onChange={(e) => setStudentId(e.target.value)} required>
-                        <option value="">Select a student...</option>
-                        {students.map(student => (
-                            <option key={student.id} value={student.id}>
-                                {student.name}
-                            </option>
-                        ))}
-                    </Form.Select>
-                </Form.Group>
+
 
                 {/* Evaluation Type */}
                 <Form.Group controlId="evaluationType" className="mb-3">
                     <Form.Label>Evaluation Type</Form.Label>
-                    <Form.Select value={evaluationType} onChange={(e) => setEvaluationType(e.target.value)} required>
-                        <option value="FIRST_EVALUATION">First Evaluation</option>
-                        <option value="FINAL_EVALUATION">Final Evaluation</option>
-                    </Form.Select>
+                    <Form.Control
+                        type="text"
+                        value={evaluationType === 'FIRST_EVALUATION' ? 'First Evaluation' : 'Final Evaluation'}
+                        readOnly
+                    />
                 </Form.Group>
 
                 {/* Assessments */}
@@ -151,11 +155,11 @@ const ReportCardForm = () => {
                 </Form.Group>
 
                 <Button variant="primary" type="submit">
-                    Submit Report Card
+                    Edit Report Card
                 </Button>
             </Form>
         </Card>
     );
 };
 
-export default ReportCardForm;
+export default EditReportCard;

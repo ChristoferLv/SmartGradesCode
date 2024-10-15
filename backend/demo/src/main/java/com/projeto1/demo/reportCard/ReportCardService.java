@@ -51,6 +51,23 @@ public class ReportCardService {
                 .collect(Collectors.toList());
     }
 
+    public ReportCardDTO getReportCardById(Long reportCardId) {
+        System.out.println("[ReportCard Service] getReportCardById " + reportCardId);
+        return reportCardRepository.findById(reportCardId)
+                .map(reportCard -> {
+                    return reportCardMapper.toDTO(reportCard);
+                })
+                .orElse(null);
+    }
+
+    public MessageResponseDTO updateReportCard(Long reportCardId, ReportCardDTO reportCardDTO) {
+        System.out.println("[ReportCard Service] updateReportCard " + reportCardId);
+        ReportCard reportCard = reportCardMapper.toModel(reportCardDTO);
+        reportCard.setId(reportCardId);
+        reportCardRepository.save(reportCard);
+        return MessageResponseDTO.builder().message("ReportCard updated with ID " + reportCard.getId()).build();
+    }
+
     public List<String> listAll() {
         System.out.println("[ReportCard Service] listAll\n");
         return reportCardRepository.findAll().stream()
