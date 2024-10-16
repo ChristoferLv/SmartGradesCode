@@ -13,9 +13,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.projeto1.demo.jwdutils.SecurityConfiguration;
+import com.projeto1.demo.reportCard.AcademicPeriod;
 import com.projeto1.demo.roles.ERole;
 import com.projeto1.demo.roles.RoleRepository;
 import com.projeto1.demo.roles.Roles;
+import com.projeto1.demo.studentsClass.StudentsClass;
+import com.projeto1.demo.studentsClass.StudentsClassRepository;
 import com.projeto1.demo.user.User;
 import com.projeto1.demo.user.UserRepository;
 
@@ -24,7 +27,8 @@ public class RoleDataLoader {
 
     @Bean
     @Transactional
-    public CommandLineRunner loadRoles(RoleRepository roleRepository, UserRepository userRepository) {
+    public CommandLineRunner loadRoles(RoleRepository roleRepository, UserRepository userRepository,
+            StudentsClassRepository stude) {
 
         return args -> {
             // Verificar se os papéis já existem e criar se não existirem
@@ -48,7 +52,6 @@ public class RoleDataLoader {
             } else {
                 adminRole = adminRoleOpt.get();
             }
-
 
             SecurityConfiguration sec = new SecurityConfiguration();
             // Verificar se o usuário admin já existe
@@ -131,6 +134,14 @@ public class RoleDataLoader {
             } else {
                 System.out.println("Usuário student já existe!");
             }
+
+            StudentsClass studentsClass = new StudentsClass();
+            studentsClass.setLevel("5A");
+            studentsClass.setPeriod(AcademicPeriod.builder().name("2024-2").build());
+            studentsClass.setClassGroup("A");
+            stude.save(studentsClass);
+            System.out.println("Class 1 criada com sucesso!");
+
 
         };
     }
