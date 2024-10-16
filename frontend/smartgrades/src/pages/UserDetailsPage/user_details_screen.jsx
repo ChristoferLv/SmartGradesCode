@@ -1,74 +1,63 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Container, Navbar, Row, Card, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Col, Container, Navbar, Row, Card, Button } from 'react-bootstrap'
 import Avatar from 'react-avatar'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars } from '@fortawesome/free-solid-svg-icons'
-import { HttpStatus } from "../../api/default";
 import { useNavigate, useParams } from 'react-router-dom'
 import { useAuthContext } from '../../contexts/AuthContext'
 import { UserAPI } from '../../api/users'
-import './user_details_screen.css'
+import { ReportCardAPI } from '../../api/reportCard' // New import for fetching report cards
 import { toast } from 'react-toastify'
 import { notify } from '../../toasts/toasts'
+import './user_details_screen.css'
+import { HttpStatus } from '../../api/default'
 import { ClassesAPI } from '../../api/studentClasses'
 
 const UserDetailsScreen = () => {
     const navigate = useNavigate()
     const { id } = useParams()
-    const { logged, user, token, refreshUserOnContext } = useAuthContext();
-    const [userInfo, setUserInfo] = useState(null);  // For storing fetched user information
-    const [enroledClasses, setEnroledClasses] = useState(null);
+    const { logged, user, token } = useAuthContext()
+    const [userInfo, setUserInfo] = useState(null) // For storing fetched user information
+    const [enroledClasses, setEnroledClasses] = useState(null)
+    const [reportCards, setReportCards] = useState(null) // State to store report cards
 
-    const notifyError = (texto) => toast.error(texto, { ...notifyError });
-    const notifySuccess = (texto) => toast.success(texto, { ...notifySuccess });
+    const notifyError = (texto) => toast.error(texto)
+    const notifySuccess = (texto) => toast.success(texto)
 
     useEffect(() => {
-        // Fetch user data on component mount
         const fetchUserData = async () => {
-            const response = await UserAPI.getUserById(id, token);
+            const response = await UserAPI.getUserById(id, token)
             if (response.status === HttpStatus.OK) {
-                setUserInfo(response.data);
+                setUserInfo(response.data)
             } else {
-                notifyError("Error fetching user information.");
+                notifyError("Error fetching user information.")
             }
-        };
-        fetchUserData();
-    }, [token, user]);
+        }
+        fetchUserData()
+    }, [token, user])
 
     useEffect(() => {
-        console.log("CHAMADO");
         const fetchEnroledClasses = async () => {
-            const response = await ClassesAPI.getEnroledClassesOfStudent(id, token);
-            console.log(response);
+            const response = await ClassesAPI.getEnroledClassesOfStudent(id, token)
             if (response.status === HttpStatus.OK) {
-                setEnroledClasses(response.data);
+                setEnroledClasses(response.data)
             } else {
-                notifyError("Error fetching enroled classes.");
+                notifyError("Error fetching enroled classes.")
             }
-        };
-        fetchEnroledClasses();
-    }, [userInfo]);
-
-    const handleEditClick = () => {
-        navigate(`/teacher/edit-user/${id}`);  // Navigate to the edit screen
-    }
-
-    const handleEmitCertificate = async () => {
-        // Example logic to emit a certificate
-        const response = await UserAPI.emitCertificate(id, token);
-        if (response.status === HttpStatus.OK) {
-            notifySuccess("Certificate emitted successfully.");
-        } else {
-            notifyError("Failed to emit certificate.");
         }
-    }
+        fetchEnroledClasses()
+    }, [userInfo])
 
-    const date = (dateString) => {
-        const dateObj = new Date(dateString);
-        const month = dateObj.getMonth() + 1;
-        const year = dateObj.getFullYear();
-        return `Member since: ${month}/${year}`;
-    }
+    useEffect(() => {
+        const fetchReportCards = async () => {
+            const response = await ReportCardAPI.getReportCardsOfStudent(id, token) // Fetch report cards
+           console.log("fetchReportCards response: ", response)
+            if (response.status === HttpStatus.OK) {
+                setReportCards(response.data)
+            } else {
+                notifyError("Error fetching report cards.")
+            }
+        }
+        fetchReportCards()
+    }, [userInfo])
 
     return logged && userInfo ? (
         <>
@@ -95,7 +84,7 @@ const UserDetailsScreen = () => {
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
-    
+
             <Container>
                 <Row className="d-flex justify-content-center gap-4">
                     <Col className='pe-0' xs={3}>
@@ -128,23 +117,13 @@ const UserDetailsScreen = () => {
                             </Row>
                             <Card.Footer className="d-flex justify-content-center align-items-center">
                                 <p className="mt-0 mb-0 fs-6" style={{ color: '#727273' }}>
-                                    {date(userInfo.createdAt)}
+                                    Member since: {new Date(userInfo.createdAt).toLocaleDateString()}
                                 </p>
                             </Card.Footer>
                         </Card>
                     </Col>
+
                     <Col>
-                        <Row>
-                            <Col className='d-flex justify-content-between pe-0 ps-0'>
-                                {/* Buttons for teachers only */}
-                                <Button onClick={handleEditClick} className='btn btn-primary mb-1'>
-                                    Edit User Info
-                                </Button>
-                                <Button onClick={handleEmitCertificate} className='btn btn-secondary mb-1'>
-                                    Emit Certificate
-                                </Button>
-                            </Col>
-                        </Row>
                         <Row className="mb-4">
                             <Card style={{ padding: '16px' }}>
                                 <Row className="mb-3">
@@ -160,15 +139,9 @@ const UserDetailsScreen = () => {
                                             <ul>
                                                 {enroledClasses.map((studentClass) => (
                                                     <li key={studentClass.id} style={{ color: '#727273' }}>
-                                                        <p className="mb-1">
-                                                            <strong>Level:</strong> {studentClass.level}
-                                                        </p>
-                                                        <p className="mb-1">
-                                                            <strong>Period:</strong> {studentClass.period.name}
-                                                        </p>
-                                                        <p className="mb-1">
-                                                            <strong>Class Group:</strong> {studentClass.classGroup}
-                                                        </p>
+                                                        <p className="mb-1"><strong>Level:</strong> {studentClass.level}</p>
+                                                        <p className="mb-1"><strong>Period:</strong> {studentClass.period.name}</p>
+                                                        <p className="mb-1"><strong>Class Group:</strong> {studentClass.classGroup}</p>
                                                         <hr />
                                                     </li>
                                                 ))}
@@ -182,11 +155,45 @@ const UserDetailsScreen = () => {
                                 </Row>
                             </Card>
                         </Row>
+
+                        {/* New section for displaying report cards */}
+                        <Row className="mb-4">
+                            <Card style={{ padding: '16px' }}>
+                                <Row className="mb-3">
+                                    <Col className="d-flex justify-content-between align-items-center">
+                                        <h1 className="fw-bold fs-5" style={{ color: '#727273' }}>
+                                            Report Cards
+                                        </h1>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col>
+                                        {reportCards && reportCards.length > 0 ? (
+                                            <ul>
+                                                {reportCards.map((reportCard) => (
+                                                    <li key={reportCard.id} style={{ color: '#727273' }}>
+                                                        <p className="mb-1"><strong>Evaluation Type:</strong> {reportCard.evaluationType}</p>
+                                                        <p className="mb-1"><strong>Final Grade:</strong> {reportCard.finalGrade}</p>
+                                                        <p className="mb-1"><strong>OT:</strong> {reportCard.ot}</p>
+                                                        <p className="mb-1"><strong>WT:</strong> {reportCard.wt}</p>
+                                                        <hr />
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        ) : (
+                                            <p className="mt-0 mb-0 fs-6" style={{ color: '#727273' }}>
+                                                No report cards available.
+                                            </p>
+                                        )}
+                                    </Col>
+                                </Row>
+                            </Card>
+                        </Row>
                     </Col>
                 </Row>
             </Container>
         </>
-    ) : <></>
-}    
+    ) : null
+}
 
-export default UserDetailsScreen;
+export default UserDetailsScreen

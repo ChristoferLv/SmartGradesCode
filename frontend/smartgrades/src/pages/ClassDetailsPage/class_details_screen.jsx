@@ -74,9 +74,9 @@ export default function ClassDetailsScreen() {
                     <Button
                         className="ms-3"
                         variant="success"
-                        onClick={() => navigate(`/teacher/enroll-student/${id}`)}
+                        onClick={() => navigate(`/teacher/edit-class/${id}`)}
                     >
-                        Enroll Students
+                        Edit Class
                     </Button>
                 </div>
             </div>
@@ -88,6 +88,16 @@ export default function ClassDetailsScreen() {
                     <p><strong>Period:</strong> {classDetails.period.name}</p>
                     <p><strong>Class Group:</strong> {classDetails.classGroup}</p>
                     <p><strong>State:</strong> {classDetails.state === 1 ? 'ACTIVE' : 'FINISHED'}</p>
+                    <div className="col-auto">
+                        <Button
+                            className='ms-2'
+                            variant="primary"
+                            onClick={() => navigate(`/teacher/enroll-student/${id}`)}
+                        >
+                            Enroll Students
+                        </Button>
+
+                    </div>
                 </div>
             </div>
 
@@ -95,10 +105,10 @@ export default function ClassDetailsScreen() {
                 <div className="col">
                     <h3>Enrolled Students</h3>
                     <Link to={`/teacher/report-card-form/${id}`}>
-                                                <Button variant="primary" className="ms-2 mb-3">
-                                                    Submit Report Card
-                                                </Button>
-                                            </Link>
+                        <Button variant="primary" className="ms-2 mb-3">
+                            Submit Report Card
+                        </Button>
+                    </Link>
                     {classDetails.students && classDetails.students.length > 0 ? (
                         <Table striped bordered hover>
                             <thead>
