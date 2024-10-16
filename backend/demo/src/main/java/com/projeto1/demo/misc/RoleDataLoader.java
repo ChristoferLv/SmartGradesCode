@@ -138,7 +138,8 @@ public class RoleDataLoader {
             StudentsClass studentsClass = new StudentsClass();
             studentsClass.setLevel("5A");
             studentsClass.setPeriod(AcademicPeriod.builder().name("2024-2").build());
-            studentsClass.setClassGroup("A");
+            studentsClass.setClassGroup("AA");
+            studentsClass.setState(1);
             stude.save(studentsClass);
             System.out.println("Class 1 criada com sucesso!");
 

@@ -25,7 +25,7 @@ const submitReportCard = async (reportCardDTO, jwt) => {
     }
 }
 
-const getReportCardOfStudent = async (studentId, jwt) => {
+const getReportCardsOfStudent = async (studentId, jwt) => {
     const url = `${BASE_URLv1}/reportCard/list-report-cards-from/${studentId}`;
     try {
         const options = {
@@ -100,7 +100,7 @@ const updateReportCard = async (reportCardId, reportCardDTO, jwt) => {
 
 export const ReportCardAPI = {
     submitReportCard,
-    getReportCardOfStudent,
+    getReportCardsOfStudent,
     getReportCard,
     updateReportCard,
 }

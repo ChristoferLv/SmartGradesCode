@@ -123,7 +123,7 @@ export default function EditClassScreen() {
                     <div className="col">
                         <p className="fw-bold fs-4 ms-1 mt-5">Edit Class</p>
                     </div>
-                    <div className="col-auto">
+                    {/* <div className="col-auto">
                         <Button
                             className="ms-3 mt-5"
                             variant="success"
@@ -132,7 +132,7 @@ export default function EditClassScreen() {
                         >
                             Enrol Students
                         </Button>
-                    </div>
+                    </div> */}
                 </div>
             </div>
 
@@ -215,8 +215,8 @@ export default function EditClassScreen() {
                             </button>
                         </div>
                         <div className="col-auto text-end">
-                            <button className="btn btn-danger" onClick={() => navigate('/')}>
-                                Cancel
+                            <button className="btn btn-danger" onClick={() => navigate("/teacher/class-details/"+id)}>
+                                Back
                             </button>
                         </div>
                     </div>
