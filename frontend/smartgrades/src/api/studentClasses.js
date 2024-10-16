@@ -1,7 +1,6 @@
 import { AUTH_DEBUG, BASE_URLv1, HttpResponse, HttpStatus } from "./default"
 
 const createClass = async (body, jwt) => {
-    console.log("ClassesAPI::createClass() body: ", body)
     var errorMessage;
     try {
         const url = `${BASE_URLv1}/classes`
@@ -14,13 +13,13 @@ const createClass = async (body, jwt) => {
             body: JSON.stringify(body), // Convert body to JSON
         }
         const response = await fetch(url, options)
+        AUTH_DEBUG && console.log("ClassesAPI::createClass() response: ", response)
         if (response.ok) {
-            console.log("ClassesAPI::createClass() response: ", response)
             const data = await response.json()
             return new HttpResponse(HttpStatus.OK, data)
         } else {
             errorMessage = await response.json();
-            throw new Error("Error on Register()")
+            throw new Error("Error on createClass()")
         }
     } catch (error) {
         return new HttpResponse(HttpStatus.ERROR, errorMessage);
@@ -44,11 +43,11 @@ const getClasses = async (jwt) => {
 
         if (response.ok) {
             const data = await response.json();
-            //AUTH_DEBUG && console.log("AuthAPI::getBookmarks(): ", data);
+            AUTH_DEBUG && console.log("ClassesAPI::getClasses(): ", data);
             return new HttpResponse(HttpStatus.OK, data);
         } else {
             errorMessage = await response.json();
-            throw new Error("Error on Register()")
+            throw new Error("Error on getClasses()")
         }
     } catch (error) {
         return new HttpResponse(HttpStatus.ERROR, errorMessage);
@@ -72,11 +71,11 @@ const getClassById = async (id, jwt) => {
 
         if (response.ok) {
             const data = await response.json();
-            //AUTH_DEBUG && console.log("AuthAPI::getBookmarks(): ", data);
+            AUTH_DEBUG && console.log("ClassesAPI::getClassById(): ", data);
             return new HttpResponse(HttpStatus.OK, data);
         } else {
             errorMessage = await response.json();
-            throw new Error("Error on Register()")
+            throw new Error("Error on getClassById()")
         }
     } catch (error) {
         return new HttpResponse(HttpStatus.ERROR, errorMessage);
@@ -101,11 +100,11 @@ const updateClass = async (id, formValues, jwt) => {
 
         if (response.ok) {
             const data = await response.json();
-            //AUTH_DEBUG && console.log("AuthAPI::getBookmarks(): ", data);
+            AUTH_DEBUG && console.log("ClassesAPI::getupdateClass(): ", data);
             return new HttpResponse(HttpStatus.OK, data);
         } else {
             errorMessage = await response.json();
-            throw new Error("Error on Register()")
+            throw new Error("Error on updateClass()")
         }
     } catch (error) {
         return new HttpResponse(HttpStatus.ERROR, errorMessage);
@@ -130,11 +129,11 @@ const enrollStudentInClass = async (values, jwt) => {
 
         if (response.ok) {
             const data = await response.json();
-            //AUTH_DEBUG && console.log("AuthAPI::getBookmarks(): ", data);
+            AUTH_DEBUG && console.log("ClassesAPI::enrollStudentInClass(): ", data);
             return new HttpResponse(HttpStatus.OK, data);
         } else {
             errorMessage = await response.json();
-            throw new Error("Error on Register()")
+            throw new Error("Error on enrollStudentInClass()")
         }
     } catch (error) {
         return new HttpResponse(HttpStatus.ERROR, errorMessage);
@@ -159,11 +158,11 @@ const unenrollStudentInClass = async (values, jwt) => {
 
         if (response.ok) {
             const data = await response.json();
-            //AUTH_DEBUG && console.log("AuthAPI::getBookmarks(): ", data);
+            AUTH_DEBUG && console.log("ClassesAPI::unenrollStudentInClass(): ", data);
             return new HttpResponse(HttpStatus.OK, data);
         } else {
             errorMessage = await response.json();
-            throw new Error("Error on Register()")
+            throw new Error("Error on unenrollStudentInClass()")
         }
     } catch (error) {
         return new HttpResponse(HttpStatus.ERROR, errorMessage);
@@ -187,11 +186,11 @@ const getEnroledClassesOfStudent = async (id, jwt) => {
 
         if (response.ok) {
             const data = await response.json();
-            //AUTH_DEBUG && console.log("AuthAPI::getBookmarks(): ", data);
+            AUTH_DEBUG && console.log("ClassesAPI::getEnroledClassesOfStudent(): ", data);
             return new HttpResponse(HttpStatus.OK, data);
         } else {
             errorMessage = await response.json();
-            throw new Error("Error on Register()")
+            throw new Error("Error on getEnroledClassesOfStudent()")
         }
     } catch (error) {
         return new HttpResponse(HttpStatus.ERROR, errorMessage);
@@ -214,7 +213,7 @@ const listStudentsInClass = async (classId, jwt) => {
 
         if (response.ok) {
             const data = await response.json(); // Parse the response as JSON
-            AUTH_DEBUG && console.log("listStudentsInClass: ", data); // Debugging log to check the response
+            AUTH_DEBUG && console.log("ClassesAPI::getEnroledClassesOfStudent(): ", data); // Debugging log to check the response
             return new HttpResponse(HttpStatus.OK, data); // Assuming you have HttpResponse to handle responses
         } else {
             throw new Error("Error fetching students in the class");

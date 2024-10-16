@@ -49,7 +49,6 @@ const UserDetailsScreen = () => {
     useEffect(() => {
         const fetchReportCards = async () => {
             const response = await ReportCardAPI.getReportCardsOfStudent(id, token) // Fetch report cards
-           console.log("fetchReportCards response: ", response)
             if (response.status === HttpStatus.OK) {
                 setReportCards(response.data)
             } else {
@@ -164,6 +163,13 @@ const UserDetailsScreen = () => {
                                         <h1 className="fw-bold fs-5" style={{ color: '#727273' }}>
                                             Report Cards
                                         </h1>
+                                        <Button
+                                            className='ms-2'
+                                            variant='secondary'
+                                            onClick={() => navigate(`/user/see-report-cards/${id}`)}
+                                        >
+                                            See all report cards
+                                        </Button>
                                     </Col>
                                 </Row>
                                 <Row>

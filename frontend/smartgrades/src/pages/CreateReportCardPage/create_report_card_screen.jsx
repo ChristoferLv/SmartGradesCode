@@ -17,8 +17,9 @@ const ReportCardForm = () => {
     ]); // List of assessments
     const [OT, setOT] = useState(''); // Oral Test grade
     const [WT, setWT] = useState(''); // Written Test grade
+    const [comments, setComments] = useState(''); // Comments
     const { classId } = useParams();
-    const { token } = useAuthContext();
+    const { user, token } = useAuthContext();
 
 
     // Fetch students in the selected class
@@ -45,9 +46,13 @@ const ReportCardForm = () => {
             assessments,
             OT: parseInt(OT, 10),
             WT: parseInt(WT, 10),
+            comments,
+            teacherId: user.id
         };
 
         const response = await ReportCardAPI.submitReportCard(reportCardDTO, token);
+        console.log("teacherid", reportCardDTO.teacherId);
+        console.log("ReportCardAPI.submitReportCard", JSON.stringify(reportCardDTO));
         if (response.status === HttpStatus.OK) {
             console.log('Report card submitted successfully');
         } else {
@@ -150,6 +155,15 @@ const ReportCardForm = () => {
                     />
                 </Form.Group>
 
+                               <Form.Group controlId="comments" className="mb-3">
+                    <Form.Label>Comments</Form.Label>
+                    <Form.Control
+                        as="textarea"
+                        value={comments}
+                        onChange={(e) => setComments(e.target.value)}
+                        required
+                    />
+                </Form.Group>
                 <Button variant="primary" type="submit">
                     Submit Report Card
                 </Button>

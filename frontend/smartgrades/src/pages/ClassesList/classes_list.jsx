@@ -24,7 +24,6 @@ const ClassesListPage = () => {
         try {
             const responseCourses = await ClassesAPI.getClasses(token)
             if (responseCourses.status === HttpStatus.OK) {
-                console.log(responseCourses)
                 setData(responseCourses.data)
                 //const pages = Math.ceil(responseCourses.data.count / pageSize)
                 //setAmountPages(pages)

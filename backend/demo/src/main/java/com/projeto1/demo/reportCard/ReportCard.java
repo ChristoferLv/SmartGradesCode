@@ -57,6 +57,11 @@ public class ReportCard {
     @Column(nullable = false)
     private Integer finalGrade; // Final grade for the evaluation
 
+    @Column(nullable = false)
+    private String comments; // Comments about the student
+
+    @Column(nullable = false)
+    private String teacherName; // Teacher ID
     // Getters and Setters
 }
 
