@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,11 +35,32 @@ public class ReportCardController {
 
     @GetMapping("/list-report-cards-from/{studentId}")
     public ResponseEntity<List<ReportCardDTO>> getReportCardsByStudentId(@PathVariable Long studentId) {
+        System.out.println("[ReportCard Controller] getReportCardsByStudentId " + studentId);
         List<ReportCardDTO> reportCards = reportCardService.listReportCardByUserId(studentId);
         if (reportCards.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(reportCards);
+    }
+
+    @GetMapping("get-report-card/{reportCardId}")
+    public ResponseEntity<ReportCardDTO> getReportCardById(@PathVariable Long reportCardId) {
+        System.out.println("[ReportCard Controller] getReportCardById " + reportCardId);
+        ReportCardDTO reportCard = reportCardService.getReportCardById(reportCardId);
+        if (reportCard == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(reportCard);
+    }
+
+    @PutMapping("update-report-card/{reportCardId}")
+    public ResponseEntity<MessageResponseDTO> updateReportCard(@PathVariable Long reportCardId, @RequestBody @Valid ReportCardDTO reportCardDTO) {
+       System.out.println("[ReportCard Controller] updateReportCard " + reportCardId);
+        MessageResponseDTO messageResponse = reportCardService.updateReportCard(reportCardId, reportCardDTO);
+        if (messageResponse == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(messageResponse);
     }
 
     @GetMapping()

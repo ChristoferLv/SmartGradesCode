@@ -225,30 +225,7 @@ const listStudentsInClass = async (classId, jwt) => {
     }
 }
 
-const submitReportCard = async (reportCardDTO, jwt) => {
-    const url = `${BASE_URLv1}/reportCard`;
-    try {
-        const options = {
-            method: 'POST',
-            headers: {
-                Authorization: `Bearer ${jwt}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(reportCardDTO),
-        };
-        const response = await fetch(url, options);
-        console.log("submitReportCard response: ", response)
-        if (response.ok) {
-            const data = await response.json();
-            return new HttpResponse(HttpStatus.OK, data);
-        } else {
-            throw new Error("Error submitting report card");
-        }
-    } catch (error) {
-        console.log("submitReportCard Error: ", error);
-        return new HttpResponse(HttpStatus.ERROR, null);
-    }
-}
+
 
 
 
@@ -261,5 +238,4 @@ export const ClassesAPI = {
     unenrollStudentInClass,
     getEnroledClassesOfStudent,
     listStudentsInClass,
-    submitReportCard
 }

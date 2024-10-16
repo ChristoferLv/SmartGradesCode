@@ -103,7 +103,7 @@ export default function EnrollStudentsScreen() {
 
                 <div className="row mt-3">
                     <div className="col-auto text-end">
-                        <Button variant="danger" onClick={() => navigate('/')}>Cancel</Button>
+                        <Button variant="danger" onClick={() => navigate(`/teacher/class-details/${id}`)}>Cancel</Button>
                     </div>
                 </div>
             </div>
