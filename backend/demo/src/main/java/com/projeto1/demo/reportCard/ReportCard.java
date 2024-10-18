@@ -35,33 +35,29 @@ public class ReportCard {
 
     @ManyToOne
     @JoinColumn(name = "student_id", nullable = false)
-    private User student; // Entity reference to the student
+    private User student; // Reference to student
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private EvaluationType evaluationType; // FIRST_EVALUATION or FINAL_EVALUATION
+    private int evaluationType; // FIRST_EVALUATION or FINAL_EVALUATION
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "reportCard", orphanRemoval = true)
     private List<Assessment> assessments = new ArrayList<>(); // Assessments tied to the report card
 
     @ManyToOne
     @JoinColumn(name = "students_class_id", nullable = false)
-    private StudentsClass studentClass; // Entity reference to the student class
+    private StudentsClass studentClass; // Reference to student class
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "reportCard", orphanRemoval = true)
+    private List<Evaluation> evaluation = new ArrayList<>(); // One-to-many relation with Evaluation
+
+    @Column
+    private Integer finalAverage;
 
     @Column(nullable = false)
-    private Integer OT; // Oral Test grade
+    private String comments;
 
     @Column(nullable = false)
-    private Integer WT; // Written Test grade
+    private String teacherName;
 
-    @Column(nullable = false)
-    private Integer finalGrade; // Final grade for the evaluation
-
-    @Column(nullable = false)
-    private String comments; // Comments about the student
-
-    @Column(nullable = false)
-    private String teacherName; // Teacher ID
     // Getters and Setters
 }
-
