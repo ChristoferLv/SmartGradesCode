@@ -1,6 +1,7 @@
 package com.projeto1.demo.reportCard;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -40,11 +41,11 @@ public class ReportCardService {
         ReportCard reportCard = reportCardMapper.toModel(reportCardDTO);
         User teacher = userRepository.findById(reportCardDTO.getTeacherId()).orElse(null);
         reportCard.setTeacherName(teacher.getName());
-    
+
         // Filtrar avaliações com base no tipo de avaliação do boletim
         EvaluationDTO evalDTO = reportCardDTO.getEvaluation().get(0);
         List<Evaluation> evaluations = new ArrayList<>();
-    
+
         if (reportCardDTO.getEvaluationType() == EvaluationType.FIRST_EVALUATION.getEval()) {
             // Create the first evaluation and associate it with the report card
             Evaluation eval = Evaluation.builder()
@@ -54,24 +55,25 @@ public class ReportCardService {
                     .build();
             evaluations.add(eval);
         }
-    
+
         if (reportCardDTO.getEvaluationType() == EvaluationType.FINAL_EVALUATION.getEval()) {
-            // Find the first evaluation report card and add the first evaluation to this report card
+            // Find the first evaluation report card and add the first evaluation to this
+            // report card
             Optional<ReportCard> firstEvalReportCard = reportCardRepository
                     .findByStudentIdAndStudentClassId(reportCardDTO.getStudentId(), reportCardDTO.getStudentClassId())
                     .stream()
                     .filter(rc -> rc.getEvaluationType() == EvaluationType.FIRST_EVALUATION.getEval())
                     .findFirst();
-    
+
             if (firstEvalReportCard.isPresent()) {
                 // Reuse the first evaluation for the final report card
                 evaluations.add(firstEvalReportCard.get().getEvaluation().get(0));
-    
+
                 // Create the second (final) evaluation for the final report card
                 Evaluation secondEvaluation = reportCardMapper.toModel(evalDTO);
                 secondEvaluation.setFinalGrade(Math.round((evalDTO.getOT() + evalDTO.getWT()) / 2));
                 evaluations.add(secondEvaluation);
-    
+
                 // Calculate final average from both evaluations
                 double finalAverage = evaluations.stream()
                         .mapToInt(Evaluation::getFinalGrade)
@@ -80,9 +82,9 @@ public class ReportCardService {
                 reportCard.setFinalAverage(Math.round((int) finalAverage));
             }
         }
-    
+
         reportCard.setEvaluation(evaluations);
-    
+
         // Convert and save assessments
         List<Assessment> assessments = reportCardDTO.getAssessments().stream()
                 .map(assessmentDTO -> {
@@ -93,15 +95,15 @@ public class ReportCardService {
                     return assessment;
                 })
                 .collect(Collectors.toList());
-    
+
         reportCard.setAssessments(assessments);
-    
-        // Save the ReportCard (which will automatically save evaluations and assessments due to CascadeType.ALL)
+
+        // Save the ReportCard (which will automatically save evaluations and
+        // assessments due to CascadeType.ALL)
         reportCardRepository.save(reportCard);
-    
+
         return MessageResponseDTO.builder().message("ReportCard created with ID " + reportCard.getId()).build();
     }
-    
 
     public List<ReportCardDTO> listReportCardByUserId(Long studentId) {
         System.out.println("[ReportCard Service] listReportCardByUserId " + studentId);
@@ -145,87 +147,91 @@ public class ReportCardService {
     public MessageResponseDTO updateReportCard(Long reportCardId, ReportCardDTO reportCardDTO) {
         System.out.println("[ReportCard Service] updateReportCard " + reportCardId);
 
-        // // Fetch the existing report card from the database
-        // ReportCard existingReportCard = reportCardRepository.findById(reportCardId)
-        //         .orElse(null);
-        // if (existingReportCard == null) {
-        //     return MessageResponseDTO.builder()
-        //             .message("First report card not found with ID " + reportCardId)
-        //             .build();
-        // }
+        // Fetch the existing report card from the database
+        ReportCard existingReportCard = reportCardRepository.findById(reportCardId)
+                .orElse(null);
+        if (existingReportCard == null) {
+            return MessageResponseDTO.builder()
+                    .message("Report card not found with ID " + reportCardId)
+                    .build();
+        }
 
-        // // Update the basic fields of the report card
-        // existingReportCard.setEvaluationType(reportCardDTO.getEvaluationType());
-        // existingReportCard.setComments(reportCardDTO.getComments());
+        // Update basic fields of the report card
+        existingReportCard.setEvaluationType(reportCardDTO.getEvaluationType());
+        existingReportCard.setComments(reportCardDTO.getComments());
 
-        // // Handle evaluations (OT, WT, and final grade)
-        // List<Evaluation> existingEvaluations = existingReportCard.getEvaluation();
-        // List<EvaluationDTO> newEvaluationDTOs = reportCardDTO.getEvaluation();
+        // Handle evaluations (OT, WT, and final grade)
+        List<Evaluation> existingEvaluations = existingReportCard.getEvaluation();
+        List<EvaluationDTO> newEvaluationDTOs = reportCardDTO.getEvaluation();
 
-        // // Clear existing evaluations and set new ones
-        // existingEvaluations.clear();
-        // for (EvaluationDTO newEvalDTO : newEvaluationDTOs) {
-        //     Evaluation newEval = Evaluation.builder()
-        //             .OT(newEvalDTO.getOT())
-        //             .WT(newEvalDTO.getWT())
-        //             .finalGrade(Math.round((newEvalDTO.getOT() + newEvalDTO.getWT()) / 2))
-        //             .evaluationType(newEvalDTO.getEvaluationType())
-        //             .reportCard(existingReportCard)
-        //             .build();
-        //     existingEvaluations.add(newEval);
-        // }
+        Map<Long, Evaluation> existingEvaluationMap = existingEvaluations.stream()
+                .collect(Collectors.toMap(Evaluation::getId, eval -> eval));
 
-        // // If it's a final evaluation, recalculate the final average considering past
-        // // evaluations
-        // if (reportCardDTO.getEvaluationType() == EvaluationType.FINAL_EVALUATION.getEval()) {
-        //     Optional<Evaluation> firstEvaluation = evaluationsRepository.findById(reportCardDTO.getId());
-        //     if (firstEvaluation.isPresent()) {
-        //         existingEvaluations.add(firstEvaluation.get());
+        for (EvaluationDTO newEvalDTO : newEvaluationDTOs) {
+            if (newEvalDTO.getId() != null && existingEvaluationMap.containsKey(newEvalDTO.getId())) {
+                // Update existing evaluation
+                Evaluation existingEvaluation = existingEvaluationMap.get(newEvalDTO.getId());
+                existingEvaluation.setOT(newEvalDTO.getOT());
+                existingEvaluation.setWT(newEvalDTO.getWT());
+                existingEvaluation.setFinalGrade(Math.round((newEvalDTO.getOT() + newEvalDTO.getWT()) / 2));
+                existingEvaluation.setEvaluationType(newEvalDTO.getEvaluationType());
+            } else {
+                // Add new evaluation if it doesn't exist
+                Evaluation newEvaluation = Evaluation.builder()
+                        .OT(newEvalDTO.getOT())
+                        .WT(newEvalDTO.getWT())
+                        .finalGrade(Math.round((newEvalDTO.getOT() + newEvalDTO.getWT()) / 2))
+                        .evaluationType(newEvalDTO.getEvaluationType())
+                        .reportCards(Arrays.asList(existingReportCard)) // Add the current report card
+                        .build();
+                existingEvaluations.add(newEvaluation);
+            }
+        }
 
-        //         // Recalculate the final average
-        //         double finalAverage = existingEvaluations.stream()
-        //                 .mapToInt(Evaluation::getFinalGrade)
-        //                 .average()
-        //                 .orElse(0);
-        //         existingReportCard.setFinalAverage(Math.round((int) finalAverage));
-        //     }
-        // }
+        // If it's a final evaluation, recalculate the final average considering past
+        // evaluations
+        if (reportCardDTO.getEvaluationType() == EvaluationType.FINAL_EVALUATION.getEval()) {
+            // Recalculate the final average
+            double finalAverage = existingEvaluations.stream()
+                    .mapToInt(Evaluation::getFinalGrade)
+                    .average()
+                    .orElse(0);
+            existingReportCard.setFinalAverage(Math.round((int) finalAverage));
+        }
 
-        // // Update the assessments
-        // List<Assessment> existingAssessments = existingReportCard.getAssessments();
-        // List<AssessmentDTO> newAssessments = reportCardDTO.getAssessments();
+        // Handle assessments (similar logic to evaluations)
+        List<Assessment> existingAssessments = existingReportCard.getAssessments();
+        List<AssessmentDTO> newAssessments = reportCardDTO.getAssessments();
 
-        // // Create a map of existing assessments for quick lookup by ID
-        // Map<Long, Assessment> existingAssessmentMap = existingAssessments.stream()
-        //         .collect(Collectors.toMap(Assessment::getId, assessment -> assessment));
+        Map<Long, Assessment> existingAssessmentMap = existingAssessments.stream()
+                .collect(Collectors.toMap(Assessment::getId, assessment -> assessment));
 
-        // // Update existing assessments or add new ones
-        // for (AssessmentDTO newAssessmentDTO : newAssessments) {
-        //     if (newAssessmentDTO.getId() != null && existingAssessmentMap.containsKey(newAssessmentDTO.getId())) {
-        //         // Update existing assessment
-        //         Assessment existingAssessment = existingAssessmentMap.get(newAssessmentDTO.getId());
-        //         existingAssessment.setSkill(newAssessmentDTO.getSkill());
-        //         existingAssessment.setRating(newAssessmentDTO.getRating());
-        //     } else {
-        //         // Add new assessment
-        //         Assessment newAssessment = new Assessment();
-        //         newAssessment.setSkill(newAssessmentDTO.getSkill());
-        //         newAssessment.setRating(newAssessmentDTO.getRating());
-        //         newAssessment.setReportCard(existingReportCard);
-        //         existingAssessments.add(newAssessment);
-        //     }
-        // }
+        for (AssessmentDTO newAssessmentDTO : newAssessments) {
+            if (newAssessmentDTO.getId() != null && existingAssessmentMap.containsKey(newAssessmentDTO.getId())) {
+                // Update existing assessment
+                Assessment existingAssessment = existingAssessmentMap.get(newAssessmentDTO.getId());
+                existingAssessment.setSkill(newAssessmentDTO.getSkill());
+                existingAssessment.setRating(newAssessmentDTO.getRating());
+            } else {
+                // Add new assessment
+                Assessment newAssessment = new Assessment();
+                newAssessment.setSkill(newAssessmentDTO.getSkill());
+                newAssessment.setRating(newAssessmentDTO.getRating());
+                newAssessment.setReportCard(existingReportCard);
+                existingAssessments.add(newAssessment);
+            }
+        }
 
-        // // Remove assessments that are no longer present in the updated report card
-        // existingAssessments.removeIf(existingAssessment -> newAssessments.stream()
-        //         .noneMatch(newAssessmentDTO -> newAssessmentDTO.getId() != null
-        //                 && newAssessmentDTO.getId().equals(existingAssessment.getId())));
+        // Remove assessments that are no longer present in the updated report card
+        existingAssessments.removeIf(existingAssessment -> newAssessments.stream()
+                .noneMatch(newAssessmentDTO -> newAssessmentDTO.getId() != null
+                        && newAssessmentDTO.getId().equals(existingAssessment.getId())));
 
-        // // Save the updated report card and its evaluations and assessments
-        // reportCardRepository.save(existingReportCard);
+        // Save the updated report card, evaluations, and assessments
+        reportCardRepository.save(existingReportCard);
 
         return MessageResponseDTO.builder()
-                .message("ReportCard updated with ID " + "existingReportCard.getId()")
+                .message("ReportCard updated with ID " + existingReportCard.getId())
                 .build();
     }
 

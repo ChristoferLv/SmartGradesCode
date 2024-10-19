@@ -6,7 +6,7 @@ import { ClassesAPI } from '../../api/studentClasses';
 import { useAuthContext } from '../../contexts/AuthContext';
 import { HttpStatus } from '../../api/default';
 import { ReportCardAPI } from '../../api/reportCard';
-import {notify} from '../../toasts/toasts';
+import { notify } from '../../toasts/toasts';
 
 const ReportCardForm = () => {
     const [students, setStudents] = useState([]); // List of students in the class
@@ -39,14 +39,14 @@ const ReportCardForm = () => {
     // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         // Map OT and WT to the evaluation structure
         const evaluation = [{
             OT: parseInt(OT, 10),
             WT: parseInt(WT, 10),
             evaluationType, // Pass the current evaluation type
         }];
-    
+
         // Create the report card DTO according to the new structure
         const reportCardDTO = {
             studentId,
@@ -57,13 +57,13 @@ const ReportCardForm = () => {
             comments,
             teacherId: user.id
         };
-    
+
         try {
             // Submit the report card to the API
             const response = await ReportCardAPI.submitReportCard(reportCardDTO, token);
             console.log("teacherId:", reportCardDTO.teacherId);
             console.log("ReportCardAPI.submitReportCard:", JSON.stringify(reportCardDTO));
-    
+
             if (response.status === HttpStatus.OK) {
                 notify.notifySuccess('Report card submitted successfully');
             } else {
@@ -74,7 +74,7 @@ const ReportCardForm = () => {
             notify.notifyError('An unexpected error occurred');
         }
     };
-    
+
 
     // Handle change in assessments
     const handleAssessmentChange = (index, field, value) => {
@@ -171,7 +171,7 @@ const ReportCardForm = () => {
                     />
                 </Form.Group>
 
-                               <Form.Group controlId="comments" className="mb-3">
+                <Form.Group controlId="comments" className="mb-3">
                     <Form.Label>Comments</Form.Label>
                     <Form.Control
                         as="textarea"

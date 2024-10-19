@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Col, Container, Row, Card, Spinner, Table } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+import { Col, Container, Row, Card, Spinner, Table, Button } from 'react-bootstrap';
+import { Link, useParams } from 'react-router-dom';
 import { useAuthContext } from '../../contexts/AuthContext';
 import { ReportCardAPI } from '../../api/reportCard';
 import { toast } from 'react-toastify';
@@ -48,6 +48,9 @@ const StudentReportCardsScreen = () => {
                             {reportCards.map((reportCard) => (
                                 <Col key={reportCard.id} className="mb-4">
                                     <Card className="p-4" style={{ maxWidth: '800px', margin: 'auto' }}>
+                                    <Link to={`/teacher/edit-report-card/${reportCard.id}`} style={{ position: 'absolute', top: '10px', right: '10px' }}>
+                <Button variant="secondary">Edit</Button>
+            </Link>
                                         <h2 className="text-center mb-4" style={{ color: 'black' }}>REPORT CARD</h2>
 
                                         {/* Student Information */}
