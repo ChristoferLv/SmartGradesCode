@@ -106,7 +106,7 @@ const ReportCardForm = () => {
                 {/* Evaluation Type */}
                 <Form.Group controlId="evaluationType" className="mb-3">
                     <Form.Label>Evaluation Type</Form.Label>
-                    <Form.Select value={evaluationType == 0 ? "First Evaluation" : "Second Evaluation"} onChange={(e) => setEvaluationType(e.target.value)} required>
+                    <Form.Select value={evaluationType} onChange={(e) => setEvaluationType(e.target.value)} required>
                         <option value={0}>First Evaluation</option>
                         <option value={1}>Final Evaluation</option>
                     </Form.Select>

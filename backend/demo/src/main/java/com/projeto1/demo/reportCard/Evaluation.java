@@ -1,5 +1,8 @@
 package com.projeto1.demo.reportCard;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hibernate.annotations.ManyToAny;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
@@ -12,6 +15,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
@@ -26,15 +30,15 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Evaluation {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "report_card_id", nullable = false) // This will create the foreign key column in Evaluation
+    @ManyToMany(mappedBy = "evaluation")
     @JsonIgnore
     @ToString.Exclude
-    private ReportCard reportCard;
+    private List<ReportCard> reportCards = new ArrayList<>();
 
     @Column(nullable = false)
     private Integer OT;
@@ -49,4 +53,3 @@ public class Evaluation {
 
     // Getters and Setters
 }
-

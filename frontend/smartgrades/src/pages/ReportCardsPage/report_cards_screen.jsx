@@ -44,7 +44,7 @@ const StudentReportCardsScreen = () => {
                     {loading ? (
                         <Spinner animation="border" variant="primary" />
                     ) : reportCards && reportCards.length > 0 ? (
-                        <Row className="g-3">
+                        <Col className="g-3">
                             {reportCards.map((reportCard) => (
                                 <Col key={reportCard.id} className="mb-4">
                                     <Card className="p-4" style={{ maxWidth: '800px', margin: 'auto' }}>
@@ -85,7 +85,7 @@ const StudentReportCardsScreen = () => {
                                             </tbody>
                                         </Table>
 
-                                        {/* Grades Table */}
+                                        {/* Language Assessment Table */}
                                         <Table bordered className="table-responsive w-100" style={{ tableLayout: 'fixed' }}>
                                             <thead>
                                                 <tr>
@@ -96,15 +96,34 @@ const StudentReportCardsScreen = () => {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td>First Evaluation</td>
-                                                    <td>{reportCard.ot || '-'}</td>
-                                                    <td>{reportCard.wt}</td>
-                                                    <td>{reportCard.finalGrade}</td>
-                                                </tr>
+                                                {reportCard.evaluation
+                                                    .filter(evaluation => evaluation.evaluationType === 0)
+                                                    .map((evaluation, index) => (
+                                                        <tr key={index}>
+                                                            <td>First Evaluation</td>
+                                                            <td>{evaluation.ot || '-'}</td>
+                                                            <td>{evaluation.wt}</td>
+                                                            <td>{evaluation.finalGrade}</td>
+                                                        </tr>
+                                                    ))}
+                                                {reportCard.evaluation
+                                                    .filter(evaluation => evaluation.evaluationType === 1)
+                                                    .map((evaluation, index) => (
+                                                        <tr key={index}>
+                                                            <td>Final Evaluation</td>
+                                                            <td>{evaluation.ot || '-'}</td>
+                                                            <td>{evaluation.wt}</td>
+                                                            <td>{evaluation.finalGrade}</td>
+                                                        </tr>
+                                                    ))}
+                                                {reportCard.evaluation.some(evaluation => evaluation.evaluationType === 1) && (
+                                                    <tr>
+                                                        <td className="text-end" colSpan="3"><strong>Final Average</strong></td>
+                                                        <td>{reportCard.finalAverage}</td>
+                                                    </tr>
+                                                )}
                                             </tbody>
                                         </Table>
-
                                         {/* Placeholder for teacher comment or other additional information */}
                                         <p className="mb-4">{reportCard.comments}</p>
 
@@ -113,7 +132,7 @@ const StudentReportCardsScreen = () => {
                                     </Card>
                                 </Col>
                             ))}
-                        </Row>
+                        </Col>
                     ) : (
                         <p style={{ color: '#727273' }}>
                             You do not have any report cards available.

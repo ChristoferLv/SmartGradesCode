@@ -15,6 +15,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
@@ -35,20 +37,25 @@ public class ReportCard {
 
     @ManyToOne
     @JoinColumn(name = "student_id", nullable = false)
-    private User student; // Reference to student
+    private User student;
 
     @Column(nullable = false)
-    private int evaluationType; // FIRST_EVALUATION or FINAL_EVALUATION
+    private int evaluationType;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "reportCard", orphanRemoval = true)
-    private List<Assessment> assessments = new ArrayList<>(); // Assessments tied to the report card
+    private List<Assessment> assessments = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "students_class_id", nullable = false)
-    private StudentsClass studentClass; // Reference to student class
+    private StudentsClass studentClass;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "reportCard", orphanRemoval = true)
-    private List<Evaluation> evaluation = new ArrayList<>(); // One-to-many relation with Evaluation
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+        name = "report_card_evaluation",
+        joinColumns = @JoinColumn(name = "report_card_id"),
+        inverseJoinColumns = @JoinColumn(name = "evaluation_id")
+    )
+    private List<Evaluation> evaluation = new ArrayList<>();
 
     @Column
     private Integer finalAverage;
