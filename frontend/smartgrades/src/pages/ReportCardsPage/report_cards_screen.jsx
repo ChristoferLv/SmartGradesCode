@@ -8,7 +8,7 @@ import { HttpStatus } from '../CreateCourse/api';
 
 const StudentReportCardsScreen = () => {
     const { id } = useParams(); // Assuming you pass student ID via URL
-    const { token } = useAuthContext(); // Auth context to get the token
+    const { token, user } = useAuthContext(); // Auth context to get the token
     const [reportCards, setReportCards] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -32,6 +32,9 @@ const StudentReportCardsScreen = () => {
         fetchReportCards();
     }, [id, token]);
 
+    const hasRole = (roleName) => {
+        return user.roles.some(role => role.name === roleName);
+    };
 
 
     return (
@@ -48,9 +51,9 @@ const StudentReportCardsScreen = () => {
                             {reportCards.map((reportCard) => (
                                 <Col key={reportCard.id} className="mb-4">
                                     <Card className="p-4" style={{ maxWidth: '800px', margin: 'auto' }}>
-                                    <Link to={`/teacher/edit-report-card/${reportCard.id}`} style={{ position: 'absolute', top: '10px', right: '10px' }}>
-                <Button variant="secondary">Edit</Button>
-            </Link>
+                                        {user && (hasRole("TEACHER") || hasRole("ADMIN")) && <Link to={`/teacher/edit-report-card/${reportCard.id}`} style={{ position: 'absolute', top: '10px', right: '10px' }}>
+                                            <Button variant="secondary">Edit</Button>
+                                        </Link>}
                                         <h2 className="text-center mb-4" style={{ color: 'black' }}>REPORT CARD</h2>
 
                                         {/* Student Information */}

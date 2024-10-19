@@ -94,11 +94,11 @@ const EditReportCard = () => {
 
     return (
         console.log('EditReportCard'),
-        
+
         <Card className='mb-2' style={{ padding: '20px', marginTop: '20px' }}>
-             <Link to={`/user/see-report-cards/${studentId}`} style={{ position: 'absolute', top: '10px', right: '10px' }}>
-            <Button variant="secondary">Back</Button>
-        </Link>
+            <Link to={`/user/see-report-cards/${studentId}`} style={{ position: 'absolute', top: '10px', right: '10px' }}>
+                <Button variant="secondary">Back</Button>
+            </Link>
             <Form onSubmit={handleSubmit}>
                 <h1>Edit Report Card</h1>
 
