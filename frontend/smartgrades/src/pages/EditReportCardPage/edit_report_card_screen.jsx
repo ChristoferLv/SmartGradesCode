@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Row, Col, Card } from 'react-bootstrap';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { ClassesAPI } from '../../api/studentClasses';
 import { useAuthContext } from '../../contexts/AuthContext';
 import { HttpStatus } from '../../api/default';
@@ -23,10 +23,12 @@ const EditReportCard = () => {
     ]); // List of assessments
     const [OT, setOT] = useState(''); // Oral Test grade
     const [WT, setWT] = useState(''); // Written Test grade
+    const [comments, setComments] = useState(''); // Comments
     const { reportCardId } = useParams();
     const { token } = useAuthContext();
+    const [evaluations, setEvaluations] = useState([]);
 
-  
+
     // Fetch report card data
     useEffect(() => {
         const fetchReportCard = async () => {
@@ -34,12 +36,16 @@ const EditReportCard = () => {
             if (response.status === HttpStatus.OK) {
                 console.log('Report card data: ', response.data);
                 const reportCard = response.data;
+                const temp = reportCard.evaluation;
+                console.log('temp', temp);
                 setStudentId(reportCard.studentId);
                 setStudentClassId(reportCard.studentClassId);
                 setEvaluationType(reportCard.evaluationType);
                 setAssessments(reportCard.assessments);
-                setOT(reportCard.ot);
-                setWT(reportCard.wt);
+                setEvaluations(reportCard.evaluation);
+                setOT(reportCard.evaluationType === 0 ? temp[0].ot : temp[1].ot);//
+                setWT(reportCard.evaluationType === 0 ? temp[0].wt : temp[1].wt);//
+                setComments(reportCard.comments);
             } else {
                 console.error('Error fetching report card data');
             }
@@ -51,15 +57,25 @@ const EditReportCard = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if (evaluationType == 0) {
+            evaluations[0].ot = OT;
+            evaluations[0].wt = WT;
+        } else {
+            evaluations[1].ot = OT;
+            evaluations[1].wt = WT;
+        }
+
         const reportCardDTO = {
             studentId,
             reportCardId,
             studentClassId,
             evaluationType,
             assessments,
-            OT: parseInt(OT, 10),
-            WT: parseInt(WT, 10),
+            evaluation: evaluations,
+            comments
         };
+
+        console.log('reportCardDTO', JSON.stringify(reportCardDTO));
 
         const response = await ReportCardAPI.updateReportCard(reportCardId, reportCardDTO, token);
         if (response.status === HttpStatus.OK) {
@@ -78,7 +94,11 @@ const EditReportCard = () => {
 
     return (
         console.log('EditReportCard'),
+
         <Card className='mb-2' style={{ padding: '20px', marginTop: '20px' }}>
+            <Link to={`/user/see-report-cards/${studentId}`} style={{ position: 'absolute', top: '10px', right: '10px' }}>
+                <Button variant="secondary">Back</Button>
+            </Link>
             <Form onSubmit={handleSubmit}>
                 <h1>Edit Report Card</h1>
 
@@ -90,7 +110,7 @@ const EditReportCard = () => {
                     <Form.Label>Evaluation Type</Form.Label>
                     <Form.Control
                         type="text"
-                        value={evaluationType === 'FIRST_EVALUATION' ? 'First Evaluation' : 'Final Evaluation'}
+                        value={evaluationType === 0 ? 'First Evaluation' : 'Final Evaluation'}
                         readOnly
                     />
                 </Form.Group>
@@ -151,6 +171,16 @@ const EditReportCard = () => {
                         required
                         min={0}
                         max={100}
+                    />
+                </Form.Group>
+
+                <Form.Group controlId="comments" className="mb-3">
+                    <Form.Label>Comments</Form.Label>
+                    <Form.Control
+                        as="textarea"
+                        value={comments}
+                        onChange={(e) => setComments(e.target.value)}
+                        required
                     />
                 </Form.Group>
 

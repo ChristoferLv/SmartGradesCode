@@ -15,6 +15,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
@@ -35,28 +37,34 @@ public class ReportCard {
 
     @ManyToOne
     @JoinColumn(name = "student_id", nullable = false)
-    private User student; // Entity reference to the student
+    private User student;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private EvaluationType evaluationType; // FIRST_EVALUATION or FINAL_EVALUATION
+    private int evaluationType;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "reportCard", orphanRemoval = true)
-    private List<Assessment> assessments = new ArrayList<>(); // Assessments tied to the report card
+    private List<Assessment> assessments = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "students_class_id", nullable = false)
-    private StudentsClass studentClass; // Entity reference to the student class
+    private StudentsClass studentClass;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+        name = "report_card_evaluation",
+        joinColumns = @JoinColumn(name = "report_card_id"),
+        inverseJoinColumns = @JoinColumn(name = "evaluation_id")
+    )
+    private List<Evaluation> evaluation = new ArrayList<>();
+
+    @Column
+    private Integer finalAverage;
 
     @Column(nullable = false)
-    private Integer OT; // Oral Test grade
+    private String comments;
 
     @Column(nullable = false)
-    private Integer WT; // Written Test grade
-
-    @Column(nullable = false)
-    private Integer finalGrade; // Final grade for the evaluation
+    private String teacherName;
 
     // Getters and Setters
 }
-

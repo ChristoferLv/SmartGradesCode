@@ -1,4 +1,4 @@
-import { BASE_URLv1, HttpResponse, HttpStatus } from "./default";
+import { AUTH_DEBUG, BASE_URLv1, HttpResponse, HttpStatus } from "./default";
 
 const submitReportCard = async (reportCardDTO, jwt) => {
     const url = `${BASE_URLv1}/reportCard`;
@@ -12,9 +12,9 @@ const submitReportCard = async (reportCardDTO, jwt) => {
             body: JSON.stringify(reportCardDTO),
         };
         const response = await fetch(url, options);
-        console.log("submitReportCard response: ", response)
         if (response.ok) {
             const data = await response.json();
+            AUTH_DEBUG && console.log("ReportCardsAPI::submitReportCard ", data);
             return new HttpResponse(HttpStatus.OK, data);
         } else {
             throw new Error("Error submitting report card");
@@ -35,9 +35,9 @@ const getReportCardsOfStudent = async (studentId, jwt) => {
             },
         };
         const response = await fetch(url, options);
-        console.log("getReportCardOfStudent response: ", response)
         if (response.ok) {
             const data = await response.json();
+            AUTH_DEBUG && console.log("ReportCardsAPI::getReportCardsOfStudent ", data);
             return new HttpResponse(HttpStatus.OK, data);
         } else {
             throw new Error("Error fetching report card");
@@ -58,9 +58,9 @@ const getReportCard = async (reportCardId, jwt) => {
             },
         };
         const response = await fetch(url, options);
-        console.log("getReportCard response: ", response)
         if (response.ok) {
             const data = await response.json();
+            AUTH_DEBUG && console.log("ReportCardsAPI::getReportCard ", data);
             return new HttpResponse(HttpStatus.OK, data);
         } else {
             throw new Error("Error fetching report card");
@@ -82,11 +82,10 @@ const updateReportCard = async (reportCardId, reportCardDTO, jwt) => {
             },
             body: JSON.stringify(reportCardDTO),
         };
-        console.log("updateReportCard options: ", options.body)
         const response = await fetch(url, options);
-        console.log("updateReportCard response: ", response)
         if (response.ok) {
             const data = await response.json();
+            AUTH_DEBUG && console.log("ReportCardsAPI::updateReportCard ", data);
             return new HttpResponse(HttpStatus.OK, data);
         } else {
             throw new Error("Error updating report card");

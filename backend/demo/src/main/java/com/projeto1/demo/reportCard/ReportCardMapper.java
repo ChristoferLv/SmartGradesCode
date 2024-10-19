@@ -24,4 +24,13 @@ public interface ReportCardMapper {
     @Mapping(target = "reportCard", ignore = true)
     @Mapping(target = "id", ignore = true) // Ignore setting ReportCard from the DTO
     Assessment toModel(AssessmentDTO assessmentDTO);
+
+
+
+
+    EvaluationDTO toDTO(Evaluation evaluation);
+
+    @Mapping(target = "reportCards", ignore = true) // Ignore reportCards in the reverse mapping to avoid issues
+    Evaluation toModel(EvaluationDTO evaluationDTO);
+
 }

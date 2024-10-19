@@ -6,19 +6,21 @@ import { ClassesAPI } from '../../api/studentClasses';
 import { useAuthContext } from '../../contexts/AuthContext';
 import { HttpStatus } from '../../api/default';
 import { ReportCardAPI } from '../../api/reportCard';
+import { notify } from '../../toasts/toasts';
 
 const ReportCardForm = () => {
     const [students, setStudents] = useState([]); // List of students in the class
     const [studentId, setStudentId] = useState(''); // Selected student
-    const [evaluationType, setEvaluationType] = useState('FIRST_EVALUATION'); // Evaluation type
+    const [evaluationType, setEvaluationType] = useState(0); // Evaluation type
     const [assessments, setAssessments] = useState([{ skill: 'Speaking', rating: '' }, { skill: 'Listening', rating: '' },
     { skill: 'Reading', rating: '' }, { skill: 'Writing/grammar', rating: '' }, { skill: 'Effort', rating: '' },
     { skill: 'Attendance', rating: '' }, { skill: 'Content Retention ', rating: '' }, { skill: 'Homework', rating: '' }
     ]); // List of assessments
     const [OT, setOT] = useState(''); // Oral Test grade
     const [WT, setWT] = useState(''); // Written Test grade
+    const [comments, setComments] = useState(''); // Comments
     const { classId } = useParams();
-    const { token } = useAuthContext();
+    const { user, token } = useAuthContext();
 
 
     // Fetch students in the selected class
@@ -38,22 +40,41 @@ const ReportCardForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // Map OT and WT to the evaluation structure
+        const evaluation = [{
+            OT: parseInt(OT, 10),
+            WT: parseInt(WT, 10),
+            evaluationType, // Pass the current evaluation type
+        }];
+
+        // Create the report card DTO according to the new structure
         const reportCardDTO = {
             studentId,
             studentClassId: classId,
-            evaluationType,
-            assessments,
-            OT: parseInt(OT, 10),
-            WT: parseInt(WT, 10),
+            evaluationType, // FIRST_EVALUATION or FINAL_EVALUATION
+            assessments, // List of assessments
+            evaluation, // List of evaluations (contains OT, WT, etc.)
+            comments,
+            teacherId: user.id
         };
 
-        const response = await ReportCardAPI.submitReportCard(reportCardDTO, token);
-        if (response.status === HttpStatus.OK) {
-            console.log('Report card submitted successfully');
-        } else {
-            console.error('Error submitting report card');
-        };
+        try {
+            // Submit the report card to the API
+            const response = await ReportCardAPI.submitReportCard(reportCardDTO, token);
+            console.log("teacherId:", reportCardDTO.teacherId);
+            console.log("ReportCardAPI.submitReportCard:", JSON.stringify(reportCardDTO));
+
+            if (response.status === HttpStatus.OK) {
+                notify.notifySuccess('Report card submitted successfully');
+            } else {
+                notify.notifyError('Error submitting report card');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            notify.notifyError('An unexpected error occurred');
+        }
     };
+
 
     // Handle change in assessments
     const handleAssessmentChange = (index, field, value) => {
@@ -86,8 +107,8 @@ const ReportCardForm = () => {
                 <Form.Group controlId="evaluationType" className="mb-3">
                     <Form.Label>Evaluation Type</Form.Label>
                     <Form.Select value={evaluationType} onChange={(e) => setEvaluationType(e.target.value)} required>
-                        <option value="FIRST_EVALUATION">First Evaluation</option>
-                        <option value="FINAL_EVALUATION">Final Evaluation</option>
+                        <option value={0}>First Evaluation</option>
+                        <option value={1}>Final Evaluation</option>
                     </Form.Select>
                 </Form.Group>
 
@@ -150,6 +171,15 @@ const ReportCardForm = () => {
                     />
                 </Form.Group>
 
+                <Form.Group controlId="comments" className="mb-3">
+                    <Form.Label>Comments</Form.Label>
+                    <Form.Control
+                        as="textarea"
+                        value={comments}
+                        onChange={(e) => setComments(e.target.value)}
+                        required
+                    />
+                </Form.Group>
                 <Button variant="primary" type="submit">
                     Submit Report Card
                 </Button>
