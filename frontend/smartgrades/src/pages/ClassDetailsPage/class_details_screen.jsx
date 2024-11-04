@@ -7,6 +7,7 @@ import { ClassesAPI } from '../../api/studentClasses';
 import { useAuthContext } from '../../contexts/AuthContext';
 import "./class_details_screen.css";
 import { notify } from '../../toasts/toasts';
+import { CertificateAPI } from '../../api/certificate';
 
 export default function ClassDetailsScreen() {
     const { id } = useParams();
@@ -33,6 +34,16 @@ export default function ClassDetailsScreen() {
             notify.notifyError("Error unenrolling student.");
         }
     };
+
+    const handleIssueCertificate = async (studentId) => {
+        const response = await CertificateAPI.generateCertificate(studentId, token);
+        if (response.status === 200) {
+            notify.notifySuccess("Certificate issued successfully.");
+        } else {
+            notify.notifyError("Error issuing certificate.");
+        }
+    };
+
 
     // Fetch class data and enrolled students
     useEffect(() => {
@@ -129,8 +140,15 @@ export default function ClassDetailsScreen() {
                                             <Button
                                                 variant="danger"
                                                 onClick={() => handleUnenroll(student.id, id, token)}
+                                                className="me-2"
                                             >
                                                 Unenroll
+                                            </Button>
+                                            <Button
+                                                variant="primary"
+                                                onClick={() => handleIssueCertificate(student.id)}
+                                            >
+                                                Issue Certificate
                                             </Button>
                                         </td>
                                     </tr>
@@ -140,6 +158,7 @@ export default function ClassDetailsScreen() {
                     ) : (
                         <p>No students enrolled yet.</p>
                     )}
+
                 </div>
             </div>
         </div>
