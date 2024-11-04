@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.time.ZonedDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,17 +23,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.projeto1.demo.certificate.CertificateGenerator;
 import com.projeto1.demo.jwdutils.JwtTokenService;
 import com.projeto1.demo.jwdutils.LoginUserDTO;
 import com.projeto1.demo.jwdutils.RecoveryJwtTokenDto;
 import com.projeto1.demo.jwdutils.SecurityConfiguration;
 import com.projeto1.demo.messages.MessageResponseDTO;
-import com.projeto1.demo.misc.CertificateGenerator;
 import com.projeto1.demo.misc.PasswordUtil;
 import com.projeto1.demo.roles.ERole;
 import com.projeto1.demo.roles.RoleRepository;
 import com.projeto1.demo.roles.Roles;
 import com.projeto1.demo.roles.RolesDTO;
+import com.projeto1.demo.studentsClass.ClassStateUtil;
+import com.projeto1.demo.studentsClass.StudentsClass;
+import com.projeto1.demo.studentsClass.StudentsClassRepository;
 
 @Service
 public class UserService {
@@ -55,6 +59,9 @@ public class UserService {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private StudentsClassRepository studentClassRepository;
 
     // Método responsável por autenticar um usuário e retornar um token JWT
     public RecoveryJwtTokenDto authenticateUser(LoginUserDTO loginUserDto) {
@@ -258,27 +265,26 @@ public class UserService {
     }
 
     public ResponseEntity<?> changePasswordOfStudent(Long studentId) {
-    System.out.println("[User Service] changePasswordOfStudent " + studentId);
+        System.out.println("[User Service] changePasswordOfStudent " + studentId);
 
-    // Find the student by ID
-    User student = userRepository.findById(studentId)
-            .orElseThrow(() -> new UsernameNotFoundException("Student not found"));
+        // Find the student by ID
+        User student = userRepository.findById(studentId)
+                .orElseThrow(() -> new UsernameNotFoundException("Student not found"));
 
-    // Generate the new 8-digit password
-    String newPassword = PasswordUtil.generateRandomPassword(6);
+        // Generate the new 8-digit password
+        String newPassword = PasswordUtil.generateRandomPassword(6);
 
-    // Encode the new password and update the user entity
-    student.setPassword(passwordEncoder.encode(newPassword));
-    userRepository.save(student);
+        // Encode the new password and update the user entity
+        student.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(student);
 
-    // Create a response map
-    Map<String, String> response = new HashMap<>();
-    response.put("newPassword", newPassword);
+        // Create a response map
+        Map<String, String> response = new HashMap<>();
+        response.put("newPassword", newPassword);
 
-    // Return the response map as JSON
-    return ResponseEntity.ok(response);
-}
-
+        // Return the response map as JSON
+        return ResponseEntity.ok(response);
+    }
 
     public MessageResponseDTO changeUserState(Long userId, ChangeUserStateDTO changeUserStateDTO) {
         System.out.println("[User Service] changeUserState " + userId + "\n");
@@ -333,20 +339,6 @@ public class UserService {
         userRepository.save(user);
         return MessageResponseDTO.builder()
                 .message("User updated successfully for user ID " + userId)
-                .build();
-    }
-
-    public MessageResponseDTO generateCertificate(Long userId) {
-        System.out.println("[User Service] generateCertificate " + userId + "\n");
-        // Find the user by ID
-        User user = userRepository.findById(userId).orElse(null);
-        if (user == null) {
-            return MessageResponseDTO.builder().message("User with ID " + userId + " not found").build();
-        }
-        // Generate the certificate for the user
-        CertificateGenerator.generateCertificate(user);
-        return MessageResponseDTO.builder()
-                .message("Certificate generated successfully for user ID " + userId)
                 .build();
     }
 
