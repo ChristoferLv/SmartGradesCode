@@ -166,13 +166,6 @@ public class UserController {
         return userService.updateUser(id, userDTO);
     }
 
-
-    @PostMapping("/generate-certificate/{id}")
-    public MessageResponseDTO generateCertificate(@PathVariable Long id) {
-        System.out.println("[User Controller] generateCertificate " + id);
-        return userService.generateCertificate(id);
-    }
-
     @GetMapping("/list-active-users")
     public List<UserDTO> listActiveUsers(){
         System.out.println("[User Controller] listActiveUsers");
