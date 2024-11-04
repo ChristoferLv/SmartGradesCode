@@ -81,6 +81,14 @@ const UserProfileScreen = () => {
     navigate('/alterar-senha')
   }
 
+  const seeCertificates = () => {
+    navigate('/user/certificates')
+  }
+
+  const seeReportCards = () => {
+    navigate('/user/see-report-cards')
+  }
+
   const editar = () => {
     setNewName(user.name)
     setAboutText(user.about)
@@ -185,6 +193,8 @@ const UserProfileScreen = () => {
                     <DropdownMenu>
                       <Dropdown.Item className="dropdown-item-no-highlight" onClick={() => editar()}>Editar Perfil</Dropdown.Item>
                       <Dropdown.Item className="dropdown-item-no-highlight" onClick={() => changePass()}>Alterar Senha</Dropdown.Item>
+                      <Dropdown.Item className="dropdown-item-no-highlight" onClick={() => seeReportCards()}>Meus Boletins</Dropdown.Item>
+                      <Dropdown.Item className="dropdown-item-no-highlight" onClick={() => seeCertificates()}>Meus Certificados</Dropdown.Item>
                     </DropdownMenu>
                   </Dropdown>
                 </Navbar.Text>

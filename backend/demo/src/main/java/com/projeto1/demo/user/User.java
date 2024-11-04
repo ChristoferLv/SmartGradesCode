@@ -1,8 +1,11 @@
 package com.projeto1.demo.user;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.projeto1.demo.certificate.StudentCertificate;
 import com.projeto1.demo.roles.Roles;
 import com.projeto1.demo.studentsClass.StudentsClass;
 
@@ -16,6 +19,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -63,6 +67,11 @@ public class User {
     // private String imageUrl;
     @Lob // To handle large objects in H2
     private byte[] profilePicture;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<StudentCertificate> certificates;
+
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))

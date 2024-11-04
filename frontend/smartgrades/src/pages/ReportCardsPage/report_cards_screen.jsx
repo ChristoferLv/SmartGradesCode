@@ -17,7 +17,13 @@ const StudentReportCardsScreen = () => {
     useEffect(() => {
         const fetchReportCards = async () => {
             try {
-                const response = await ReportCardAPI.getReportCardsOfStudent(id, token);
+                let idToUse = -1
+                if (hasRole("TEACHER") || hasRole("ADMIN")) {
+                    idToUse = id
+                } else {
+                    idToUse = user.id
+                }
+                const response = await ReportCardAPI.getReportCardsOfStudent(idToUse, token);
                 if (response.status === HttpStatus.OK) {
                     setReportCards(response.data);
                 } else {
