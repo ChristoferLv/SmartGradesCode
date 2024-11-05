@@ -4,7 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useAuthContext } from '../../contexts/AuthContext';
 import { ReportCardAPI } from '../../api/reportCard';
 import { toast } from 'react-toastify';
-import { HttpStatus } from '../CreateCourse/api';
+import { HttpStatus } from '../../api/default';
 
 const StudentReportCardsScreen = () => {
     const { id } = useParams(); // Assuming you pass student ID via URL
@@ -24,10 +24,13 @@ const StudentReportCardsScreen = () => {
                     idToUse = user.id
                 }
                 const response = await ReportCardAPI.getReportCardsOfStudent(idToUse, token);
-                 const sortedReportCards = response.data.sort((a, b) => b.id - a.id);
                 if (response.status === HttpStatus.OK) {
+                    const sortedReportCards = response.data.sort((a, b) => b.id - a.id);
                     setReportCards(sortedReportCards);
                 } else {
+                    if (response.data == null) {
+                        return;
+                    }
                     notifyError("Error fetching report cards.");
                 }
             } catch (error) {

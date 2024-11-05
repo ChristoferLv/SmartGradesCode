@@ -74,7 +74,7 @@ const SideNav = () => {
   return (
       <Navbar className='home'>
         <Card className='cardSide'>
-          <Card.Img className="cardSide-img-top mx-auto mt-2" variant="top" onClick={()=> navigate("/")} src={'https://i.ibb.co/r3QPmSt/logo.png'} />
+          <Card.Img className="cardSide-img-top mx-auto mt-2" variant="top" onClick={()=> navigate("/")} src={'https://i.ibb.co/RjNZH1H/logo.png'} />
 
           <Card.Body
             style={{

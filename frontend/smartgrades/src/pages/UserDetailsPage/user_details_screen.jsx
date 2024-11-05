@@ -53,6 +53,9 @@ const UserDetailsScreen = () => {
                 const sortedReportCards = response.data.sort((a, b) => b.id - a.id); // Sort in descending order by ID
                 setReportCards(sortedReportCards);
             } else {
+                if(response.dara == null){
+                    return;
+                }
                 notifyError("Error fetching report cards.");
             }
         };
