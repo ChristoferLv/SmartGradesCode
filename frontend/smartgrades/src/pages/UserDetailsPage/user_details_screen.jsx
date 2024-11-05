@@ -178,10 +178,10 @@ const UserDetailsScreen = () => {
                                             <ul>
                                                 {reportCards.map((reportCard) => (
                                                     <li key={reportCard.id} style={{ color: '#727273' }}>
-                                                        <p className="mb-1"><strong>Evaluation Type:</strong> {reportCard.evaluationType}</p>
-                                                        <p className="mb-1"><strong>Final Grade:</strong> {reportCard.finalGrade}</p>
-                                                        <p className="mb-1"><strong>OT:</strong> {reportCard.ot}</p>
-                                                        <p className="mb-1"><strong>WT:</strong> {reportCard.wt}</p>
+                                                        <p className="mb-1"><strong>Evaluation Type:</strong> {reportCard.evaluationType == 0 ? "First Evaluation" : "Final Evaluation"}</p>
+                                                        <p className="mb-1"><strong>Final Grade:</strong> {reportCard.evaluation.at(-1).finalGrade}</p>
+                                                        <p className="mb-1"><strong>OT:</strong> {reportCard.evaluation.at(-1).ot}</p>
+                                                        <p className="mb-1"><strong>WT:</strong> {reportCard.evaluation.at(-1).wt}</p>
                                                         <hr />
                                                     </li>
                                                 ))}

@@ -24,6 +24,7 @@ const StudentReportCardsScreen = () => {
                     idToUse = user.id
                 }
                 const response = await ReportCardAPI.getReportCardsOfStudent(idToUse, token);
+                console.log(response)
                 if (response.status === HttpStatus.OK) {
                     setReportCards(response.data);
                 } else {
@@ -68,6 +69,9 @@ const StudentReportCardsScreen = () => {
                                             <p><strong>Period:</strong> {reportCard.studentClass.period.name}</p>
                                             <p><strong>Level:</strong> {reportCard.studentClass.level}</p>
                                             <p><strong>Group:</strong> {reportCard.studentClass.classGroup}</p>
+                                            <hr />
+                                            <p><strong>Number of Classes: </strong> {reportCard.totalClasses}</p>
+                                            <p><strong>Number of Student Attendances: </strong> {reportCard.totalPresentClasses}</p>
 
                                         </div>
 
