@@ -24,9 +24,9 @@ const StudentReportCardsScreen = () => {
                     idToUse = user.id
                 }
                 const response = await ReportCardAPI.getReportCardsOfStudent(idToUse, token);
-                console.log(response)
+                 const sortedReportCards = response.data.sort((a, b) => b.id - a.id);
                 if (response.status === HttpStatus.OK) {
-                    setReportCards(response.data);
+                    setReportCards(sortedReportCards);
                 } else {
                     notifyError("Error fetching report cards.");
                 }

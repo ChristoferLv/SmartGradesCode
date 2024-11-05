@@ -46,17 +46,18 @@ const UserDetailsScreen = () => {
         fetchEnroledClasses()
     }, [userInfo])
 
-    useEffect(() => {
+       useEffect(() => {
         const fetchReportCards = async () => {
-            const response = await ReportCardAPI.getReportCardsOfStudent(id, token) // Fetch report cards
+            const response = await ReportCardAPI.getReportCardsOfStudent(id, token); // Fetch report cards
             if (response.status === HttpStatus.OK) {
-                setReportCards(response.data)
+                const sortedReportCards = response.data.sort((a, b) => b.id - a.id); // Sort in descending order by ID
+                setReportCards(sortedReportCards);
             } else {
-                notifyError("Error fetching report cards.")
+                notifyError("Error fetching report cards.");
             }
-        }
-        fetchReportCards()
-    }, [userInfo])
+        };
+        fetchReportCards();
+    }, [userInfo]);
 
     return logged && userInfo ? (
         <>

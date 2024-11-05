@@ -45,6 +45,7 @@ import ReportCardForm from '../pages/CreateReportCardPage/create_report_card_scr
 import EditReportCard from '../pages/EditReportCardPage/edit_report_card_screen';
 import StudentReportCardsScreen from '../pages/ReportCardsPage/report_cards_screen';
 import CertificatesPage from '../pages/CertificatesPage/certificates_screen';
+import RegisterAttendancesScreen from '../pages/RegisterAttendancesPage/register_attendances_screen';
 
 const SidebarLayout = () => (
   <>
@@ -96,7 +97,7 @@ function DefaultRoutes() {
             <Route path='/teacher/class-details/:id' element={<StrictRoute roles={[Roles.TEACHER, Roles.ADMIN]}><ClassDetailsScreen /></StrictRoute>} />
             <Route path='/teacher/report-card-form/:classId' element={<StrictRoute roles={[Roles.TEACHER, Roles.ADMIN]}><ReportCardForm /></StrictRoute>} />
             <Route path='/teacher/edit-report-card/:reportCardId' element={<StrictRoute roles={[Roles.TEACHER, Roles.ADMIN]}><EditReportCard /></StrictRoute>} />
-
+            <Route path='/teacher/attendance-form/:classId' element={<StrictRoute roles={[Roles.TEACHER, Roles.ADMIN]}><RegisterAttendancesScreen /></StrictRoute>} />
 
 
 

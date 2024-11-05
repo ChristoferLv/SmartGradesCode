@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, Route, useNavigate, useParams } from 'react-router-dom';
 import { Button, Spinner, Table } from "react-bootstrap";
 import { Bounce, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -120,13 +120,17 @@ export default function ClassDetailsScreen() {
                             Submit Report Card
                         </Button>
                     </Link>
+                    <Link to={`/teacher/attendance-form/${id}`}>
+                        <Button variant="primary" className="ms-2 mb-3">
+                            Take Attendances
+                        </Button>
+                    </Link>
                     {classDetails.students && classDetails.students.length > 0 ? (
                         <Table striped bordered hover>
                             <thead>
                                 <tr>
                                     <th>#</th>
                                     <th>Name</th>
-                                    <th>Email</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -134,8 +138,9 @@ export default function ClassDetailsScreen() {
                                 {classDetails.students.map((student, index) => (
                                     <tr key={student.id}>
                                         <td>{index + 1}</td>
-                                        <td>{student.name}</td>
-                                        <td>{student.email}</td>
+                                        <td><Link to={`/teacher/user-profile/${student.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
+                                            {student.name}
+                                        </Link></td>
                                         <td>
                                             <Button
                                                 variant="danger"
