@@ -6,9 +6,11 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.projeto1.demo.certificate.StudentCertificate;
+import com.projeto1.demo.presence.Attendance;
 import com.projeto1.demo.roles.Roles;
 import com.projeto1.demo.studentsClass.StudentsClass;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -84,5 +86,9 @@ public class User {
     @EqualsAndHashCode.Exclude // Prevent circular references
     private Set<StudentsClass> studentsClasses = new HashSet<>();
 
+    // Relationship with Attendance
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Attendance> attendances;
     // Getters and Setters
 }

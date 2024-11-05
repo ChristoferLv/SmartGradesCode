@@ -46,17 +46,18 @@ const UserDetailsScreen = () => {
         fetchEnroledClasses()
     }, [userInfo])
 
-    useEffect(() => {
+       useEffect(() => {
         const fetchReportCards = async () => {
-            const response = await ReportCardAPI.getReportCardsOfStudent(id, token) // Fetch report cards
+            const response = await ReportCardAPI.getReportCardsOfStudent(id, token); // Fetch report cards
             if (response.status === HttpStatus.OK) {
-                setReportCards(response.data)
+                const sortedReportCards = response.data.sort((a, b) => b.id - a.id); // Sort in descending order by ID
+                setReportCards(sortedReportCards);
             } else {
-                notifyError("Error fetching report cards.")
+                notifyError("Error fetching report cards.");
             }
-        }
-        fetchReportCards()
-    }, [userInfo])
+        };
+        fetchReportCards();
+    }, [userInfo]);
 
     return logged && userInfo ? (
         <>
@@ -178,10 +179,10 @@ const UserDetailsScreen = () => {
                                             <ul>
                                                 {reportCards.map((reportCard) => (
                                                     <li key={reportCard.id} style={{ color: '#727273' }}>
-                                                        <p className="mb-1"><strong>Evaluation Type:</strong> {reportCard.evaluationType}</p>
-                                                        <p className="mb-1"><strong>Final Grade:</strong> {reportCard.finalGrade}</p>
-                                                        <p className="mb-1"><strong>OT:</strong> {reportCard.ot}</p>
-                                                        <p className="mb-1"><strong>WT:</strong> {reportCard.wt}</p>
+                                                        <p className="mb-1"><strong>Evaluation Type:</strong> {reportCard.evaluationType == 0 ? "First Evaluation" : "Final Evaluation"}</p>
+                                                        <p className="mb-1"><strong>Final Grade:</strong> {reportCard.evaluation.at(-1).finalGrade}</p>
+                                                        <p className="mb-1"><strong>OT:</strong> {reportCard.evaluation.at(-1).ot}</p>
+                                                        <p className="mb-1"><strong>WT:</strong> {reportCard.evaluation.at(-1).wt}</p>
                                                         <hr />
                                                     </li>
                                                 ))}

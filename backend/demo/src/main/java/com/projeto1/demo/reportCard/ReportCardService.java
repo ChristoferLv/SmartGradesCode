@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.projeto1.demo.messages.MessageResponseDTO;
+import com.projeto1.demo.presence.Attendance;
+import com.projeto1.demo.presence.AttendanceRepository;
 import com.projeto1.demo.studentsClass.StudentClassDTOSimplified;
 import com.projeto1.demo.studentsClass.StudentsClass;
 import com.projeto1.demo.studentsClass.StudentsClassMapper;
@@ -35,6 +37,9 @@ public class ReportCardService {
 
     @Autowired
     private EvaluationsRepository evaluationsRepository;
+
+    @Autowired
+    private AttendanceRepository attendanceRepository;
 
     public MessageResponseDTO addNewReportCard(ReportCardDTO reportCardDTO) {
         System.out.println("[ReportCard Service] addNewReportCard " + reportCardDTO.getStudentId());
@@ -129,6 +134,12 @@ public class ReportCardService {
                     // Set the student and student class fields
                     reportCardDTO.setStudent(userDTOSimplified);
                     reportCardDTO.setStudentClass(studentClassDTOSimplified);
+
+                    int aulas = attendanceRepository.countTotalAulas(studentClass.getId());
+                    int presentAulas = attendanceRepository.countTotalPresentAttendances(studentId, studentClass.getId());
+
+                    reportCardDTO.setTotalClasses(aulas);
+                    reportCardDTO.setTotalPresentClasses(presentAulas);
 
                     return reportCardDTO;
                 })

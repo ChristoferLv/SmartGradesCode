@@ -24,6 +24,8 @@ public class SecurityConfiguration {
 
     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
             "/api/v1/user/login", // Url que usaremos para fazer login
+            "/api/v1/aulas/register",
+            "/api/v1/aulas/list",
     };
 
      // Endpoints que requerem autenticação para serem acessados
