@@ -181,9 +181,9 @@ export default function EditUserScreen() {
             <div className="row">
                 <div className="col">
                     <img
-                        style={{ width: '11em' }}
+                        style={{ width: '7em', borderRadius: '15px' }}
                         onClick={() => navigate('/')}
-                        src="https://i.ibb.co/r3QPmSt/logo.png"
+                        src="https://i.ibb.co/RjNZH1H/logo.png"
                         alt="logo"
                         border="0"
                     />
@@ -194,10 +194,11 @@ export default function EditUserScreen() {
                     </div>
                     <div className="col-auto">
                         <Button
+                        style={{padding: '0.25rem 0.5rem',  backgroundColor: "#FFD700", color: "black", border: "none"}}
                             className="ms-3 mt-5"
                             variant="success"
                             onClick={handleResetPassword}
-                            style={{ padding: '0.25rem 0.5rem' }} // Ajuste o padding conforme necessário
+                          
                         >
                             Reset Password
                         </Button>
@@ -295,7 +296,7 @@ export default function EditUserScreen() {
 
                     <div className="row mt-3">
                         <div className="col text-start">
-                            <button className="fbtn btn btn-success" disabled={isLoading}>
+                            <button style={{backgroundColor:"#FFD700", color:"black", border:"none"}} className="fbtn btn btn-success" disabled={isLoading}>
                                 {isLoading ? (
                                     <Spinner
                                         className="me-2"

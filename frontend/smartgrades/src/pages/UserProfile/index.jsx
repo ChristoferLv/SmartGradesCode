@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Container, Navbar, Row, Card, Button, Modal, Form, Dropdown } from 'react-bootstrap'
+import { Col, Container, Navbar, Row, Card, Button, Dropdown } from 'react-bootstrap'
 import Avatar from 'react-avatar'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { HttpStatus } from "../../api/default";
 import { useNavigate } from 'react-router-dom'
 import { useAuthContext } from '../../contexts/AuthContext'
-import { Roles } from '../../api/default'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { ProfileAPI } from '../../api/profile';
 import './style.css'
@@ -22,9 +21,7 @@ const UserProfileScreen = () => {
   const [newName, setNewName] = useState();
   const [newLink, setNewLink] = useState(undefined);
   const [formErrors, setFormErrors] = useState({});
-  const { logged, user, token, setToken, refreshUserOnContext } = useAuthContext();
-  const [authorizationCode, setAuthorizationCode] = useState('');
-  const [showModal, setShowModal] = useState(false);
+  const { logged, user, token, refreshUserOnContext } = useAuthContext();
   const [imagesToUpdate, setImagesToUpdate] = useState()
 
   const notifyError = (texto) => toast.error(texto, {
@@ -64,9 +61,6 @@ const UserProfileScreen = () => {
   }, [imagesToUpdate])
 
 
-  const handleCloseModal = () => setShowModal(false);
-  const handleShowModal = () => setShowModal(true);
-
   const date = (dateString) => {
     const dateObj = new Date(dateString);
     const month = dateObj.getMonth() + 1;
@@ -92,7 +86,7 @@ const UserProfileScreen = () => {
   const editar = () => {
     setNewName(user.name)
     setAboutText(user.about)
-    setNewLink(user.contactLink == "https://www.exemplo.com" ? "" : user.contactLink)
+    setNewLink(user.contactLink === "https://www.exemplo.com" ? "" : user.contactLink)
     setEditando(true)
   }
 

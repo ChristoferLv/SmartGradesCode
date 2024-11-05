@@ -27,6 +27,7 @@ import EditReportCard from '../pages/EditReportCardPage/edit_report_card_screen'
 import StudentReportCardsScreen from '../pages/ReportCardsPage/report_cards_screen';
 import CertificatesPage from '../pages/CertificatesPage/certificates_screen';
 import RegisterAttendancesScreen from '../pages/RegisterAttendancesPage/register_attendances_screen';
+import UserProfileScreen from '../pages/UserProfile';
 
 const SidebarLayout = () => (
   <>
@@ -60,8 +61,8 @@ function DefaultRoutes() {
           <Route path='/alterar-senha' element={<ChangePasswordPage />} />
           <Route element={<SidebarLayout />}>
             <Route path='/' element={<StrictRoute roles={[Roles.TEACHER, Roles.ADMIN]}><UsersPage /></StrictRoute>} />
-       
 
+            <Route path="/perfil" element={<StrictRoute roles={[Roles.STUDENT, Roles.TEACHER, Roles.ADMIN]}><UserProfileScreen /></StrictRoute>} />
 
             <Route path='/user/see-report-cards/:id?' element={<StrictRoute roles={[Roles.STUDENT, Roles.TEACHER, Roles.ADMIN]}><StudentReportCardsScreen /></StrictRoute>} />
             <Route path='/user/certificates' element={<StrictRoute roles={[Roles.STUDENT, Roles.TEACHER, Roles.ADMIN]}><CertificatesPage /></StrictRoute>} />

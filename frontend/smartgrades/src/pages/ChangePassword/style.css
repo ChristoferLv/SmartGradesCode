@@ -1,16 +1,16 @@
 body {
-  background-color: '#FFF';
-  color: BLACK;
+  background-color: #FFF;
+  color: #e24046; /* Vermelho */
 }
 
 .titulo {
   padding: 20px;
-  color: BLACK;
+  color: #e24046; /* Vermelho */
 }
 
 .formulario {
   background-color: rgb(44, 60, 101);
-  color: BLACK;
+  color: #e24046; /* Vermelho */
 }
 
 .link-limpo:hover {
@@ -22,12 +22,12 @@ body {
 }
 
 .link-termos {
-  color: #1dbfb0;
-  text-decoration-color: #1dbfb0;
+  color: goldenrod; /* Dourado */
+  text-decoration-color: goldenrod; /* Dourado */
   text-decoration: none;
 }
 
 .link-termos:hover {
-  color: #1dbfb0;
+  color: goldenrod; /* Dourado */
   text-decoration: underline;
 }

@@ -55,9 +55,10 @@
 }
 
 .cardSide-img-top {
-  width: 75%;
+  border-radius: 15px;
+  width: 40%;
   height: 5vw;
-  object-fit: contain;
+  object-fit: inherit;
   border-top: 0px;
   margin-top: 0px;
   padding-top: 0px;

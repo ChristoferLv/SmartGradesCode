@@ -112,9 +112,9 @@ export default function EditClassScreen() {
             <div className="row">
                 <div className="col">
                     <img
-                        style={{ width: '11em' }}
+                        style={{ width: '7em', borderRadius:"15px" }}
                         onClick={() => navigate('/')}
-                        src="https://i.ibb.co/r3QPmSt/logo.png"
+                        src="https://i.ibb.co/RjNZH1H/logo.png"
                         alt="logo"
                         border="0"
                     />
@@ -198,7 +198,7 @@ export default function EditClassScreen() {
 
                     <div className="row mt-3">
                         <div className="col text-start">
-                            <button className="btn btn-success" disabled={isLoading}>
+                            <button style={{background:"#daa520", borderColor:"#daa520"}} className="btn btn-success" disabled={isLoading}>
                                 {isLoading ? (
                                     <Spinner
                                         className="me-2"
