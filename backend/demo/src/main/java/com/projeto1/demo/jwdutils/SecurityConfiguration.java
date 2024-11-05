@@ -1,6 +1,5 @@
 package com.projeto1.demo.jwdutils;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,62 +21,66 @@ public class SecurityConfiguration {
     @Autowired
     private UserAuthenticationFilter userAuthenticationFilter;
 
-    public static final String [] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
+    public static final String[] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
             "/api/v1/user/login", // Url que usaremos para fazer login
-            "/api/v1/aulas/register",
-            "/api/v1/aulas/list",
     };
 
-     // Endpoints que requerem autenticação para serem acessados
-     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
-        "/api/v1/user/test",
-        "/api/v1/user/user-info",
-        "/api/v1/user/change-role",
-        "/api/v1/user",
-        "/api/v1/user/get-user-by-id",
-        "/api/v1/user/update-user",
-        "/api/v1/user/change-password-of",
-        "/api/v1/user/list-active-users",
-        "/api/v1/user/list-teachers",
-        "/api/v1/user/change-role",
-        "/api/v1/user/upload-profile-picture",
+    // Endpoints que requerem autenticação para serem acessados
+    public static final String[] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
+            "/api/v1/user/test",
+            "/api/v1/user/user-info",
+            "/api/v1/user/change-role",
+            "/api/v1/user",
+            "/api/v1/user/get-user-by-id",
+            "/api/v1/user/update-user",
+            "/api/v1/user/change-password-of",
+            "/api/v1/user/list-active-users",
+            "/api/v1/user/list-teachers",
+            "/api/v1/user/change-role",
+            "/api/v1/user/upload-profile-picture",
 
-        "/api/v1/classes/get-class-by-id",
-        "/api/v1/classes/update-class",
-        "/api/v1/classes/enroll",
-        "/api/v1/classes/get-enrolled-class",
-        "/api/v1/classes/students-enrolled",
+            "/api/v1/classes/get-class-by-id",
+            "/api/v1/classes/update-class",
+            "/api/v1/classes/enroll",
+            "/api/v1/classes/get-enrolled-class",
+            "/api/v1/classes/students-enrolled",
 
-        "/api/v1/reportCard",
-        "/api/v1/reportCard/list-report-cards-from",
-        "/api/v1/reportCard/get-report-card",
-        "/api/v1/reportCard/update-report-card",
-        
-        "/api/v1/certificate/generate",
-        "/api/v1/certificate/list",
-        "/api/v1/certificate",
-};
+            "/api/v1/reportCard",
+            "/api/v1/reportCard/list-report-cards-from",
+            "/api/v1/reportCard/get-report-card",
+            "/api/v1/reportCard/update-report-card",
 
+            "/api/v1/certificate/generate",
+            "/api/v1/certificate/list",
+            "/api/v1/certificate",
 
-@Bean
-public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-    return httpSecurity.csrf(csrf -> csrf.disable()) // Disable CSRF protection
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless session policy
-            .authorizeHttpRequests(auth -> auth
-            .requestMatchers(HttpMethod.OPTIONS).permitAll() // Allow preflight requests
-                .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).permitAll() // Public endpoints
-                .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED).authenticated() // Secure endpoints
-                .anyRequest().permitAll() // TROCAR PARA DENYALL QUANDO FINALIZADO !!!!!!!!!!!!!!!!!!!!!!!!!!!
-            )
-            // Only add the authentication filter for endpoints that require authentication
-            .addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-            .build();
-}
+            "/api/v1/aulas/register",
+            "/api/v1/aulas/list",
 
+            "/api/v1/attendance/stats"
+    };
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-       System.out.println("isso foi chamado");
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity.csrf(csrf -> csrf.disable()) // Disable CSRF protection
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless
+                                                                                                              // session
+                                                                                                              // policy
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS).permitAll() // Allow preflight requests
+                        .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).permitAll() // Public endpoints
+                        .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED).authenticated() // Secure endpoints
+                        .anyRequest().permitAll() // TROCAR PARA DENYALL QUANDO FINALIZADO !!!!!!!!!!!!!!!!!!!!!!!!!!!
+                )
+                // Only add the authentication filter for endpoints that require authentication
+                .addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
+        System.out.println("isso foi chamado");
         return authenticationConfiguration.getAuthenticationManager();
     }
 
