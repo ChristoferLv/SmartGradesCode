@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Container, Row, Pagination } from 'react-bootstrap'
-import { Link, useNavigate } from 'react-router-dom'
-import { BASE_URL, HttpResponse, HttpStatus } from '../../api/default'
+import { Col, Container, Row} from 'react-bootstrap'
+import { Link } from 'react-router-dom'
+import { HttpStatus } from '../../api/default'
 import { useAuthContext } from '../../contexts/AuthContext';
-import CardCourses from '../../components/CardCourses'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHandPointLeft } from '@fortawesome/free-solid-svg-icons'
 import { ClassesAPI } from '../../api/studentClasses';
 import CardStudentClass from '../../components/CardStudentClass/card_student_class';
 
@@ -13,9 +10,6 @@ const ClassesListPage = () => {
     const [userData, setUserData] = useState({ name: "" });
     const [data, setData] = useState({});
     const [isFetched, setIsFetched] = useState(false);
-    const [activePage, setActivePage] = useState(1);
-    const [amountPages, setAmountPages] = useState(6);
-    const navigate = useNavigate();
     const { token } = useAuthContext();
 
 
