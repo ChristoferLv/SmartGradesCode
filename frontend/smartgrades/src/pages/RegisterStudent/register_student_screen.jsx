@@ -186,11 +186,11 @@ export default function RegisterStudentScreen() {
         <div className="row">
           <div className="col">
             <img
-              style={{ width: '11em' }}
+              style={{ width: '7em', borderRadius:"15px" }}
               onClick={() => {
                 window.location.href = '/'
               }}
-              src="https://i.ibb.co/r3QPmSt/logo.png"
+              src="https://i.ibb.co/RjNZH1H/logo.png"
               alt="logo"
               border="0"
             />
@@ -278,7 +278,7 @@ export default function RegisterStudentScreen() {
 
             <div className="row mt-3">
               <div className="col text-start">
-              <button className="fbtn btn btn-success" disabled={isLoading}>
+              <button style={{background:"#daa520", borderColor:"#daa520", color:'black'}} className="fbtn btn btn-success" disabled={isLoading}>
                 {isLoading ? (
                     <Spinner
                       className="me-2"

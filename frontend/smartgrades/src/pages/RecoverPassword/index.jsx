@@ -93,7 +93,7 @@ const PasswordRecoveryPage = () => {
                     <div className="col mb-5">
                         <div className="row">
                             <div className="col">
-                                <img style={{ width: "11em" }} onClick={() => {navigate('/')}} src="https://i.ibb.co/r3QPmSt/logo.png" alt="logo" border="0" />
+                                <img style={{ width: "11em" }} onClick={() => {navigate('/')}} src="https://i.ibb.co/RjNZH1H/logo.png" alt="logo" border="0" />
                             </div>
                             <div className="col d-flex justify-content-end">
                                 <p className="mt-3">Já tem conta?&nbsp;<Link className="fw-bold link-termos" to="/login">ENTRE AGORA!</Link></p>

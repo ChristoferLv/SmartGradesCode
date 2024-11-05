@@ -65,9 +65,9 @@ export default function EnrollStudentsScreen() {
             <div className="row">
                 <div className="col">
                     <img
-                        style={{ width: '11em' }}
+                        style={{ width: '7em', borderRadius: '15px' }}
                         onClick={() => navigate('/')}
-                        src="https://i.ibb.co/r3QPmSt/logo.png"
+                        src="https://i.ibb.co/RjNZH1H/logo.png"
                         alt="logo"
                     />
                 </div>
@@ -91,6 +91,7 @@ export default function EnrollStudentsScreen() {
                         <ListGroup.Item key={student.id} className="d-flex justify-content-between align-items-center">
                             {student.name}
                             <Button
+                            style={{backgroundColor: "#FFD700", color: "black", border: "none"}}
                                 variant="success"
                                 onClick={() => enrollStudent(student.id)}
                                 disabled={isLoading}

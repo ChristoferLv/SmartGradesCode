@@ -109,10 +109,10 @@ const ChangePasswordPage = () => {
                     <div className="col mb-5">
                         <div className="row">
                             <div className="col">
-                                <img style={{ width: "11em" }} onClick={() => { navigate("/") }} src="https://i.ibb.co/r3QPmSt/logo.png" alt="logo" border="0" />
+                                <img style={{ width: "7em", borderRadius:"15px" }} onClick={() => { navigate("/") }} src="https://i.ibb.co/RjNZH1H/logo.png" alt="logo" border="0" />
                             </div>
                             <div className="col d-flex justify-content-end">
-                                <p className="mt-3"><Link className="fw-bold link-limpo" style={{ color: "#1dbfb0" }} to="/perfil"><FontAwesomeIcon icon={faArrowLeftLong} className="me-1" /> Voltar!</Link></p>
+                                <p className="mt-3"><Link className="fw-bold link-limpo" style={{ color: "#e24046" }} to="/perfil"><FontAwesomeIcon icon={faArrowLeftLong} className="me-1" /> Voltar!</Link></p>
                             </div>
                         </div>
                     </div>
