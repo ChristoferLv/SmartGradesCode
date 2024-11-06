@@ -268,7 +268,6 @@ const uploadProfilePicture = async (imageFile, jwt) => {
 
         if (response.ok) {
             const data = await response.json();
-            console.log("Profile picture uploaded successfully", data);
             return new HttpResponse(HttpStatus.OK, data);
         } else {
             errorMessage = await response.json();

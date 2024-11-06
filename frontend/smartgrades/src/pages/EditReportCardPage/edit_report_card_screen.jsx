@@ -6,6 +6,7 @@ import { ClassesAPI } from '../../api/studentClasses';
 import { useAuthContext } from '../../contexts/AuthContext';
 import { HttpStatus } from '../../api/default';
 import { ReportCardAPI } from '../../api/reportCard';
+import { notify } from '../../toasts/toasts';
 
 const EditReportCard = () => {
     const [studentId, setStudentId] = useState(''); // Selected student
@@ -34,10 +35,10 @@ const EditReportCard = () => {
         const fetchReportCard = async () => {
             const response = await ReportCardAPI.getReportCard(reportCardId, token);
             if (response.status === HttpStatus.OK) {
-                console.log('Report card data: ', response.data);
+                //console.log('Report card data: ', response.data);
                 const reportCard = response.data;
                 const temp = reportCard.evaluation;
-                console.log('temp', temp);
+                //console.log('temp', temp);
                 setStudentId(reportCard.studentId);
                 setStudentClassId(reportCard.studentClassId);
                 setEvaluationType(reportCard.evaluationType);
@@ -75,13 +76,13 @@ const EditReportCard = () => {
             comments
         };
 
-        console.log('reportCardDTO', JSON.stringify(reportCardDTO));
+        //console.log('reportCardDTO', JSON.stringify(reportCardDTO));
 
         const response = await ReportCardAPI.updateReportCard(reportCardId, reportCardDTO, token);
         if (response.status === HttpStatus.OK) {
-            console.log('Report card submitted successfully');
+            notify.notifySuccess('Report card updated successfully');
         } else {
-            console.error('Error submitting report card');
+            notify.notifyError('Error updating report card');
         }
     };
 
@@ -93,7 +94,7 @@ const EditReportCard = () => {
     };
 
     return (
-        console.log('EditReportCard'),
+        //console.log('EditReportCard'),
 
         <Card className='mb-2' style={{ padding: '20px', marginTop: '20px' }}>
             <Link to={`/user/see-report-cards/${studentId}`} style={{ position: 'absolute', top: '10px', right: '10px' }}>

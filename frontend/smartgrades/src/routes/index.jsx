@@ -11,7 +11,7 @@ import { StrictRoute } from '../contexts/StrictRoute';
 import { Roles } from '../api/default';
 
 import "../global.css"
-import PasswordRecoveryPage from '../pages/RecoverPassword';
+
 import ChangePasswordPage from '../pages/ChangePassword';
 import UsersPage from '../pages/UsersPage/UsersPage';
 import NewClassScreen from '../pages/CreateClass/create_class';
@@ -59,7 +59,7 @@ function DefaultRoutes() {
       <AuthProvider>
         <Routes>
           <Route path='/login' element={<LoginPage />} />
-          <Route path='/recuperar-senha' element={<PasswordRecoveryPage />} />
+          
           <Route path='/alterar-senha' element={<ChangePasswordPage />} />
           <Route element={<SidebarLayout />}>
             <Route path='/' element={<StrictRoute roles={[Roles.STUDENT, Roles.TEACHER, Roles.ADMIN]}><UsersPage /></StrictRoute>} />
