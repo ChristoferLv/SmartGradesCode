@@ -5,6 +5,7 @@ import React, { useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import LoginPage from "../pages/Login";
 import SideNav from '../components/NavBar/nav_bar';
+import SideNavMobile from '../components/NavBarMobile/nav_bar_mobile';
 import { AuthProvider, useAuthContext } from '../contexts/AuthContext';
 import { StrictRoute } from '../contexts/StrictRoute';
 import { Roles } from '../api/default';
@@ -31,10 +32,11 @@ import UserProfileScreen from '../pages/UserProfile';
 
 const SidebarLayout = () => (
   <>
+    <SideNavMobile />
     <SideNav />
     <Container>
       <Row>
-        <div className="col-2" />
+        <div className="col-lg-2 col-md-2" />
         <Col>
           <Outlet />
         </Col>
@@ -60,7 +62,7 @@ function DefaultRoutes() {
           <Route path='/recuperar-senha' element={<PasswordRecoveryPage />} />
           <Route path='/alterar-senha' element={<ChangePasswordPage />} />
           <Route element={<SidebarLayout />}>
-            <Route path='/' element={<StrictRoute roles={[Roles.TEACHER, Roles.ADMIN]}><UsersPage /></StrictRoute>} />
+            <Route path='/' element={<StrictRoute roles={[Roles.STUDENT, Roles.TEACHER, Roles.ADMIN]}><UsersPage /></StrictRoute>} />
 
             <Route path="/perfil" element={<StrictRoute roles={[Roles.STUDENT, Roles.TEACHER, Roles.ADMIN]}><UserProfileScreen /></StrictRoute>} />
 

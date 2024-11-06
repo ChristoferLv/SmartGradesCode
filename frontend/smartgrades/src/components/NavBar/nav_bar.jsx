@@ -1,8 +1,8 @@
 import React from 'react';
 import './nav_bar.css'
 import { Navbar, Card, ListGroup, ListGroupItem } from 'react-bootstrap';
-import { SiBookstack, SiNotepadplusplus } from 'react-icons/si'
-import { FaBookmark, FaUser } from 'react-icons/fa'
+import { SiBookstack } from 'react-icons/si'
+import { FaBookmark, FaList, FaNotesMedical, FaRegIdCard, FaStickyNote, FaUser } from 'react-icons/fa'
 import { ImBooks } from 'react-icons/im'
 import { GiArchiveRegister } from 'react-icons/gi'
 import { TbLogin, TbNote } from 'react-icons/tb'
@@ -11,8 +11,8 @@ import { BsKeyFill, BsReverseListColumnsReverse } from 'react-icons/bs'
 import { Link, useNavigate } from 'react-router-dom';
 import { OnlyNotLogged, StrictRoute } from '../../contexts/StrictRoute';
 import { Roles } from '../../api/default';
-import { faNoteSticky } from '@fortawesome/free-solid-svg-icons';
 import { IoAdd } from 'react-icons/io5';
+import { faNoteSticky } from '@fortawesome/free-solid-svg-icons';
 
 
 const NavLinkTo = ({ href, title, icon }) => (
@@ -72,9 +72,9 @@ const FAIcon = ({ Icon }) => (
 const SideNav = () => {
   const navigate = useNavigate();
   return (
-      <Navbar className='home'>
+      <Navbar className='home-desktop show-desktop-version'>
         <Card className='cardSide'>
-          <Card.Img className="cardSide-img-top mx-auto mt-2" variant="top" onClick={()=> navigate("/")} src={'https://i.ibb.co/RjNZH1H/logo.png'} />
+        <Card.Img className="cardSide-img-top mx-auto mt-2" variant="top" onClick={()=> navigate("/")} src={'https://i.ibb.co/RjNZH1H/logo.png'} />
 
           <Card.Body
             style={{
@@ -87,9 +87,10 @@ const SideNav = () => {
               <NavLinkTo title='Home' href='/' icon={<FAIcon Icon={AiFillHome} />} />
               <StrictRoute roles={[Roles.STUDENT, Roles.ADMIN, Roles.TEACHER]}>
                 <NavLinkTo title='Meu Perfil' href='/perfil' icon={<FAIcon Icon={FaUser} />} />
+                {/* <NavLinkTo title='Meus Boletins' href='/user/see-report-cards' icon={<FAIcon Icon={FaList} />} /> */}
+                <NavLinkTo title='Meus Certificados' href='/user/certificates' icon={<FAIcon Icon={FaStickyNote} />} />
               </StrictRoute>
               <OnlyNotLogged>
-                <NavLinkTo title='Cadastre-se' href='/register' icon={<FAIcon Icon={GiArchiveRegister} />} />
                 <NavLinkTo title='Logar-se' href='/login' icon={<FAIcon Icon={TbLogin} />} />
               </OnlyNotLogged>
             </NavGroupFlush>
@@ -121,7 +122,7 @@ const SideNav = () => {
             </Card.Footer>
           </StrictRoute>
         </Card>
-      </Navbar >
+      </Navbar>
     );
   }
 

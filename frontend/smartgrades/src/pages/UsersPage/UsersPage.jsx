@@ -12,9 +12,9 @@ import Navbar from 'react-bootstrap/Navbar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { AuthAPI } from '../../api/auth-api';
-import { HttpStatus } from '../../api/default';
+import { HttpStatus, Roles } from '../../api/default';
 import { useAuthContext } from '../../contexts/AuthContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import './UsersPage.css';
 import { UserAPI } from '../../api/users';
@@ -48,9 +48,21 @@ function UsersPage() {
     setSearchValue(e.target.value);
   };
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     getUsers();
   }, [listStudents, token]);
+
+  const hasRole = (roleName) => {
+    return user.roles.some(role => role.name === roleName);
+  };
+
+  useEffect(() => {
+    if (!hasRole(Roles.TEACHER) && !hasRole(Roles.ADMIN)) {
+      navigate('/user/see-report-cards/');
+    }
+  }, [user]);
 
   const filteredUsers = usersData.filter((user) =>
     user.name.toLowerCase().includes(searchValue.toLowerCase())
@@ -96,7 +108,7 @@ function UsersPage() {
 
               <div className="mb-3 container-input">
                 <input
-                style={{color:"black"}}
+                  style={{ color: "black" }}
                   placeholder="Buscar usuários"
                   className='input-search'
                   value={searchValue}
