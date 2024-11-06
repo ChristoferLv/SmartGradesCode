@@ -18,76 +18,93 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-    @Autowired
-    private UserAuthenticationFilter userAuthenticationFilter;
+        @Autowired
+        private UserAuthenticationFilter userAuthenticationFilter;
 
-    public static final String[] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
-            "/api/v1/user/login", // Url que usaremos para fazer login
-    };
+        public static final String[] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
+                        "/api/v1/user/login", // Url que usaremos para fazer login
+        };
 
-    // Endpoints que requerem autenticação para serem acessados
-    public static final String[] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
-            "/api/v1/user/test",
-            "/api/v1/user/user-info",
-            "/api/v1/user/change-role",
-            "/api/v1/user",
-            "/api/v1/user/get-user-by-id",
-            "/api/v1/user/update-user",
-            "/api/v1/user/change-password-of",
-            "/api/v1/user/list-active-users",
-            "/api/v1/user/list-teachers",
-            "/api/v1/user/change-role",
-            "/api/v1/user/upload-profile-picture",
+        // Endpoints que requerem autenticação para serem acessados
+        public static final String[] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
+                        "/api/v1/user/test",
+                        "/api/v1/user/user-info", // todos
+                        "/api/v1/user/change-role", // admin
+                        "/api/v1/user", // teacher
+                        "/api/v1/user/get-user-by-id", // teacher
+                        "/api/v1/user/update-user", // teacher
+                        "/api/v1/user/change-password", // user
+                        "/api/v1/user/change-password-of", // teacher
+                        "/api/v1/user/list-active-users", // teacher
+                        "/api/v1/user/list-teachers", // teacher
+                        "/api/v1/user/change-role", // teacher
+                        "/api/v1/user/upload-profile-picture", // todos
 
-            "/api/v1/classes/get-class-by-id",
-            "/api/v1/classes/update-class",
-            "/api/v1/classes/enroll",
-            "/api/v1/classes/get-enrolled-class",
-            "/api/v1/classes/students-enrolled",
+                        "/api/v1/classes/get-class-by-id", // teacher
+                        "/api/v1/classes/update-class", // teacher
+                        "/api/v1/classes/enroll", // teacher
+                        "/api/v1/classes/get-enrolled-class", // teacher
+                        "/api/v1/classes/students-enrolled", // teacher
 
-            "/api/v1/reportCard",
-            "/api/v1/reportCard/list-report-cards-from",
-            "/api/v1/reportCard/get-report-card",
-            "/api/v1/reportCard/update-report-card",
-            "/api/v1/reportCard/change-report-card-status",
+                        "/api/v1/reportCard", // teacher
+                        "/api/v1/reportCard/list-report-cards-from", // user
+                        "/api/v1/reportCard/get-report-card", // teacher
+                        "/api/v1/reportCard/update-report-card", // teacher
+                        "/api/v1/reportCard/change-report-card-status", // teacher
 
-            "/api/v1/certificate/generate",
-            "/api/v1/certificate/list",
-            "/api/v1/certificate",
+                        "/api/v1/certificate/generate", // teacher
+                        "/api/v1/certificate/list", // user
+                        "/api/v1/certificate", // teacher
 
-            "/api/v1/aulas/register",
-            "/api/v1/aulas/list",
+                        "/api/v1/aulas/register", // teacher
+                        "/api/v1/aulas/list", // teacher
 
-            "/api/v1/attendance/stats"
-    };
+                        "/api/v1/attendance/stats" // teacher
+        };
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity.csrf(csrf -> csrf.disable()) // Disable CSRF protection
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless
-                                                                                                              // session
-                                                                                                              // policy
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS).permitAll() // Allow preflight requests
-                        .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).permitAll() // Public endpoints
-                        .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED).authenticated() // Secure endpoints
-                        .anyRequest().permitAll() // TROCAR PARA DENYALL QUANDO FINALIZADO !!!!!!!!!!!!!!!!!!!!!!!!!!!
-                )
-                // Only add the authentication filter for endpoints that require authentication
-                .addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
-    }
+        // Endpoints que só podem ser acessador por usuários com permissão de cliente
+        public static final String[] ENDPOINTS_TEACHER = {
+                        "/users/test/customer"
+        };
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
-            throws Exception {
-        System.out.println("isso foi chamado");
-        return authenticationConfiguration.getAuthenticationManager();
-    }
+        // Endpoints que só podem ser acessador por usuários com permissão de
+        // administrador
+        public static final String[] ENDPOINTS_ADMIN = {
+                        "/users/test/administrator"
+        };
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+                return httpSecurity.csrf(csrf -> csrf.disable()) // Disable CSRF protection
+                                .sessionManagement(session -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless
+                                                                                                         // session
+                                                                                                         // policy
+                                .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers(HttpMethod.OPTIONS).permitAll() // Allow preflight
+                                                                                                 // requests
+                                                .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).permitAll() // Public
+                                                                                                                         // endpoints
+                                                .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED).authenticated() // Secure
+                                                                                                                         // endpoints
+                                                .anyRequest().permitAll() // TROCAR PARA DENYALL QUANDO FINALIZADO
+                                                                          // !!!!!!!!!!!!!!!!!!!!!!!!!!!
+                                )
+                                // Only add the authentication filter for endpoints that require authentication
+                                .addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                                .build();
+        }
+
+        @Bean
+        public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+                        throws Exception {
+                System.out.println("isso foi chamado");
+                return authenticationConfiguration.getAuthenticationManager();
+        }
+
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 
 }
