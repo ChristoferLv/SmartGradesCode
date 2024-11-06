@@ -37,9 +37,6 @@ public class ReportCardController {
     public ResponseEntity<List<ReportCardDTO>> getReportCardsByStudentId(@PathVariable Long studentId) {
         System.out.println("[ReportCard Controller] getReportCardsByStudentId " + studentId);
         List<ReportCardDTO> reportCards = reportCardService.listReportCardByUserId(studentId);
-        if (reportCards.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
         return ResponseEntity.ok(reportCards);
     }
 

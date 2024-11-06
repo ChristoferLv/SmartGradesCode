@@ -75,7 +75,7 @@ public class CertificateService {
         // Find all certificates for the user
         List<StudentCertificate> certificates = certificateRepository.findByUserId(userId);
         if (certificates == null || certificates.isEmpty()) {
-            return null;
+            return new ArrayList<>();
         }
 
         // Convert the certificates to DTOs

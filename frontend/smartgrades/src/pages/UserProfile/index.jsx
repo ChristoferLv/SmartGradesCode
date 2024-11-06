@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Col, Container, Navbar, Row, Card, Button, Dropdown } from 'react-bootstrap'
 import Avatar from 'react-avatar'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars } from '@fortawesome/free-solid-svg-icons'
+import { faPen } from '@fortawesome/free-solid-svg-icons'
 import { HttpStatus } from "../../api/default";
 import { useNavigate } from 'react-router-dom'
 import { useAuthContext } from '../../contexts/AuthContext'
@@ -181,14 +181,14 @@ const UserProfileScreen = () => {
                   <Dropdown>
                     <DropdownToggle className='gear'>
                       <FontAwesomeIcon
-                        icon={faBars}
+                        icon={faPen}
                       />
                     </DropdownToggle>
                     <DropdownMenu>
                       <Dropdown.Item className="dropdown-item-no-highlight" onClick={() => editar()}>Editar Perfil</Dropdown.Item>
                       <Dropdown.Item className="dropdown-item-no-highlight" onClick={() => changePass()}>Alterar Senha</Dropdown.Item>
-                      <Dropdown.Item className="dropdown-item-no-highlight" onClick={() => seeReportCards()}>Meus Boletins</Dropdown.Item>
-                      <Dropdown.Item className="dropdown-item-no-highlight" onClick={() => seeCertificates()}>Meus Certificados</Dropdown.Item>
+                      {/* <Dropdown.Item className="dropdown-item-no-highlight" onClick={() => seeReportCards()}>Meus Boletins</Dropdown.Item> */}
+                      {/* <Dropdown.Item className="dropdown-item-no-highlight" onClick={() => seeCertificates()}>Meus Certificados</Dropdown.Item> */}
                     </DropdownMenu>
                   </Dropdown>
                 </Navbar.Text>
@@ -228,7 +228,7 @@ const UserProfileScreen = () => {
                       <label className='d-flex justify-content-center' htmlFor="input-files-user-photo-update" >
                         {user.profilePicture ? <img
                           src={`data:image/jpeg;base64,${user.profilePicture}`} // Ajuste o tipo de imagem conforme necessário
-                          style={{ width: '70%', aspectRatio: 1, borderRadius: '50%', objectFit: 'fill', objectPosition: 'center', cursor: 'pointer' }}
+                          style={{ width: '70%', aspectRatio: 1, borderRadius: '50%', objectFit: 'fill', objectPosition: 'center', cursor: 'pointer', paddingTop: '10px' }}
                           alt="profile"
                         />
                           : <Avatar
@@ -237,7 +237,7 @@ const UserProfileScreen = () => {
                             size={150}
                             textSizeRatio={2}
                             round={true}
-                            style={{ cursor: 'pointer' }}
+                            style={{ cursor: 'pointer', paddingTop: '10px' }}
                           />}
                       </label>
                     </OverlayTrigger>

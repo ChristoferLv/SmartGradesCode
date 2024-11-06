@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -113,40 +114,62 @@ public class ReportCardService {
     }
 
     public List<ReportCardDTO> listReportCardByUserId(Long studentId) {
-        System.out.println("[ReportCard Service] listReportCardByUserId " + studentId);
-        return reportCardRepository.findByStudentId(studentId).stream()
-                .map(reportCard -> {
-                    // Fetch the user and student class
-                    User user = reportCard.getStudent();
-                    StudentsClass studentClass = reportCard.getStudentClass();
+    System.out.println("[ReportCard Service] listReportCardByUserId " + studentId);
 
-                    // Map to simplified DTOs
-                    UserDTOSimplified userDTOSimplified = UserDTOSimplified.builder().name(user.getName()).id(studentId)
-                            .build();
-                    StudentClassDTOSimplified studentClassDTOSimplified = StudentClassDTOSimplified.builder()
-                            .id(studentClass.getId())
-                            .level(studentClass.getLevel())
-                            .classGroup(studentClass.getClassGroup())
-                            .period(studentClass.getPeriod())
-                            .build();
+    // Fetch the report cards by studentId
+    List<ReportCard> reportCards = reportCardRepository.findByStudentId(studentId);
 
-                    // Map the report card to DTO
-                    ReportCardDTO reportCardDTO = reportCardMapper.toDTO(reportCard);
-
-                    // Set the student and student class fields
-                    reportCardDTO.setStudent(userDTOSimplified);
-                    reportCardDTO.setStudentClass(studentClassDTOSimplified);
-
-                    int aulas = attendanceRepository.countTotalAulas(studentClass.getId());
-                    int presentAulas = attendanceRepository.countTotalPresentAttendances(studentId, studentClass.getId());
-
-                    reportCardDTO.setTotalClasses(aulas);
-                    reportCardDTO.setTotalPresentClasses(presentAulas);
-
-                    return reportCardDTO;
-                })
-                .collect(Collectors.toList());
+    // Return an empty list if no report cards are found
+    if (reportCards == null || reportCards.isEmpty()) {
+        return new ArrayList<>();
     }
+
+    return reportCards.stream()
+            .map(reportCard -> {
+                // Fetch the user and student class
+                User user = reportCard.getStudent();
+                StudentsClass studentClass = reportCard.getStudentClass();
+
+                // Handle potential null values for user or studentClass
+                if (user == null || studentClass == null) {
+                    return null; // Skip this report card if either is null
+                }
+
+                // Map to simplified DTOs
+                UserDTOSimplified userDTOSimplified = UserDTOSimplified.builder()
+                        .name(user.getName())
+                        .id(studentId)
+                        .build();
+                
+                StudentClassDTOSimplified studentClassDTOSimplified = StudentClassDTOSimplified.builder()
+                        .id(studentClass.getId())
+                        .level(studentClass.getLevel())
+                        .classGroup(studentClass.getClassGroup())
+                        .period(studentClass.getPeriod())
+                        .build();
+
+                // Map the report card to DTO
+                ReportCardDTO reportCardDTO = reportCardMapper.toDTO(reportCard);
+
+                // Set the student and student class fields
+                reportCardDTO.setStudent(userDTOSimplified);
+                reportCardDTO.setStudentClass(studentClassDTOSimplified);
+
+                // Fetch attendance data
+                int aulas = attendanceRepository.countTotalAulas(studentClass.getId());
+                int presentAulas = attendanceRepository.countTotalPresentAttendances(studentId, studentClass.getId());
+
+                // Set attendance data
+                reportCardDTO.setTotalClasses(aulas);
+                reportCardDTO.setTotalPresentClasses(presentAulas);
+
+                return reportCardDTO;
+            })
+            // Filter out null elements (in case any were skipped due to null values)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
+}
+
 
     public ReportCardDTO getReportCardById(Long reportCardId) {
         System.out.println("[ReportCard Service] getReportCardById " + reportCardId);

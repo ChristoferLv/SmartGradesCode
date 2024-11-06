@@ -18,7 +18,6 @@ const CertificatesPage = () => {
         try {
             const response = await CertificateAPI.getCertificates(user.id, token); // Assuming this API endpoint exists
             if (response.status === HttpStatus.OK) {
-                console.log(response)
                 const sortedCertificates = response.data.sort((a, b) => 
                     new Date(b.creationDate) - new Date(a.creationDate)
                 );
