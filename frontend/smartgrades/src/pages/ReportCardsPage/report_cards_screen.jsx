@@ -15,31 +15,33 @@ const StudentReportCardsScreen = () => {
     const notifySuccess = (texto) => toast.success(texto);
     const notifyError = (texto) => toast.error(texto);
 
-    useEffect(() => {
-        const fetchReportCards = async () => {
-            try {
-                let idToUse = -1
-                if (hasRole("TEACHER") || hasRole("ADMIN")) {
-                    idToUse = id
-                } else {
-                    idToUse = user.id
-                }
-                const response = await ReportCardAPI.getReportCardsOfStudent(idToUse, token);
-                if (response.status === HttpStatus.OK) {
-                    const sortedReportCards = response.data.sort((a, b) => b.id - a.id);
-                    setReportCards(sortedReportCards);
-                } else {
-                    if (response.data == null) {
-                        return;
-                    }
-                    notifyError("Error fetching report cards.");
-                }
-            } catch (error) {
-                notifyError("Failed to load report cards.");
-            } finally {
-                setLoading(false);
+    const fetchReportCards = async () => {
+        try {
+            let idToUse = -1
+            if (hasRole("TEACHER") || hasRole("ADMIN")) {
+                idToUse = id
+            } else {
+                idToUse = user.id
             }
-        };
+            const response = await ReportCardAPI.getReportCardsOfStudent(idToUse, token);
+            if (response.status === HttpStatus.OK) {
+                const sortedReportCards = response.data.sort((a, b) => b.id - a.id);
+                setReportCards(sortedReportCards);
+            } else {
+                if (response.data == null) {
+                    return;
+                }
+                notifyError("Error fetching report cards.");
+            }
+        } catch (error) {
+            notifyError("Failed to load report cards.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+       
         fetchReportCards();
     }, [id, token]);
 
@@ -53,6 +55,7 @@ const StudentReportCardsScreen = () => {
             const response = await ReportCardAPI.updateReportCardStatus(reportcard, token);
             if (response.status === HttpStatus.OK) {
                 notifySuccess("Report card status updated successfully.");
+                fetchReportCards();
             } else {
                 notifyError("Error updating report card status.");
             }

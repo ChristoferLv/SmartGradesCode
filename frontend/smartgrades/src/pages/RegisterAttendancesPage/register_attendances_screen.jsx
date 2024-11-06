@@ -58,8 +58,7 @@ const RegisterAttendancesScreen = () => {
         try {
             // Submit the report card to the API
             const response = await AttendanceAPI.registerAula(attendanceData, token);
-            console.log("attendanceData:", attendanceData);
-
+            
             if (response.status === HttpStatus.OK) {
                 notify.notifySuccess('Report card submitted successfully');
             } else {
