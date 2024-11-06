@@ -49,6 +49,7 @@ public class SecurityConfiguration {
             "/api/v1/reportCard/list-report-cards-from",
             "/api/v1/reportCard/get-report-card",
             "/api/v1/reportCard/update-report-card",
+            "/api/v1/reportCard/change-report-card-status",
 
             "/api/v1/certificate/generate",
             "/api/v1/certificate/list",

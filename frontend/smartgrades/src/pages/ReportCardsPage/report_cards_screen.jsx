@@ -12,6 +12,7 @@ const StudentReportCardsScreen = () => {
     const [reportCards, setReportCards] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    const notifySuccess = (texto) => toast.success(texto);
     const notifyError = (texto) => toast.error(texto);
 
     useEffect(() => {
@@ -46,6 +47,20 @@ const StudentReportCardsScreen = () => {
         return user.roles.some(role => role.name === roleName);
     };
 
+    const handleReportCardStatus = async (id, reportCardStatus) => {
+        try {
+            const reportcard = { id: id, reportCardStatus: !reportCardStatus };
+            const response = await ReportCardAPI.updateReportCardStatus(reportcard, token);
+            if (response.status === HttpStatus.OK) {
+                notifySuccess("Report card status updated successfully.");
+            } else {
+                notifyError("Error updating report card status.");
+            }
+        } catch (error) {
+            notifyError("Failed to update report card status.");
+        }
+    }
+
 
     return (
         <section className="box-course pb-1 pt-1">
@@ -61,9 +76,12 @@ const StudentReportCardsScreen = () => {
                             {reportCards.map((reportCard) => (
                                 <Col key={reportCard.id} className="mb-4">
                                     <Card className="p-4" style={{ maxWidth: '800px', margin: 'auto' }}>
-                                        {user && (hasRole("TEACHER") || hasRole("ADMIN")) && <Link to={`/teacher/edit-report-card/${reportCard.id}`} style={{ position: 'absolute', top: '10px', right: '10px' }}>
+                                        {user && ((hasRole("TEACHER") && reportCard.reportCardStatus) || hasRole("ADMIN")) && <Link to={`/teacher/edit-report-card/${reportCard.id}`} style={{ position: 'absolute', top: '10px', right: '10px' }}>
                                             <Button variant="secondary">Edit</Button>
                                         </Link>}
+                                        {user && (hasRole("ADMIN")) &&
+                                            <Button style={{ position: 'absolute', top: '10px', right: '80px' }} variant="secondary" onClick={() => handleReportCardStatus(reportCard.id, reportCard.reportCardStatus)}>{reportCard.reportCardStatus ? "Close" : "Re-open"}</Button>
+                                        }
                                         <h2 className="text-center mb-4" style={{ color: 'black' }}>REPORT CARD</h2>
 
                                         {/* Student Information */}

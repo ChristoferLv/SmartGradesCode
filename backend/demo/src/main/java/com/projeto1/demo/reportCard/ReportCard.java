@@ -35,6 +35,9 @@ public class ReportCard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private boolean reportCardStatus;   //Boletim aberto, boletim fechado. Quando fechado, apenas o admin pode fazer modificações
+    
     @ManyToOne
     @JoinColumn(name = "student_id", nullable = false)
     private User student;

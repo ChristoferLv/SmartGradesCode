@@ -63,6 +63,13 @@ public class ReportCardController {
         return ResponseEntity.ok(messageResponse);
     }
 
+    @PutMapping("change-report-card-status")
+    public ResponseEntity<MessageResponseDTO> changeReportCardStatus(@Valid @RequestBody ReportCardStatusDTO reportCardStatusDTO) {
+        System.out.println("[ReportCard Controller] changeReportCardStatus " + reportCardStatusDTO.id());
+        MessageResponseDTO messageResponse = reportCardService.changeReportCardStatus(reportCardStatusDTO);
+        return ResponseEntity.ok(messageResponse);
+    }
+
     @GetMapping()
     public List<String> listAllReportCards() {
         System.out.println("[ReportCard Controller] listAllReportCards");
