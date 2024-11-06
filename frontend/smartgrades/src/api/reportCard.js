@@ -96,10 +96,36 @@ const updateReportCard = async (reportCardId, reportCardDTO, jwt) => {
     }
 }
 
+const updateReportCardStatus = async ( data, jwt) => {
+    const url = `${BASE_URLv1}/reportCard/change-report-card-status`;
+    try {
+        const options = {
+            method: 'PUT',
+            headers: {
+                Authorization: `Bearer ${jwt}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        };
+        const response = await fetch(url, options);
+        if (response.ok) {
+            const data = await response.json();
+            AUTH_DEBUG && console.log("ReportCardsAPI::updateReportCardStatus ", data);
+            return new HttpResponse(HttpStatus.OK, data);
+        } else {
+            throw new Error("Error updating report card status");
+        }
+    } catch (error) {
+        console.log("updateReportCardStatus Error: ", error);
+        return new HttpResponse(HttpStatus.ERROR, null);
+    }
+}
+
 
 export const ReportCardAPI = {
     submitReportCard,
     getReportCardsOfStudent,
     getReportCard,
     updateReportCard,
+    updateReportCardStatus
 }

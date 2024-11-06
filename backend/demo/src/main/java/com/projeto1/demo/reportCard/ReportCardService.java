@@ -103,6 +103,8 @@ public class ReportCardService {
 
         reportCard.setAssessments(assessments);
 
+        reportCard.setReportCardStatus(true);
+
         // Save the ReportCard (which will automatically save evaluations and
         // assessments due to CascadeType.ALL)
         reportCardRepository.save(reportCard);
@@ -245,6 +247,29 @@ public class ReportCardService {
                 .message("ReportCard updated with ID " + existingReportCard.getId())
                 .build();
     }
+
+    public MessageResponseDTO changeReportCardStatus(ReportCardStatusDTO reportCardStatusDTO) {
+        System.out.println("[ReportCard Service] changeReportCardStatus " + reportCardStatusDTO.id());
+
+        // Fetch the existing report card from the database
+        ReportCard existingReportCard = reportCardRepository.findById(reportCardStatusDTO.id())
+                .orElse(null);
+        if (existingReportCard == null) {
+            return MessageResponseDTO.builder()
+                    .message("Report card not found with ID " + reportCardStatusDTO.id())
+                    .build();
+        }
+
+        // Close the report card
+        existingReportCard.setReportCardStatus(reportCardStatusDTO.reportCardStatus());
+        reportCardRepository.save(existingReportCard);
+
+        return MessageResponseDTO.builder()
+                .message("ReportCard closed with ID " + existingReportCard.getId())
+                .build();
+    }
+
+
 
     public List<String> listAll() {
         System.out.println("[ReportCard Service] listAll\n");

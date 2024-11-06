@@ -61,8 +61,8 @@ const ReportCardForm = () => {
         try {
             // Submit the report card to the API
             const response = await ReportCardAPI.submitReportCard(reportCardDTO, token);
-            console.log("teacherId:", reportCardDTO.teacherId);
-            console.log("ReportCardAPI.submitReportCard:", JSON.stringify(reportCardDTO));
+            //console.log("teacherId:", reportCardDTO.teacherId);
+            //console.log("ReportCardAPI.submitReportCard:", JSON.stringify(reportCardDTO));
 
             if (response.status === HttpStatus.OK) {
                 notify.notifySuccess('Report card submitted successfully');
