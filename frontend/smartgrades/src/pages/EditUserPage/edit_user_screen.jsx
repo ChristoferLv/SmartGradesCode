@@ -64,10 +64,19 @@ export default function EditUserScreen() {
             const fetchUserData = async () => {
                 const response = await UserAPI.getUserById(id, token);
                 if (response.status === 200) {
-                    setFormValues(response.data);
-                    
+                    const userData = response.data;
+        
+                    // Format the phone number if it's present
+                    const formattedPhoneNumber = formatPhoneNumber(userData.phoneNumber || '');
+        
+                    // Update the form values with the formatted phone number
+                    setFormValues({
+                        ...userData,
+                        phoneNumber: formattedPhoneNumber
+                    });
+        
                     // Set selected roles based on the fetched user data
-                    const userRoles = response.data.roles.map(role => role.name);
+                    const userRoles = userData.roles.map(role => role.name);
                     setSelectedRoles(userRoles);
                 } else {
                     notifyError("Error fetching user data");
@@ -75,6 +84,7 @@ export default function EditUserScreen() {
             };
             fetchUserData();
         }, [id, token]);
+        
     
 
     const handleChange = (e) => {
@@ -145,36 +155,44 @@ export default function EditUserScreen() {
     };
 
     function formatPhoneNumber(number) {
-        const formattedValue = number.replace(/\D/g, '')
-        if (!number) return '';
-        if (formattedValue.length === 11) {
-            return formattedValue.replace(/^(\d{2})(\d{1})(\d{4})(\d{4})/, '($1) $2$3-$4');
+        const formattedValue = number.replace(/\D/g, '');  // Remove all non-numeric characters
+        if (!formattedValue) return '';
+        
+        if (formattedValue.length <= 10) {
+            // Format as (XX) XXXX-XXXX for 10-digit numbers
+            return formattedValue.replace(/^(\d{2})(\d{4})(\d{4})$/, '($1) $2-$3');
+        } else if (formattedValue.length === 11) {
+            // Format as (XX) X XXXX-XXXX for 11-digit numbers
+            return formattedValue.replace(/^(\d{2})(\d{1})(\d{4})(\d{4})$/, '($1) $2 $3-$4');
         }
+        return formattedValue; // Return as is if not a valid length
     }
+    
 
     const validate = (values) => {
         const errors = {};
         const regexEmail = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
-        const regexPhone = /^\(\d{2}\) \d{4,5}-\d{4}$/;
-
+        const regexPhone = /^\(\d{2}\) \d{1} \d{4}-\d{4}$/; // Adjusted to match 11-digit phone numbers
+    
         if (!values.name) {
             errors.name = "Name is required";
         }
-
+    
         if (!values.email) {
             errors.email = "Email is required";
         } else if (!regexEmail.test(values.email)) {
             errors.email = "Invalid email format";
         }
-
+    
         if (!values.phoneNumber) {
             errors.phoneNumber = "Phone number is required";
-        } else if (!regexPhone.test(formatPhoneNumber(values.phoneNumber))) {
+        } else if (!regexPhone.test(values.phoneNumber)) {
             errors.phoneNumber = "Invalid phone number format";
         }
-
+    
         return errors;
     };
+    
 
     return (
         <div className="container-fluid p-5 col-sm-7 col-md-8 col-lg-10">
