@@ -18,7 +18,7 @@ public class CertificateController {
     private CertificateService certificateService;
 
     @PostMapping("/generate/{userId}")
-    public MessageResponseDTO generateCertificate(@PathVariable Long userId) {
+    public ResponseEntity<MessageResponseDTO> generateCertificate(@PathVariable Long userId) {
         System.out.println("[Certificate Controller] generateCertificate " + userId);
         return certificateService.generateCertificate(userId);
     }

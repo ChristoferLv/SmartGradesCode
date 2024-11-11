@@ -145,7 +145,7 @@ public class ReportCardService {
     }
 
     public List<ReportCardDTO> listReportCardByUserId(Long studentId) {
-        System.out.println("[ReportCard Service] listReportCardByUserId " + studentId);
+        System.out.println("[ReportCard Service] listReportCardByUserId " + studentId  + "\n");
 
         // Fetch the report cards by studentId
         List<ReportCard> reportCards = reportCardRepository.findByStudentId(studentId);
@@ -203,7 +203,7 @@ public class ReportCardService {
     }
 
     public ReportCardDTO getReportCardById(Long reportCardId) {
-        System.out.println("[ReportCard Service] getReportCardById " + reportCardId);
+        System.out.println("[ReportCard Service] getReportCardById " + reportCardId + "\n");
         return reportCardRepository.findById(reportCardId)
                 .map(reportCard -> {
                     return reportCardMapper.toDTO(reportCard);
@@ -303,7 +303,7 @@ public class ReportCardService {
     }
 
     public MessageResponseDTO changeReportCardStatus(ReportCardStatusDTO reportCardStatusDTO) {
-        System.out.println("[ReportCard Service] changeReportCardStatus " + reportCardStatusDTO.id());
+        System.out.println("[ReportCard Service] changeReportCardStatus " + reportCardStatusDTO.id() + "\n");
 
         // Fetch the existing report card from the database
         ReportCard existingReportCard = reportCardRepository.findById(reportCardStatusDTO.id())

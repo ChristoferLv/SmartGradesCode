@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.projeto1.demo.studentsClass.StudentsClass;
 import com.projeto1.demo.user.User;
 
 import jakarta.annotation.Generated;
@@ -36,6 +37,10 @@ public class StudentCertificate {
     @ManyToOne
     @JsonIgnore
     private User user;
+
+    @ManyToOne
+    @JsonIgnore
+    private StudentsClass studentsClass;
 
     @Column(nullable = false)
     @Lob

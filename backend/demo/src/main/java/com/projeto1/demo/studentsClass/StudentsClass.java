@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.HashSet;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.projeto1.demo.certificate.StudentCertificate;
 import com.projeto1.demo.reportCard.AcademicPeriod;
 import com.projeto1.demo.user.User;
 
@@ -16,6 +17,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
@@ -54,6 +56,10 @@ public class StudentsClass {
     @ManyToMany(mappedBy = "studentsClasses")
     @EqualsAndHashCode.Exclude // Prevent infinite loop
     private Set<User> students = new HashSet<>();
+
+    @OneToMany(mappedBy = "studentsClass")
+    @JsonIgnore
+    private Set<StudentCertificate> certificates = new HashSet<>();
 
     // Getters and Setters
 }

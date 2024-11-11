@@ -37,10 +37,11 @@ export default function ClassDetailsScreen() {
 
     const handleIssueCertificate = async (studentId) => {
         const response = await CertificateAPI.generateCertificate(studentId, token);
+        console.log(response);
         if (response.status === 200) {
             notify.notifySuccess("Certificate issued successfully.");
         } else {
-            notify.notifyError("Error issuing certificate.");
+            notify.notifyError("Error issuing certificate: " + response.data.message);
         }
     };
 
