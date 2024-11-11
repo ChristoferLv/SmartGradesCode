@@ -25,6 +25,15 @@ public class AulaController {
         }
     }
 
+    @GetMapping("/list-class-aulas/{id}")
+    public ResponseEntity<List<Aula>> getAulasByClassId(@PathVariable Long id) {
+        List<Aula> aulas = aulaService.getAulasByClassId(id);
+        if (aulas.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(aulas, HttpStatus.OK);
+    }
+
     @GetMapping("/list")
     public ResponseEntity<List<Aula>> getAllAulas() {
         List<Aula> aulas = aulaService.getAllAulas();

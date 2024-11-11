@@ -84,8 +84,8 @@ const SideNav = () => {
           >
             <NavText text='GERAL' />
             <NavGroupFlush>
-              <NavLinkTo title='Home' href='/' icon={<FAIcon Icon={AiFillHome} />} />
               <StrictRoute roles={[Roles.STUDENT, Roles.ADMIN, Roles.TEACHER]}>
+              <NavLinkTo title='Home' href='/' icon={<FAIcon Icon={AiFillHome} />} />
                 <NavLinkTo title='Meu Perfil' href='/perfil' icon={<FAIcon Icon={FaUser} />} />
                 {/* <NavLinkTo title='Meus Boletins' href='/user/see-report-cards' icon={<FAIcon Icon={FaList} />} /> */}
                 <NavLinkTo title='Meus Certificados' href='/user/certificates' icon={<FAIcon Icon={FaStickyNote} />} />
