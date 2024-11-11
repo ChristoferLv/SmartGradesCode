@@ -69,7 +69,8 @@ public class SecurityConfiguration {
                         "/api/v1/aulas/register", // teacher
                         "/api/v1/aulas/list", // teacher
 
-                        "/api/v1/attendance/stats" // teacher
+                        "/api/v1/attendance/stats", // teacher
+                        "/api/v1/aulas/list-class-aulas/**"
         };
 
         // Endpoints que só podem ser acessador por usuários com permissão de

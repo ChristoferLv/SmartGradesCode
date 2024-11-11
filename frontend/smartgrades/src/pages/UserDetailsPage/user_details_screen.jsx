@@ -46,14 +46,14 @@ const UserDetailsScreen = () => {
         fetchEnroledClasses()
     }, [userInfo])
 
-       useEffect(() => {
+    useEffect(() => {
         const fetchReportCards = async () => {
             const response = await ReportCardAPI.getReportCardsOfStudent(id, token); // Fetch report cards
             if (response.status === HttpStatus.OK) {
                 const sortedReportCards = response.data.sort((a, b) => b.id - a.id); // Sort in descending order by ID
                 setReportCards(sortedReportCards);
             } else {
-                if(response.dara == null){
+                if (response.dara == null) {
                     return;
                 }
                 notifyError("Error fetching report cards.");
@@ -116,6 +116,7 @@ const UserDetailsScreen = () => {
                                             {userInfo.name}
                                         </h1>
                                     </Col>
+
                                 </Col>
                             </Row>
                             <Card.Footer className="d-flex justify-content-center align-items-center">
@@ -127,6 +128,14 @@ const UserDetailsScreen = () => {
                     </Col>
 
                     <Col>
+                        <Col className="d-flex justify-content-end mb-3 mt-0">
+                            <Button
+                                variant="warning"
+                                onClick={() => navigate(`/teacher/edit-user/${id}`)}
+                            >
+                                Edit User
+                            </Button>
+                        </Col>
                         <Row className="mb-4">
                             <Card style={{ padding: '16px' }}>
                                 <Row className="mb-3">
@@ -203,7 +212,8 @@ const UserDetailsScreen = () => {
                 </Row>
             </Container>
         </>
-    ) : null
-}
+    ) : null;
+};
+
 
 export default UserDetailsScreen

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link, Route, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button, Spinner, Table } from "react-bootstrap";
-import { Bounce, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ClassesAPI } from '../../api/studentClasses';
 import { useAuthContext } from '../../contexts/AuthContext';
@@ -17,7 +17,6 @@ export default function ClassDetailsScreen() {
     const navigate = useNavigate();
 
     const handleUnenroll = async (studentId, id, token) => {
-
         const enrollmentDTO = {
             studentId: studentId,
             classId: id,
@@ -44,7 +43,6 @@ export default function ClassDetailsScreen() {
             notify.notifyError("Error issuing certificate: " + response.data.message);
         }
     };
-
 
     // Fetch class data and enrolled students
     useEffect(() => {
@@ -75,7 +73,7 @@ export default function ClassDetailsScreen() {
             <div className="row mb-3">
                 <div className="col">
                     <img
-                        style={{ width: '7em', borderRadius:"15px" }}
+                        style={{ width: '7em', borderRadius: "15px" }}
                         onClick={() => navigate('/')}
                         src="https://i.ibb.co/RjNZH1H/logo.png"
                         alt="logo"
@@ -84,12 +82,20 @@ export default function ClassDetailsScreen() {
                 </div>
                 <div className="col-auto">
                     <Button
-                    style={{backgroundColor: "#FFD700", color: "black", border: "none"}}
+                        style={{ backgroundColor: "#FFD700", color: "black", border: "none" }}
                         className="ms-3"
                         variant="success"
                         onClick={() => navigate(`/teacher/edit-class/${id}`)}
                     >
                         Edit Class
+                    </Button>
+                    <Button
+                        style={{ backgroundColor: "#FFD700", color: "black", border: "none" }}
+                        className="ms-3"
+                        variant="success"
+                        onClick={() => navigate(`/teacher/aulas/${id}`)}
+                    >
+                        View Lectures
                     </Button>
                 </div>
             </div>
@@ -109,7 +115,6 @@ export default function ClassDetailsScreen() {
                         >
                             Enroll Students
                         </Button>
-
                     </div>
                 </div>
             </div>
@@ -127,6 +132,7 @@ export default function ClassDetailsScreen() {
                             Take Attendances
                         </Button>
                     </Link>
+
                     {classDetails.students && classDetails.students.length > 0 ? (
                         <Table striped bordered hover>
                             <thead>
@@ -165,11 +171,8 @@ export default function ClassDetailsScreen() {
                     ) : (
                         <p>No students enrolled yet.</p>
                     )}
-
                 </div>
             </div>
         </div>
     );
 }
-
-

@@ -63,6 +63,11 @@ public class AulaService {
         return aulaRepository.save(newAula);
     }
 
+    // Método para buscar todas as aulas de uma turma
+    public List<Aula> getAulasByClassId(Long id) {
+        return aulaRepository.findByStudentsClassIdOrderByDateDesc(id);
+    }
+
       // Método para buscar todas as aulas
       public List<Aula> getAllAulas() {
         return aulaRepository.findAll();
