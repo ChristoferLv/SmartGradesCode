@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest  # Uses the latest PostgreSQL image
+    container_name: postgres_db  # Optional: name your container
+    environment:
+      POSTGRES_DB: smartgradesDB     # The database to create
+      POSTGRES_USER: smartgradesUser        # Username for authentication
+      POSTGRES_PASSWORD: smartgradesPass    # Password for the user
+    ports:
+      - "5432:5432"  # Expose PostgreSQL on port 5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data  # Persist data outside the container
+
+volumes:
+  pgdata:  # Named volume to persist PostgreSQL data
