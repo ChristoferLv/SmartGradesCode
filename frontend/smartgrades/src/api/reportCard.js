@@ -2,6 +2,7 @@ import { AUTH_DEBUG, BASE_URLv1, HttpResponse, HttpStatus } from "./default";
 
 const submitReportCard = async (reportCardDTO, jwt) => {
     const url = `${BASE_URLv1}/reportCard`;
+    var errorMessage = "";
     try {
         const options = {
             method: 'POST',
@@ -17,11 +18,12 @@ const submitReportCard = async (reportCardDTO, jwt) => {
             AUTH_DEBUG && console.log("ReportCardsAPI::submitReportCard ", data);
             return new HttpResponse(HttpStatus.OK, data);
         } else {
+            errorMessage = await response.json();
             throw new Error("Error submitting report card");
         }
     } catch (error) {
         console.log("submitReportCard Error: ", error);
-        return new HttpResponse(HttpStatus.ERROR, null);
+        return new HttpResponse(HttpStatus.ERROR, errorMessage);
     }
 }
 
