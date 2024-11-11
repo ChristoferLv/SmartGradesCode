@@ -81,7 +81,7 @@ public class UserController {
     }
 
     @PostMapping
-    public MessageResponseDTO createNewUser(@RequestBody @Valid UserDTO userDTO, HttpServletRequest request) {
+    public ResponseEntity<MessageResponseDTO> createNewUser(@RequestBody @Valid UserDTO userDTO, HttpServletRequest request) {
         System.out.println("[User Controller] registerNewUser " + userDTO.getName());
 
         String authorizationHeader = request.getHeader("Authorization");

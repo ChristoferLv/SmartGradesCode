@@ -17,6 +17,7 @@ const registerUser = async (formValues, jwt) => {
         }
 
         const response = await fetch(url, options);
+        console.log(response)
         if (response.ok) {
             const data = await response.json();
             AUTH_DEBUG && console.log("AuthAPI::Register(): ", data.token);

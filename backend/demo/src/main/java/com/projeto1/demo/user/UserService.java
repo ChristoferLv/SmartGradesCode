@@ -104,12 +104,12 @@ public class UserService {
         return userMapper.toDTO(user);
     }
 
-    public MessageResponseDTO addNewUser(UserDTO userDTO, String token) {
+       public ResponseEntity<MessageResponseDTO> addNewUser(UserDTO userDTO, String token) {
         System.out.println("[User Service] addNewUser " + userDTO);
-
+    
         // Check if the creator user is authorized (Teacher or Admin)
         String username = jwtTokenService.getSubjectFromToken(token);
-
+    
         // Find the user by email (or username) and convert it to a DTO
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -117,15 +117,22 @@ public class UserService {
         boolean hasAuthority = user.getRoles().stream()
                 .map(role -> role.getName()) // Adjust based on your role structure
                 .anyMatch(roleName -> roleName.equals(ERole.ADMIN) || roleName.equals(ERole.TEACHER));
-
+    
         if (!hasAuthority) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,
                     "User does not have the required role to add a new user.");
         }
         System.out.println(hasAuthority);
-
+    
+        // Check if the email already exists
+        if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
+            return ResponseEntity.badRequest()
+                    .body(MessageResponseDTO.builder()
+                            .message("Email already in use.").build());
+        }
+    
         Set<Roles> roles = new HashSet<>();
-
+    
         // Iterate through role names in the DTO and fetch them from the database
         for (RolesDTO roleDTO : userDTO.getRoles()) {
             // Fetch the role from the database
@@ -134,20 +141,20 @@ public class UserService {
                 roles.add(role.get());
             }
         }
-
+    
         // Create a new user based on the provided DTO and encode the password
         User userToSave = userMapper.toEntity(userDTO);
         userToSave.setRoles(roles);
         userToSave.setPassword(securityConfiguration.passwordEncoder().encode(userDTO.getPassword()));
         userToSave.setState(UserStateUtil.ACTIVE.getState());
         userToSave.setCreatedAt(ZonedDateTime.now(ZoneId.of("America/Recife")).toInstant().toString());
-
+    
         // Save the new user in the repository
         User savedUser = userRepository.save(userToSave);
-
-        return MessageResponseDTO.builder()
+    
+        return ResponseEntity.ok(MessageResponseDTO.builder()
                 .message("Created user with ID " + savedUser.getId() + " " + savedUser.toString())
-                .build();
+                .build());
     }
 
     public MessageResponseDTO addNewTeacher(UserDTO userDTO, int creatorId) {
