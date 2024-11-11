@@ -3,6 +3,7 @@ import { AUTH_DEBUG, BASE_URLv1, HttpResponse, HttpStatus } from "./default";
 
 const generateCertificate = async (id, jwt) => {
     const url = `${BASE_URLv1}/certificate/generate/${id}`;
+    var errorMessage = "";
     try {
         const options = {
             method: 'POST',
@@ -12,16 +13,18 @@ const generateCertificate = async (id, jwt) => {
             },
         };
         const response = await fetch(url, options);
+        console.log(response);
         if (response.ok) {
             const data = await response.json();
             AUTH_DEBUG && console.log("ReportCardsAPI::getReportCards ", data);
             return new HttpResponse(HttpStatus.OK, data);
         } else {
-            throw new Error("Error getting certificates");
+            errorMessage = await response.json();
+            throw new Error("Error generating certificate");
         }
     } catch (error) {
-        console.log("getReportCards Error: ", error);
-        return new HttpResponse(HttpStatus.ERROR, null);
+        console.log("getReportCards Error: ", errorMessage);
+        return new HttpResponse(HttpStatus.ERROR, errorMessage);
     }
 }
 

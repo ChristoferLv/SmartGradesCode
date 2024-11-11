@@ -28,7 +28,7 @@ public class ReportCardController {
     }
 
     @PostMapping
-    public MessageResponseDTO createNewReportCard(@RequestBody @Valid ReportCardDTO reportCardDTO) {
+    public ResponseEntity<MessageResponseDTO> createNewReportCard(@RequestBody @Valid ReportCardDTO reportCardDTO) {
         System.out.println("[ReportCard Controller] createNewReportCard " + reportCardDTO.getStudentId());
         return reportCardService.addNewReportCard(reportCardDTO);
     }

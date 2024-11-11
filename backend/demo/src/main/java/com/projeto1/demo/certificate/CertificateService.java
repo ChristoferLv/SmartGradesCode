@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.projeto1.demo.messages.MessageResponseDTO;
@@ -24,20 +25,21 @@ public class CertificateService {
     @Autowired
     private UserRepository userRepository;
 
-    public MessageResponseDTO generateCertificate(Long userId) {
-        System.out.println("[Certificate Service] generateCertificate " + userId);
+    public ResponseEntity<MessageResponseDTO> generateCertificate(Long userId) {
+        System.out.println("[Certificate Service] generateCertificate " + userId + "\n");
 
         // Find the user by ID
         User user = userRepository.findById(userId).orElse(null);
         if (user == null) {
-            return MessageResponseDTO.builder().message("User with ID " + userId + " not found").build();
+            return ResponseEntity.badRequest()
+                    .body(MessageResponseDTO.builder().message("User not found for ID " + userId).build());
         }
 
         // Find all classes the student is enrolled in
         List<StudentsClass> studentClasses = new ArrayList<>(user.getStudentsClasses());
-        if (studentClasses == null || studentClasses.isEmpty()) {
-            return MessageResponseDTO.builder().message("No classes found for user ID " + userId).build();
-        }
+        if (studentClasses == null || studentClasses.isEmpty())
+            return ResponseEntity.badRequest()
+                    .body(MessageResponseDTO.builder().message("No classes found for user ID " + userId).build());
 
         // Find the active class
         StudentsClass activeClass = studentClasses.stream()
@@ -45,7 +47,15 @@ public class CertificateService {
                 .findFirst()
                 .orElse(null);
         if (activeClass == null) {
-            return MessageResponseDTO.builder().message("No active class found for user ID " + userId).build();
+            return ResponseEntity.badRequest().body(
+                    MessageResponseDTO.builder().message("No active class found for user ID " + userId).build());
+        }
+
+        // Check if a certificate already exists for this user in the active class
+        boolean certificateExists = certificateRepository.existsByUserIdAndStudentsClassId(userId, activeClass.getId());
+        if (certificateExists) {
+            return ResponseEntity.badRequest().body(MessageResponseDTO.builder()
+                    .message("Certificate already exists for this student.").build());
         }
 
         // Generate the certificate for the user and the active class
@@ -54,17 +64,18 @@ public class CertificateService {
         // Save the certificate in the repository
         StudentCertificate certificate = new StudentCertificate();
         certificate.setUser(user);
+        certificate.setStudentsClass(activeClass);
         certificate.setCertificateImage(certificateImage);
         certificate.setCreatedAt(ZonedDateTime.now(ZoneId.of("America/Recife")).toInstant().toString());
         certificateRepository.save(certificate);
 
-        return MessageResponseDTO.builder()
-                .message("Certificate generated and saved successfully for user ID " + userId)
-                .build();
+        return ResponseEntity
+                .ok(MessageResponseDTO.builder().message("Certificate generated for user ID " + userId).build());
+
     }
 
     public List<CertificateDTO> getAllUserCertificates(Long userId) {
-        System.out.println("[Certificate Service] getAllUserCertificates " + userId);
+        System.out.println("[Certificate Service] getAllUserCertificates " + userId + "\n");
 
         // Find the user by ID
         User user = userRepository.findById(userId).orElse(null);
@@ -82,17 +93,16 @@ public class CertificateService {
         List<CertificateDTO> certificateDTOs = new ArrayList<>();
         for (StudentCertificate certificate : certificates) {
             certificateDTOs.add(new CertificateDTO(
-                certificate.getId(),
-                certificate.getCreatedAt(),
-                certificate.getCertificateImage()
-            ));
+                    certificate.getId(),
+                    certificate.getCreatedAt(),
+                    certificate.getCertificateImage()));
         }
 
         return certificateDTOs;
     }
 
     public List<CertificateDTO> getAllCertificates() {
-        System.out.println("[Certificate Service] getAllCertificates");
+        System.out.println("[Certificate Service] getAllCertificates" + "\n");
 
         // Find all certificates
         List<StudentCertificate> certificates = certificateRepository.findAll();
@@ -104,10 +114,9 @@ public class CertificateService {
         List<CertificateDTO> certificateDTOs = new ArrayList<>();
         for (StudentCertificate certificate : certificates) {
             certificateDTOs.add(new CertificateDTO(
-                certificate.getId(),
-                certificate.getCreatedAt(),
-                certificate.getCertificateImage()
-            ));
+                    certificate.getId(),
+                    certificate.getCreatedAt(),
+                    certificate.getCertificateImage()));
         }
 
         return certificateDTOs;

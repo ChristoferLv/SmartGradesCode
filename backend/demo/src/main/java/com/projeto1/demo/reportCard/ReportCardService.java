@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.projeto1.demo.messages.MessageResponseDTO;
@@ -42,11 +43,41 @@ public class ReportCardService {
     @Autowired
     private AttendanceRepository attendanceRepository;
 
-    public MessageResponseDTO addNewReportCard(ReportCardDTO reportCardDTO) {
-        System.out.println("[ReportCard Service] addNewReportCard " + reportCardDTO.getStudentId());
+    public ResponseEntity<MessageResponseDTO> addNewReportCard(ReportCardDTO reportCardDTO) {
+        System.out.println("[ReportCard Service] addNewReportCard " + reportCardDTO.getStudentId() + "\n");
         ReportCard reportCard = reportCardMapper.toModel(reportCardDTO);
         User teacher = userRepository.findById(reportCardDTO.getTeacherId()).orElse(null);
         reportCard.setTeacherName(teacher.getName());
+
+        // Verificar se já existe uma avaliação inicial ou final para esta classe
+        List<ReportCard> existingReportCards = reportCardRepository
+                .findByStudentIdAndStudentClassId(reportCardDTO.getStudentId(), reportCardDTO.getStudentClassId());
+
+        boolean hasFirstEvaluation = existingReportCards.stream()
+                .anyMatch(rc -> rc.getEvaluationType() == EvaluationType.FIRST_EVALUATION.getEval());
+        boolean hasFinalEvaluation = existingReportCards.stream()
+                .anyMatch(rc -> rc.getEvaluationType() == EvaluationType.FINAL_EVALUATION.getEval());
+
+        if (reportCardDTO.getEvaluationType() == EvaluationType.FIRST_EVALUATION.getEval()) {
+            if (hasFirstEvaluation) {
+                return ResponseEntity.badRequest()
+                        .body(MessageResponseDTO.builder()
+                                .message("Student already has a first evaluation for this class.").build());
+            }
+        }
+
+        if (reportCardDTO.getEvaluationType() == EvaluationType.FINAL_EVALUATION.getEval()) {
+            if (hasFinalEvaluation) {
+                return ResponseEntity.badRequest()
+                        .body(MessageResponseDTO.builder()
+                                .message("Student already has a final evaluation for this class.").build());
+            }
+            if (!hasFirstEvaluation) {
+                return ResponseEntity.badRequest()
+                        .body(MessageResponseDTO.builder()
+                                .message("Student must have a first evaluation before a final evaluation.").build());
+            }
+        }
 
         // Filtrar avaliações com base no tipo de avaliação do boletim
         EvaluationDTO evalDTO = reportCardDTO.getEvaluation().get(0);
@@ -65,9 +96,7 @@ public class ReportCardService {
         if (reportCardDTO.getEvaluationType() == EvaluationType.FINAL_EVALUATION.getEval()) {
             // Find the first evaluation report card and add the first evaluation to this
             // report card
-            Optional<ReportCard> firstEvalReportCard = reportCardRepository
-                    .findByStudentIdAndStudentClassId(reportCardDTO.getStudentId(), reportCardDTO.getStudentClassId())
-                    .stream()
+            Optional<ReportCard> firstEvalReportCard = existingReportCards.stream()
                     .filter(rc -> rc.getEvaluationType() == EvaluationType.FIRST_EVALUATION.getEval())
                     .findFirst();
 
@@ -110,69 +139,71 @@ public class ReportCardService {
         // assessments due to CascadeType.ALL)
         reportCardRepository.save(reportCard);
 
-        return MessageResponseDTO.builder().message("ReportCard created with ID " + reportCard.getId()).build();
+        return ResponseEntity.ok(MessageResponseDTO.builder()
+                .message("ReportCard created with ID " + reportCard.getId())
+                .build());
     }
 
     public List<ReportCardDTO> listReportCardByUserId(Long studentId) {
-    System.out.println("[ReportCard Service] listReportCardByUserId " + studentId);
+        System.out.println("[ReportCard Service] listReportCardByUserId " + studentId  + "\n");
 
-    // Fetch the report cards by studentId
-    List<ReportCard> reportCards = reportCardRepository.findByStudentId(studentId);
+        // Fetch the report cards by studentId
+        List<ReportCard> reportCards = reportCardRepository.findByStudentId(studentId);
 
-    // Return an empty list if no report cards are found
-    if (reportCards == null || reportCards.isEmpty()) {
-        return new ArrayList<>();
+        // Return an empty list if no report cards are found
+        if (reportCards == null || reportCards.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return reportCards.stream()
+                .map(reportCard -> {
+                    // Fetch the user and student class
+                    User user = reportCard.getStudent();
+                    StudentsClass studentClass = reportCard.getStudentClass();
+
+                    // Handle potential null values for user or studentClass
+                    if (user == null || studentClass == null) {
+                        return null; // Skip this report card if either is null
+                    }
+
+                    // Map to simplified DTOs
+                    UserDTOSimplified userDTOSimplified = UserDTOSimplified.builder()
+                            .name(user.getName())
+                            .id(studentId)
+                            .build();
+
+                    StudentClassDTOSimplified studentClassDTOSimplified = StudentClassDTOSimplified.builder()
+                            .id(studentClass.getId())
+                            .level(studentClass.getLevel())
+                            .classGroup(studentClass.getClassGroup())
+                            .period(studentClass.getPeriod())
+                            .build();
+
+                    // Map the report card to DTO
+                    ReportCardDTO reportCardDTO = reportCardMapper.toDTO(reportCard);
+
+                    // Set the student and student class fields
+                    reportCardDTO.setStudent(userDTOSimplified);
+                    reportCardDTO.setStudentClass(studentClassDTOSimplified);
+
+                    // Fetch attendance data
+                    int aulas = attendanceRepository.countTotalAulas(studentClass.getId());
+                    int presentAulas = attendanceRepository.countTotalPresentAttendances(studentId,
+                            studentClass.getId());
+
+                    // Set attendance data
+                    reportCardDTO.setTotalClasses(aulas);
+                    reportCardDTO.setTotalPresentClasses(presentAulas);
+
+                    return reportCardDTO;
+                })
+                // Filter out null elements (in case any were skipped due to null values)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
-    return reportCards.stream()
-            .map(reportCard -> {
-                // Fetch the user and student class
-                User user = reportCard.getStudent();
-                StudentsClass studentClass = reportCard.getStudentClass();
-
-                // Handle potential null values for user or studentClass
-                if (user == null || studentClass == null) {
-                    return null; // Skip this report card if either is null
-                }
-
-                // Map to simplified DTOs
-                UserDTOSimplified userDTOSimplified = UserDTOSimplified.builder()
-                        .name(user.getName())
-                        .id(studentId)
-                        .build();
-                
-                StudentClassDTOSimplified studentClassDTOSimplified = StudentClassDTOSimplified.builder()
-                        .id(studentClass.getId())
-                        .level(studentClass.getLevel())
-                        .classGroup(studentClass.getClassGroup())
-                        .period(studentClass.getPeriod())
-                        .build();
-
-                // Map the report card to DTO
-                ReportCardDTO reportCardDTO = reportCardMapper.toDTO(reportCard);
-
-                // Set the student and student class fields
-                reportCardDTO.setStudent(userDTOSimplified);
-                reportCardDTO.setStudentClass(studentClassDTOSimplified);
-
-                // Fetch attendance data
-                int aulas = attendanceRepository.countTotalAulas(studentClass.getId());
-                int presentAulas = attendanceRepository.countTotalPresentAttendances(studentId, studentClass.getId());
-
-                // Set attendance data
-                reportCardDTO.setTotalClasses(aulas);
-                reportCardDTO.setTotalPresentClasses(presentAulas);
-
-                return reportCardDTO;
-            })
-            // Filter out null elements (in case any were skipped due to null values)
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
-}
-
-
     public ReportCardDTO getReportCardById(Long reportCardId) {
-        System.out.println("[ReportCard Service] getReportCardById " + reportCardId);
+        System.out.println("[ReportCard Service] getReportCardById " + reportCardId + "\n");
         return reportCardRepository.findById(reportCardId)
                 .map(reportCard -> {
                     return reportCardMapper.toDTO(reportCard);
@@ -272,7 +303,7 @@ public class ReportCardService {
     }
 
     public MessageResponseDTO changeReportCardStatus(ReportCardStatusDTO reportCardStatusDTO) {
-        System.out.println("[ReportCard Service] changeReportCardStatus " + reportCardStatusDTO.id());
+        System.out.println("[ReportCard Service] changeReportCardStatus " + reportCardStatusDTO.id() + "\n");
 
         // Fetch the existing report card from the database
         ReportCard existingReportCard = reportCardRepository.findById(reportCardStatusDTO.id())
@@ -291,8 +322,6 @@ public class ReportCardService {
                 .message("ReportCard closed with ID " + existingReportCard.getId())
                 .build();
     }
-
-
 
     public List<String> listAll() {
         System.out.println("[ReportCard Service] listAll\n");

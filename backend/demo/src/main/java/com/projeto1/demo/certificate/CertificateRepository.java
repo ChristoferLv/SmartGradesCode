@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CertificateRepository extends JpaRepository<StudentCertificate, Long> {
     public List<StudentCertificate> findByUserId(Long userId);
+    public boolean existsByUserIdAndStudentsClassId(Long userId, Long studentsClassId);
 }

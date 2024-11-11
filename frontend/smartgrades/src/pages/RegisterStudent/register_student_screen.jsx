@@ -98,14 +98,16 @@ export default function RegisterStudentScreen() {
         };
 
         const response = await UserAPI.registerUser(userWithRoles, token);
+        console.log(response)
         if (response.status === HttpStatus.OK) {
             notifySuccess("Registrado com sucesso!");
             setIsLoading(false)
         } else {
           setIsLoading(false)
-          notifyError("Falha ao cadastrar novo usuário. " + response.data.error + ".");
+          notifyError("Falha ao cadastrar novo usuário. " + response.data.message);
         }
     }
+    setIsLoading(false)
   }
   fetchFunction();
   }, [isSubmit]);
@@ -121,11 +123,23 @@ export default function RegisterStudentScreen() {
     setIsLoading(true);
     console.log(formErrors)
     if (Object.keys(formErrors).length === 0 && isSubmit) {
-        const response = await AuthAPI.fetchRegister(formValues);
+      setIsLoading(true)
+      // Create a new object with roles added
+      const userWithRoles = {
+       ...formValues,
+       username:formValues.email,
+       roles: [
+         {
+           name: "STUDENT" // Adjust this based on your logic if you need different roles
+         }
+       ]
+     };
+        const response = await  UserAPI.registerUser(userWithRoles, token);
+        console.log(response)
         if (response.status === HttpStatus.OK) {
             notifySuccess("Registrado com sucesso!");
         } else {
-            notifyError("Falha ao cadastrar novo usuário. " + response.data.error + ".");
+            notifyError("Falha ao cadastrar novo usuário. " + response.data.message);
         }
       }
       setIsLoading(false)
