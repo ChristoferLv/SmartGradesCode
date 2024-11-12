@@ -38,6 +38,8 @@ import com.projeto1.demo.studentsClass.ClassStateUtil;
 import com.projeto1.demo.studentsClass.StudentsClass;
 import com.projeto1.demo.studentsClass.StudentsClassRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class UserService {
 
@@ -349,6 +351,7 @@ public class UserService {
                 .build();
     }
 
+    @Transactional
     public MessageResponseDTO uploadProfilePicture(byte[] image, String token) {
         // Decodificar o token para obter o ID do usuário
         Long userId = jwtTokenService.getUserIdFromToken(token);

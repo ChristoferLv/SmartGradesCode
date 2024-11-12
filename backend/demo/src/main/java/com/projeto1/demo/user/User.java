@@ -66,8 +66,7 @@ public class User {
     @Column
     private int state;
 
-    // private String imageUrl;
-    @Lob // To handle large objects in H2
+    @Column
     private byte[] profilePicture;
 
     @OneToMany(mappedBy = "user")
