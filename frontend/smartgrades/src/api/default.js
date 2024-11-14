@@ -1,5 +1,6 @@
 // export const BASE_URL = 'https://portal-aulas-api.fly.dev';
-export const BASE_URL = 'http://localhost:8080';
+//export const BASE_URL = 'http://localhost:8080';
+export const BASE_URL = 'http://20.14.113.9:8080';
 export const BASE_URLv1 = `${BASE_URL}/api/v1`;
 
 export const AUTH_DEBUG = false
