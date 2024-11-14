@@ -1,31 +1,15 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:latest
-    container_name: postgres_db
-    environment:
-      POSTGRES_DB: smartgradesDB
-      POSTGRES_USER: smartgradesUser
-      POSTGRES_PASSWORD: smartgradesPass
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-
   backend:
     build:
       context: .
       dockerfile: Dockerfile  # Points to your Dockerfile in the current directory
-    container_name: spring_backend
+    container_name: spring_backend2
     ports:
       - "8080:8080"  # Expose the Spring Boot app on port 8080
-    depends_on:
-      - postgres  # Ensure the backend waits for the Postgres container
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_db:5432/smartgradesDB
-      SPRING_DATASOURCE_USERNAME: smartgradesUser
-      SPRING_DATASOURCE_PASSWORD: smartgradesPass
-
-volumes:
-  pgdata:
+      # Use Azure PostgreSQL database credentials
+      SPRING_DATASOURCE_URL: jdbc:postgresql://smartgrades-postgres.postgres.database.azure.com:5432/postgres?sslmode=require
+      SPRING_DATASOURCE_USERNAME: smartgradesDB
+      SPRING_DATASOURCE_PASSWORD: senhaboaDB4*
