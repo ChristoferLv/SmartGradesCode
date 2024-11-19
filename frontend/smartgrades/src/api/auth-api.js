@@ -59,7 +59,7 @@ const fetchRegister = async (formValues) => {
 }
 
 const login = async (email, password) => {
-    const url = `${BASE_URLv1}/user/login`
+    const url = `https://20.31.72.110:8443/api/v1/user/login`
     var errorMessage;
     try {
         const options = {
