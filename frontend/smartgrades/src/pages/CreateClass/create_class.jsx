@@ -13,12 +13,12 @@ import {
   Spinner,
 } from 'react-bootstrap'
 import { ClassesAPI } from '../../api/studentClasses'
-import { HttpStatus, CourseAPI } from './api'
 import { useAuthContext } from '../../contexts/AuthContext'
 import { cut } from '../../tools/string'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAdd } from '@fortawesome/free-solid-svg-icons'
 import { notify } from '../../toasts/toasts'
+import { HttpStatus } from '../../api/default'
 
 const PostFormStatus = {
   ENVIADO: 'ENVIADO',

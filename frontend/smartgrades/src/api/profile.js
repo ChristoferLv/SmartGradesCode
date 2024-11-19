@@ -1,10 +1,10 @@
-import { AUTH_DEBUG, BASE_URL, HttpResponse, HttpStatus } from "./default";
+import { AUTH_DEBUG, BASE_URLv1, HttpResponse, HttpStatus } from "./default";
 
 const updateUserPicture = async (userImageToUpdate, id) => {
     var body = new FormData();
     body.append("photo", userImageToUpdate);
     var errorMessage;
-    const url = `${BASE_URL}/user/${id}/`
+    const url = `${BASE_URLv1}/user/${id}/`
     try {
         const options = {
             method: 'PATCH',
@@ -28,7 +28,7 @@ const updateUserPicture = async (userImageToUpdate, id) => {
 }
 
 const fetchEdit = async (newName, aboutText, newLink, id) => {
-    const url = `${BASE_URL}/user/${id}/`
+    const url = `${BASE_URLv1}/user/${id}/`
     var errorMessage;
     try {
         const options = {
@@ -56,7 +56,7 @@ const fetchEdit = async (newName, aboutText, newLink, id) => {
 }
 
 const putInvite = async (userId, invite, jwt) => {
-    const url = `${BASE_URL}/invitation/`;
+    const url = `${BASE_URLv1}/invitation/`;
     var errorMessage;
     try {
         const options = {

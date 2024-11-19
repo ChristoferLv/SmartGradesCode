@@ -1,4 +1,4 @@
-import { AUTH_DEBUG, BASE_URL, BASE_URLv1, HttpResponse, HttpStatus } from "./default";
+import { AUTH_DEBUG, BASE_URLv1, HttpResponse, HttpStatus } from "./default";
 
 const fetchChange = async (oldPassword, newPassword, jwt) => {
     const url = `${BASE_URLv1}/user/change-password`
@@ -30,7 +30,7 @@ const fetchChange = async (oldPassword, newPassword, jwt) => {
 }
 
 const fetchRecovery = async (email) => {
-    const url = `${BASE_URL}/generate-password`
+    const url = `${BASE_URLv1}/generate-password`
     var errorMessage;
     try {
         const options = {
