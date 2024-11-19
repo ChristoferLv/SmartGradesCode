@@ -10,7 +10,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**") // Adjust the path to your API
-                .allowedOrigins("http://localhost:3000") // Frontend origin
+                .allowedOrigins("http://localhost:3000", "https://fluentiaacademy.firebaseapp.com", "https://fluentiaacademy.web.app")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("Authorization", "Content-Type", "Accept")
                 .allowCredentials(true); // Include if your requests include cookies/credentials

@@ -4,27 +4,16 @@ services:
   backend:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile  # Points to your Dockerfile in the current directory
     container_name: spring_backend2
     ports:
-<<<<<<< Updated upstream
-      - "8443:8443"  # Expose the HTTPS port
-    environment:
-      # Use Azure PostgreSQL database credentials
-     
-=======
       - "8443:8443"  # Expose the Spring Boot app on port 8080
     environment:
       # Use Azure PostgreSQL database credentials
       SPRING_DATASOURCE_URL: jdbc:postgresql://smartgrades-postgres2.postgres.database.azure.com:5432/postgres?sslmode=require
->>>>>>> Stashed changes
       SPRING_DATASOURCE_USERNAME: smartgradesDB
       SPRING_DATASOURCE_PASSWORD: smartgradesPass
       # Set the keystore location and credentials
       SERVER_SSL_KEYSTORE: /app/keystore.p12
       SERVER_SSL_KEYSTORE_PASSWORD: smartgrades
       SERVER_SSL_KEYSTORE_TYPE: PKCS12
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
